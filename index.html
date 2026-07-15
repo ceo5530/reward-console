@@ -7,93 +7,148 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 <style>
   :root{
     --bg:#101019; --surface:#181826; --surface-2:#1F2033; --line:#2B2C42;
-    --text:#F4F3F8; --muted:#9694AC;
+    --text:#F4F3F8; --muted:#ADAABF;
     --navy:#272058; --navy-2:#3A31A0; --amber:#FF6A00; --amber-soft:#FFB37A;
     --ok:#4ADE80; --warn:#FBBF24; --bad:#F87171;
     --mono:'JetBrains Mono', ui-monospace, monospace; --sans:'Pretendard', -apple-system, sans-serif;
   }
   *{box-sizing:border-box;}
-  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);}
+  html{font-size:16px;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:1rem;line-height:1.55;}
   a{color:inherit;}
-  header{background:linear-gradient(180deg,#151233,#101019); border-bottom:1px solid var(--line); padding:16px 24px; display:flex; flex-wrap:wrap; gap:14px; align-items:center; justify-content:space-between;}
-  .brand{display:flex; align-items:center; gap:10px;}
-  .brand .mark{width:34px;height:34px;border-radius:8px;background:var(--navy);border:1px solid var(--navy-2);display:flex;align-items:center;justify-content:center;}
-  .brand h1{font-size:15px; margin:0;}
-  .brand p{font-size:11px; color:var(--muted); margin:2px 0 0;}
-  .ticker{font-family:var(--mono);background:#0A0A12;border:1px solid var(--line);border-radius:10px;padding:8px 14px;display:flex;gap:14px;align-items:center;}
-  .ticker .lbl{font-size:9.5px; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase;}
-  .ticker .val{font-size:17px; font-weight:700; color:var(--amber-soft); font-variant-numeric:tabular-nums;}
-  .status{font-size:10.5px; padding:3px 8px; border-radius:999px; font-weight:600;}
+
+  header{background:linear-gradient(180deg,#151233,#101019); border-bottom:1px solid var(--line); padding:18px 24px; display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between;}
+  .brand{display:flex; align-items:center; gap:12px;}
+  .brand .mark{width:40px;height:40px;border-radius:10px;background:var(--navy);border:1px solid var(--navy-2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .brand .mark svg{width:24px;height:24px;}
+  .brand h1{font-size:1.15rem; margin:0; font-weight:700;}
+  .brand p{font-size:0.8rem; color:var(--muted); margin:3px 0 0;}
+
+  .ticker{font-family:var(--mono);background:#0A0A12;border:1px solid var(--line);border-radius:12px;padding:10px 16px;display:flex;gap:16px;align-items:center;}
+  .ticker .lbl{font-size:0.68rem; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase;}
+  .ticker .val{font-size:1.2rem; font-weight:700; color:var(--amber-soft); font-variant-numeric:tabular-nums;}
+  .status{font-size:0.75rem; padding:4px 10px; border-radius:999px; font-weight:600;}
   .status.open{background:rgba(74,222,128,0.15); color:var(--ok);}
   .status.closed{background:rgba(248,113,113,0.15); color:var(--bad);}
-  .userbox{display:flex; align-items:center; gap:10px; font-size:11.5px; color:var(--muted); flex-wrap:wrap;}
-  .userbox .role{padding:2px 8px; border-radius:999px; font-weight:700; font-size:10px;}
+
+  .userbox{display:flex; align-items:center; gap:12px; font-size:0.85rem; color:var(--muted); flex-wrap:wrap;}
+  .userbox .role{padding:3px 10px; border-radius:999px; font-weight:700; font-size:0.72rem;}
   .role.admin{background:rgba(255,106,0,0.18); color:var(--amber-soft);}
   .role.client{background:rgba(58,49,160,0.25); color:#B7B0FF;}
-  .refcode{font-family:var(--mono); background:var(--surface-2); border:1px solid var(--line); padding:3px 8px; border-radius:6px; color:var(--amber-soft);}
-  .userbox button{background:none; border:1px solid var(--line); color:var(--muted); padding:6px 10px; border-radius:8px; cursor:pointer; font-size:11px;}
-  .navtabs{display:flex; gap:6px; padding:0 24px; margin-top:14px; flex-wrap:wrap;}
-  .navtabs button{padding:8px 14px; border-radius:8px 8px 0 0; border:1px solid var(--line); border-bottom:none; background:var(--surface); color:var(--muted); font-size:12.5px; font-weight:600; cursor:pointer;}
+  .refcode{font-family:var(--mono); background:var(--surface-2); border:1px solid var(--line); padding:4px 10px; border-radius:7px; color:var(--amber-soft); font-size:0.85rem;}
+  .userbox button{background:none; border:1px solid var(--line); color:var(--muted); padding:7px 12px; border-radius:9px; cursor:pointer; font-size:0.8rem;}
+
+  .navtabs{display:flex; gap:6px; padding:0 24px; margin-top:16px; flex-wrap:wrap;}
+  .navtabs button{padding:10px 18px; border-radius:10px 10px 0 0; border:1px solid var(--line); border-bottom:none; background:var(--surface); color:var(--muted); font-size:0.9rem; font-weight:600; cursor:pointer;}
   .navtabs button.active{background:var(--surface-2); color:var(--text);}
-  main{padding:20px 24px 40px; max-width:1400px; margin:0 auto; display:grid; grid-template-columns:420px 1fr; gap:20px;}
-  @media(max-width:1000px){ main{grid-template-columns:1fr;} }
-  .card{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:20px;}
-  .card + .card{margin-top:20px;}
-  .card h2{font-size:13px; margin:0 0 16px; letter-spacing:0.03em; color:var(--muted); text-transform:uppercase; display:flex; align-items:center; gap:8px;}
-  .card h2 .n{font-family:var(--mono); color:var(--amber); font-size:11px;}
-  label{display:block; font-size:12px; color:var(--muted); margin-bottom:6px; margin-top:14px;}
+
+  main{padding:22px 24px 48px; max-width:1400px; margin:0 auto; display:grid; grid-template-columns:440px 1fr; gap:22px;}
+  @media(max-width:1000px){ main{grid-template-columns:1fr; padding:16px 14px 40px;} }
+
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:24px;}
+  .card + .card{margin-top:22px;}
+  .card h2{font-size:0.95rem; margin:0 0 18px; letter-spacing:0.02em; color:var(--text); text-transform:none; display:flex; align-items:center; gap:9px; font-weight:700;}
+  .card h2 .n{font-family:var(--mono); color:var(--amber); font-size:0.8rem; background:rgba(255,106,0,0.12); padding:2px 8px; border-radius:6px;}
+
+  label{display:block; font-size:0.85rem; color:var(--muted); margin-bottom:7px; margin-top:16px; font-weight:500;}
   label:first-of-type{margin-top:0;}
-  input, select, textarea{width:100%; background:var(--surface-2); border:1px solid var(--line); color:var(--text); padding:10px 12px; border-radius:8px; font-size:14px; font-family:var(--sans);}
-  textarea{resize:vertical; min-height:70px;}
+  input, select, textarea{width:100%; background:var(--surface-2); border:1px solid var(--line); color:var(--text); padding:12px 14px; border-radius:10px; font-size:1rem; font-family:var(--sans);}
+  textarea{resize:vertical; min-height:80px;}
   input:focus, select:focus, textarea:focus{outline:none; border-color:var(--navy-2);}
-  input:disabled{opacity:0.6;}
+  input:disabled{opacity:0.65;}
   .row2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
-  .kw-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
-  .hint{font-size:11px; color:var(--muted); margin-top:6px; line-height:1.5;}
-  .seg{display:flex; gap:6px; background:var(--surface-2); border-radius:10px; padding:4px;}
-  .seg button{flex:1; padding:9px; border:none; background:none; color:var(--muted); border-radius:7px; font-weight:600; font-size:13px; cursor:pointer;}
+  .kw-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  @media(max-width:420px){ .kw-grid{grid-template-columns:1fr;} }
+  .hint{font-size:0.8rem; color:var(--muted); margin-top:8px; line-height:1.6;}
+
+  .seg{display:flex; gap:6px; background:var(--surface-2); border-radius:12px; padding:4px;}
+  .seg button{flex:1; padding:11px; border:none; background:none; color:var(--muted); border-radius:9px; font-weight:600; font-size:0.92rem; cursor:pointer;}
   .seg button.active{background:var(--navy-2); color:#fff;}
-  .price-box{margin-top:16px; background:#0A0A12; border:1px dashed var(--line); border-radius:10px; padding:12px 14px; font-family:var(--mono); font-size:12px; line-height:1.9;}
-  .price-box .row{display:flex; justify-content:space-between;}
+
+  .price-box{margin-top:18px; background:#0A0A12; border:1px solid var(--line); border-radius:12px; padding:16px 18px;}
+  .price-box .row{display:flex; justify-content:space-between; align-items:baseline; padding:5px 0; font-size:0.92rem;}
   .price-box .row span:first-child{color:var(--muted);}
-  .price-box .row.total{border-top:1px solid var(--line); margin-top:6px; padding-top:6px; font-weight:700; color:var(--amber-soft);}
-  .btn{margin-top:18px; width:100%; padding:13px; border:none; border-radius:10px; background:var(--amber); color:#1A0E00; font-weight:700; font-size:14px; cursor:pointer;}
+  .price-box .row span:last-child{font-family:var(--mono); font-weight:600;}
+  .price-box .row.total{border-top:1px solid var(--line); margin-top:8px; padding-top:12px;}
+  .price-box .row.total span:first-child{color:var(--text); font-weight:700;}
+  .price-box .row.total span:last-child{font-size:1.35rem; font-weight:800; color:var(--amber-soft);}
+
+  .btn{margin-top:20px; width:100%; padding:15px; border:none; border-radius:12px; background:var(--amber); color:#1A0E00; font-weight:700; font-size:1rem; cursor:pointer; box-shadow:0 4px 14px rgba(255,106,0,0.25);}
   .btn:active{transform:scale(0.98);}
-  .btn.secondary{background:var(--surface-2); color:var(--text); border:1px solid var(--line); font-weight:600;}
-  .btn.small{margin-top:0; width:auto; padding:8px 12px; font-size:12px;}
+  .btn.secondary{background:var(--surface-2); color:var(--text); border:1px solid var(--line); font-weight:600; box-shadow:none;}
+  .btn.small{margin-top:0; width:auto; padding:9px 16px; font-size:0.85rem; box-shadow:none;}
   .btn:disabled{opacity:0.5; cursor:not-allowed;}
-  table{width:100%; border-collapse:collapse; font-size:12.5px;}
-  th{text-align:left; font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; padding:8px 10px; border-bottom:1px solid var(--line);}
-  td{padding:10px; border-bottom:1px solid var(--line); vertical-align:top;}
-  tr:last-child td{border-bottom:none;}
+
   .mono{font-family:var(--mono);}
-  .pill{display:inline-block; padding:2px 8px; border-radius:999px; font-size:10.5px; font-weight:600;}
+  .pill{display:inline-block; padding:5px 12px; border-radius:999px; font-size:0.8rem; font-weight:700; white-space:nowrap;}
   .pill.payment_pending{background:rgba(251,191,36,0.15); color:var(--warn);}
   .pill.approved, .pill.confirmed{background:rgba(74,222,128,0.15); color:var(--ok);}
   .pill.done{background:rgba(150,148,172,0.15); color:var(--muted);}
-  .kw-tags span{display:inline-block; background:var(--surface-2); border:1px solid var(--line); border-radius:6px; padding:2px 6px; font-size:11px; margin:2px 3px 0 0;}
-  .empty{color:var(--muted); font-size:13px; padding:20px 0; text-align:center;}
-  .toolbar{display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; align-items:center;}
-  .config{background:#0A0A12; border:1px solid var(--line); border-radius:10px; padding:14px; margin-top:14px;}
-  .config summary{cursor:pointer; font-size:12px; color:var(--muted); font-weight:600;}
-  .msg{font-size:12px; padding:10px 12px; border-radius:8px; margin-top:12px; display:none;}
+
+  .empty{color:var(--muted); font-size:0.95rem; padding:30px 0; text-align:center;}
+  .toolbar{display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; align-items:center;}
+  .config{background:#0A0A12; border:1px solid var(--line); border-radius:12px; padding:16px; margin-top:18px;}
+  .config summary{cursor:pointer; font-size:0.85rem; color:var(--muted); font-weight:600;}
+  .msg{font-size:0.88rem; padding:12px 14px; border-radius:10px; margin-top:14px; display:none; line-height:1.5;}
   .msg.show{display:block;}
   .msg.ok{background:rgba(74,222,128,0.12); color:var(--ok); border:1px solid rgba(74,222,128,0.3);}
   .msg.warn{background:rgba(251,191,36,0.12); color:var(--warn); border:1px solid rgba(251,191,36,0.3);}
-  .bank-banner{background:rgba(255,106,0,0.1); border:1px solid rgba(255,106,0,0.35); border-radius:10px; padding:14px; margin-top:14px; font-size:13px;}
-  .bank-banner .acc{font-family:var(--mono); font-size:16px; font-weight:700; color:var(--amber-soft); margin:6px 0;}
-  .coupon-item{display:flex; justify-content:space-between; align-items:center; background:var(--surface-2); border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin-top:8px; font-size:12.5px;}
+
+  .bank-banner{background:rgba(255,106,0,0.1); border:1px solid rgba(255,106,0,0.35); border-radius:12px; padding:16px 18px; margin-top:16px;}
+  .bank-banner strong{font-size:0.95rem;}
+  .bank-banner .acc{font-family:var(--mono); font-size:1.15rem; font-weight:700; color:var(--amber-soft); margin:8px 0;}
+  .coupon-item{display:flex; justify-content:space-between; align-items:center; background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin-top:10px; font-size:0.9rem;}
+
   #authScreen{min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px;}
-  .authcard{width:100%; max-width:400px; background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:28px;}
-  .authtabs{display:flex; gap:4px; background:var(--surface-2); border-radius:10px; padding:4px; margin-bottom:20px;}
-  .authtabs button{flex:1; padding:9px; border:none; background:none; color:var(--muted); border-radius:8px; font-weight:600; font-size:13px; cursor:pointer;}
+  .authcard{width:100%; max-width:420px; background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:30px;}
+  .authtabs{display:flex; gap:4px; background:var(--surface-2); border-radius:12px; padding:4px; margin-bottom:22px;}
+  .authtabs button{flex:1; padding:11px; border:none; background:none; color:var(--muted); border-radius:9px; font-weight:600; font-size:0.95rem; cursor:pointer;}
   .authtabs button.active{background:var(--navy-2); color:#fff;}
   #app{display:none;}
   .panel{display:none;}
   .panel.active{display:block;}
+
+  /* ---- 접수현황 카드 리스트 (표 대신) ---- */
+  .result-list{display:flex; flex-direction:column; gap:14px;}
+  .result-card{background:var(--surface-2); border:1px solid var(--line); border-radius:14px; padding:18px 20px;}
+  .result-top{display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;}
+  .result-client{font-size:1.05rem; font-weight:700;}
+  .result-phone{font-family:var(--mono); font-size:0.82rem; color:var(--muted); margin-top:2px;}
+  .result-amount{font-family:var(--mono); font-size:1.15rem; font-weight:700; color:var(--amber-soft); text-align:right;}
+  .result-amount .lbl{display:block; font-size:0.7rem; color:var(--muted); font-weight:500; font-family:var(--sans); margin-bottom:2px;}
+  .result-mid{margin-top:14px; padding-top:14px; border-top:1px dashed var(--line);}
+  .result-product{font-size:0.98rem; font-weight:600; margin-bottom:6px;}
+  .result-link{font-size:0.82rem; color:var(--amber-soft); text-decoration:none;}
+  .kw-tags{display:flex; flex-wrap:wrap; gap:6px; margin-top:10px;}
+  .kw-tags span{display:inline-block; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:5px 10px; font-size:0.82rem;}
+  .result-bottom{margin-top:14px; padding-top:14px; border-top:1px dashed var(--line); display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;}
+  .result-period{font-size:0.88rem; color:var(--text);}
+  .result-period .lbl{color:var(--muted); font-size:0.78rem; display:block; margin-bottom:3px;}
+  .result-yt-meta{font-size:0.88rem; color:var(--muted); margin-top:6px; line-height:1.6;}
+
+  /* 관리자용 추천현황 등 남은 표는 모바일에서 가로스크롤로 보이게 */
+  table{width:100%; border-collapse:collapse; font-size:0.88rem;}
+  th{text-align:left; font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.04em; padding:10px 12px; border-bottom:1px solid var(--line);}
+  td{padding:12px; border-bottom:1px solid var(--line); vertical-align:top;}
+  tr:last-child td{border-bottom:none;}
+  #referralWrap, #couponListWrap{overflow-x:auto;}
+
+  /* ---- 현황판 ---- */
+  .dash-wrap{padding:0 24px 40px; max-width:1400px; margin:0 auto; display:flex; flex-direction:column; gap:22px;}
+  @media(max-width:1000px){ .dash-wrap{padding:0 14px 40px;} }
+  .stat-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px;}
+  .stat-card{background:var(--surface-2); border:1px solid var(--line); border-radius:14px; padding:18px;}
+  .stat-card .num{font-family:var(--mono); font-size:1.6rem; font-weight:800; color:var(--amber-soft);}
+  .stat-card .lbl{font-size:0.82rem; color:var(--muted); margin-top:6px;}
+  .chart-controls{display:flex; flex-direction:column; gap:14px;}
+  .kw-check-group{display:flex; flex-wrap:wrap; gap:8px;}
+  .kw-check-group label{display:flex; align-items:center; gap:6px; background:var(--surface-2); border:1px solid var(--line); border-radius:9px; padding:8px 12px; font-size:0.85rem; color:var(--text); margin:0; cursor:pointer;}
+  .kw-check-group input{width:auto; accent-color:var(--amber);}
 </style>
 </head>
 <body>
@@ -103,7 +158,7 @@
   <div class="authcard">
     <div class="brand" style="margin-bottom:20px;">
       <div class="mark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 18L12 5L20 18" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 18L12 9.5L20 18" stroke="#B7B0E8" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/></svg></div>
-      <div><h1 style="margin:0;font-size:16px;">접수 콘솔</h1><p style="margin:2px 0 0;font-size:11px;color:var(--muted);">올림컴퍼니</p></div>
+      <div><h1 style="margin:0;font-size:16px;">접수 콘솔</h1><p style="margin:2px 0 0;font-size:13px;color:var(--muted);">올림컴퍼니</p></div>
     </div>
     <div class="authtabs">
       <button id="tabLogin" class="active">로그인</button>
@@ -157,6 +212,7 @@
 
 <div class="navtabs">
   <button class="navtab active" data-panel="panelMain">접수/현황</button>
+  <button class="navtab" data-panel="panelDashboard">📊 내 현황판</button>
   <button class="navtab" data-panel="panelCoupons">보유 쿠폰함</button>
   <button class="navtab admin-only" data-panel="panelReferrals" style="display:none;">추천 현황(관리자)</button>
 </div>
@@ -244,6 +300,53 @@
   </section>
 </main>
 
+<div id="panelDashboard" class="panel">
+  <div class="dash-wrap">
+    <div class="card">
+      <h2><span class="n">DASH</span> 내 현황 요약</h2>
+      <div class="stat-grid" id="statGrid"><div class="empty">로딩중...</div></div>
+    </div>
+
+    <div class="card">
+      <h2><span class="n">CHART</span> 순위 추이 그래프</h2>
+      <div class="chart-controls">
+        <div>
+          <label>상품 선택</label>
+          <select id="chart_submission"></select>
+        </div>
+        <div>
+          <label>표시할 키워드 (여러 개 선택 가능)</label>
+          <div class="kw-check-group" id="chart_keywords"></div>
+        </div>
+        <div>
+          <label>기간</label>
+          <div class="seg" id="rangePresets">
+            <button data-days="7">최근 7일</button>
+            <button data-days="30" class="active">최근 30일</button>
+            <button data-days="90">최근 90일</button>
+            <button data-days="0">전체</button>
+          </div>
+        </div>
+        <div class="row2">
+          <div><label>시작일</label><input type="date" id="chart_start" /></div>
+          <div><label>종료일</label><input type="date" id="chart_end" /></div>
+        </div>
+      </div>
+      <div style="position:relative; height:320px; margin-top:20px;">
+        <canvas id="rankChart"></canvas>
+      </div>
+      <div class="hint" id="chartEmptyHint" style="display:none; text-align:center; padding:20px 0;">
+        아직 그래프로 보여줄 데이터가 부족해요. 순위조회는 6시간마다 자동으로 진행되니, 시간이 지나면 점점 채워집니다.
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="n">LOG</span> 지난 접수 내역 전체</h2>
+      <div id="historyListWrap"><div class="empty">로딩중...</div></div>
+    </div>
+  </div>
+</div>
+
 <div id="panelCoupons" class="panel">
   <div class="card" style="max-width:600px; margin:0 24px;">
     <h2><span class="n">03</span> 보유 쿠폰함</h2>
@@ -266,9 +369,25 @@ const CUTOFF_HOUR = 16;
 const SK_SESSION = 'session';
 let CATALOG = { products: [], bank: {} };
 let COUPONS_CACHE = [];
+let lastStatusMap = {}; // 승인 여부 변경 감지용
 
 function fmt(d){ const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), dd=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${dd}`; }
 function addDays(d,n){ const r=new Date(d); r.setDate(r.getDate()+n); return r; }
+// "2026-07-16" 또는 ISO 문자열을 "7월 16일(목)" 형태로 예쁘게 표시
+function prettyDate(dateStr){
+  if(!dateStr) return '-';
+  const d = new Date(dateStr.length>10 ? dateStr : dateStr+'T00:00:00');
+  if(isNaN(d)) return dateStr;
+  const days = ['일','월','화','수','목','금','토'];
+  return `${d.getMonth()+1}월 ${d.getDate()}일(${days[d.getDay()]})`;
+}
+function prettyRange(startStr, endStr){
+  if(!startStr || !endStr) return null;
+  const s = new Date(startStr.length>10 ? startStr : startStr+'T00:00:00');
+  const e = new Date(endStr.length>10 ? endStr : endStr+'T00:00:00');
+  const days = Math.round((e-s)/86400000)+1;
+  return `${prettyDate(startStr)} ~ ${prettyDate(endStr)} · 총 ${days}일`;
+}
 function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function showMsg(id,text,type){ const el=document.getElementById(id); el.textContent=text; el.className='msg show '+type; setTimeout(()=>{el.className='msg';},6000); }
 
@@ -357,6 +476,7 @@ document.querySelectorAll('.navtab').forEach(btn=>{
     if(btn.dataset.panel === 'panelMain') panel.style.display='grid'; else panel.style.display='block';
     if(btn.dataset.panel === 'panelCoupons') renderCoupons();
     if(btn.dataset.panel === 'panelReferrals') renderReferrals();
+    if(btn.dataset.panel === 'panelDashboard') loadDashboard();
   });
 });
 
@@ -501,13 +621,13 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
 
 // ---------- 대시보드 ----------
 function statusLabel(rec){
-  if(rec.status === 'payment_pending') return {cls:'payment_pending', text:'결제대기'};
-  if(rec.status === 'confirmed') return {cls:'confirmed', text:'예약확정'};
+  if(rec.status === 'payment_pending') return {cls:'payment_pending', text:'⏳ 결제확인 대기중'};
+  if(rec.status === 'confirmed') return {cls:'confirmed', text:'✅ 승인완료 · 예약확정'};
   if(rec.productType === 'reward' && rec.status === 'approved'){
     const today = fmt(new Date());
-    if(rec.startDate && today < rec.startDate) return {cls:'approved', text:'반영대기'};
+    if(rec.startDate && today < rec.startDate) return {cls:'approved', text:`✅ 승인완료 · ${prettyDate(rec.startDate)}부터 시작`};
     if(rec.endDate && today > rec.endDate) return {cls:'done', text:'종료'};
-    return {cls:'approved', text:'진행중'};
+    return {cls:'approved', text:'✅ 진행중'};
   }
   return {cls:'done', text:rec.status};
 }
@@ -520,35 +640,64 @@ async function renderTable(){
   if(!listRes.ok){ wrap.innerHTML = `<div class="empty">${escapeHtml(listRes.error||'조회 실패')}</div>`; return; }
   const records = (listRes.submissions||[]).sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt));
   const ranksMap = (rankRes.ok && rankRes.ranks) ? rankRes.ranks : {};
+
+  // 결제대기 -> 승인 으로 바뀐 걸 감지해서 축하 알림
+  if(session.role === 'client'){
+    let justApproved = false;
+    records.forEach(rec=>{
+      const prev = lastStatusMap[rec.id];
+      if(prev === 'payment_pending' && (rec.status === 'approved' || rec.status === 'confirmed')) justApproved = true;
+    });
+    if(justApproved) showMsg('submitMsg', '🎉 입금이 확인되어 접수가 승인됐어요! 작업이 곧 시작됩니다.', 'ok');
+  }
+  records.forEach(rec=>{ lastStatusMap[rec.id] = rec.status; });
+
   if(records.length===0){ wrap.innerHTML='<div class="empty">아직 접수된 건이 없습니다.</div>'; return; }
 
-  let html = `<table><thead><tr><th>업체</th><th>내용</th><th>금액</th><th>기간/일정</th><th>상태</th><th></th></tr></thead><tbody>`;
+  let html = '<div class="result-list">';
   for(const rec of records){
     const st = statusLabel(rec);
-    let contentCell, periodCell;
+    const amount = rec.productType==='reward' ? `${Number(rec.grandTotal||0).toLocaleString('ko-KR')}원` : '협의 후 안내';
+    const approveBtn = (session.role==='admin' && rec.status==='payment_pending')
+      ? `<button class="btn small approveBtn" data-id="${rec.id}">입금확인 · 승인하기</button>` : '';
+
+    let midHtml, bottomHtml;
     if(rec.productType === 'reward'){
       const kws = Array.isArray(rec.keywords) ? rec.keywords : String(rec.keywords||'').split(',').map(k=>k.trim()).filter(Boolean);
       const ranks = ranksMap[rec.id] || {};
-      const kwTags = kws.map(k=>{ const info=ranks[k]; return `<span>${escapeHtml(info?`${k} (${info.rank}위)`:k)}</span>`; }).join('');
-      contentCell = `${escapeHtml(rec.channel)}/${escapeHtml(rec.program)} · ${rec.qty}개${rec.bonusSlots?`+${rec.bonusSlots}`:''}<br/><a href="${escapeHtml(rec.link)}" target="_blank" style="color:var(--amber-soft); font-size:11px;">상품링크 ↗</a><div class="kw-tags">${kwTags}</div>`;
-      periodCell = rec.startDate ? `<span class="mono">${rec.startDate} ~ ${rec.endDate}</span>` : '<span style="color:var(--muted)">승인 후 확정</span>';
+      const kwTags = kws.map(k=>{ const info=ranks[k]; return `<span>${escapeHtml(info?`${k} · ${info.rank}위`:k)}</span>`; }).join('');
+      midHtml = `
+        <div class="result-product">${escapeHtml(rec.channel)} · ${escapeHtml(rec.program)} — ${rec.qty}개${rec.bonusSlots?` <span style="color:var(--ok)">(+${rec.bonusSlots} 보너스)</span>`:''}</div>
+        <a class="result-link" href="${escapeHtml(rec.link)}" target="_blank">상품링크 열기 ↗</a>
+        <div class="kw-tags">${kwTags}</div>`;
+      const periodText = rec.startDate ? prettyRange(rec.startDate, rec.endDate) : null;
+      bottomHtml = `<div class="result-period">${periodText ? `<span class="lbl">진행 기간</span>${periodText}` : `<span class="lbl">진행 기간</span>승인 후 확정돼요`}</div>`;
     } else {
-      contentCell = `유튜브 촬영<br/><span style="color:var(--muted); font-size:11.5px;">${escapeHtml(rec.location||'-')}</span><br/><span style="color:var(--muted); font-size:11px;">${escapeHtml(rec.notes||'')}</span>`;
-      periodCell = `<span class="mono">희망일 ${escapeHtml(rec.requestedDate||'-')}</span>`;
+      midHtml = `
+        <div class="result-product">🎥 유튜브 인터뷰 촬영</div>
+        <div class="result-yt-meta">📍 ${escapeHtml(rec.location||'장소 미정')}<br/>${escapeHtml(rec.notes||'')}</div>`;
+      bottomHtml = `<div class="result-period"><span class="lbl">촬영 희망일</span>${prettyDate(rec.requestedDate)}</div>`;
     }
-    const amount = rec.productType==='reward' ? `${Number(rec.grandTotal||0).toLocaleString('ko-KR')}원` : '협의 후 안내';
-    const approveBtn = (session.role==='admin' && rec.status==='payment_pending')
-      ? `<button class="btn small approveBtn" data-id="${rec.id}">승인</button>` : '';
-    html += `<tr>
-      <td><strong>${escapeHtml(rec.client)}</strong><br/><span class="mono" style="color:var(--muted)">${escapeHtml(rec.phone||'-')}</span></td>
-      <td>${contentCell}</td>
-      <td class="mono">${amount}</td>
-      <td>${periodCell}</td>
-      <td><span class="pill ${st.cls}">${st.text}</span></td>
-      <td>${approveBtn}</td>
-    </tr>`;
+
+    html += `<div class="result-card">
+      <div class="result-top">
+        <div>
+          <div class="result-client">${escapeHtml(rec.client)}</div>
+          <div class="result-phone">${escapeHtml(rec.phone||'-')}</div>
+        </div>
+        <div class="result-amount"><span class="lbl">금액</span>${amount}</div>
+      </div>
+      <div class="result-mid">${midHtml}</div>
+      <div class="result-bottom">
+        ${bottomHtml}
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span class="pill ${st.cls}">${st.text}</span>
+          ${approveBtn}
+        </div>
+      </div>
+    </div>`;
   }
-  html += '</tbody></table>';
+  html += '</div>';
   wrap.innerHTML = html;
 
   document.querySelectorAll('.approveBtn').forEach(btn=>{
@@ -557,11 +706,18 @@ async function renderTable(){
       btn.disabled = true; btn.textContent='처리중...';
       const res = await apiCall('approveSubmission', { token:s.token, submissionId: btn.dataset.id });
       if(res.ok){ showMsg('submitMsg','승인 완료. 롤링 일정이 반영되었습니다.','ok'); renderTable(); }
-      else { showMsg('submitMsg', res.error||'승인 실패','warn'); btn.disabled=false; btn.textContent='승인'; }
+      else { showMsg('submitMsg', res.error||'승인 실패','warn'); btn.disabled=false; btn.textContent='입금확인 · 승인하기'; }
     });
   });
 }
 document.getElementById('refreshBtn').addEventListener('click', renderTable);
+// 접수현황 화면을 보고 있는 동안 30초마다 조용히 자동 갱신 (승인 여부를 실시간에 가깝게 확인)
+setInterval(async ()=>{
+  const session = await getSession();
+  const mainPanel = document.getElementById('panelMain');
+  if(session && mainPanel && mainPanel.classList.contains('active')) renderTable();
+}, 30000);
+
 
 // ---------- 쿠폰함 ----------
 async function loadCoupons(){
@@ -577,7 +733,7 @@ async function renderCoupons(){
   wrap.innerHTML = COUPONS_CACHE.map(c=>`
     <div class="coupon-item">
       <span><strong>${c.type}</strong> 쿠폰 · ${req_(c)}개 이상 주문 시 사용 가능</span>
-      <span class="mono" style="color:var(--muted); font-size:11px;">지급일 ${c.grantedAt ? c.grantedAt.slice(0,10) : '-'}</span>
+      <span class="mono" style="color:var(--muted); font-size:12.5px;">지급일 ${c.grantedAt ? c.grantedAt.slice(0,10) : '-'}</span>
     </div>`).join('');
 }
 
@@ -593,8 +749,8 @@ async function renderReferrals(){
   let html = `<table><thead><tr><th>추천인</th><th>가입한 업체</th><th>결제완료</th><th>쿠폰지급</th></tr></thead><tbody>`;
   referrals.forEach((r,i)=>{
     html += `<tr>
-      <td>${escapeHtml(r.referrerCompany)}<br/><span class="mono" style="color:var(--muted); font-size:11px;">${escapeHtml(r.referrerEmail||'-')}</span></td>
-      <td>${escapeHtml(r.referredCompany)}<br/><span class="mono" style="color:var(--muted); font-size:11px;">${escapeHtml(r.referredEmail)}</span></td>
+      <td>${escapeHtml(r.referrerCompany)}<br/><span class="mono" style="color:var(--muted); font-size:12.5px;">${escapeHtml(r.referrerEmail||'-')}</span></td>
+      <td>${escapeHtml(r.referredCompany)}<br/><span class="mono" style="color:var(--muted); font-size:12.5px;">${escapeHtml(r.referredEmail)}</span></td>
       <td>${r.hasCompletedPayment ? '<span class="pill approved">완료</span>' : '<span class="pill payment_pending">대기</span>'}</td>
       <td>
         ${r.referrerEmail ? `
@@ -616,6 +772,165 @@ async function renderReferrals(){
       if(res.ok){ btn.textContent='지급완료'; } else { alert(res.error||'지급 실패'); btn.disabled=false; }
     });
   });
+}
+
+// ---------- 현황판 ----------
+let rankChartInstance = null;
+
+async function loadDashboard(){
+  const session = await getSession();
+  if(!session) return;
+  document.getElementById('statGrid').innerHTML = '<div class="empty">로딩중...</div>';
+  document.getElementById('historyListWrap').innerHTML = '<div class="empty">로딩중...</div>';
+  const listRes = await apiCall('listSubmissions', { token: session.token });
+  const records = (listRes.ok ? listRes.submissions : []) || [];
+  renderStatGrid(records);
+  renderHistoryList(records);
+
+  if(!document.getElementById('chart_start').value){
+    const end = new Date(); const start = addDays(end, -29);
+    document.getElementById('chart_start').value = fmt(start);
+    document.getElementById('chart_end').value = fmt(end);
+  }
+  populateChartSubmissionSelect(records);
+}
+
+function renderStatGrid(records){
+  const total = records.length;
+  const today = fmt(new Date());
+  const active = records.filter(r => r.productType==='reward' && r.status==='approved' && (!r.endDate || today <= r.endDate)).length;
+  const totalPaid = records.filter(r => r.status==='approved' || r.status==='confirmed').reduce((s,r)=> s+Number(r.grandTotal||0), 0);
+  const totalKeywords = new Set(
+    records.filter(r=>r.productType==='reward')
+      .flatMap(r => Array.isArray(r.keywords) ? r.keywords : String(r.keywords||'').split(',').map(k=>k.trim()).filter(Boolean))
+  ).size;
+  document.getElementById('statGrid').innerHTML = `
+    <div class="stat-card"><div class="num">${total}</div><div class="lbl">총 접수 건수</div></div>
+    <div class="stat-card"><div class="num">${active}</div><div class="lbl">진행중인 캠페인</div></div>
+    <div class="stat-card"><div class="num">${totalPaid.toLocaleString('ko-KR')}<span style="font-size:1rem;">원</span></div><div class="lbl">누적 결제금액</div></div>
+    <div class="stat-card"><div class="num">${totalKeywords}</div><div class="lbl">등록된 키워드 수</div></div>
+  `;
+}
+
+function renderHistoryList(records){
+  const wrap = document.getElementById('historyListWrap');
+  if(records.length===0){ wrap.innerHTML='<div class="empty">아직 접수 내역이 없습니다.</div>'; return; }
+  const sorted = [...records].sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
+  wrap.innerHTML = '<div class="result-list">' + sorted.map(rec=>{
+    const st = statusLabel(rec);
+    const title = rec.productType==='reward' ? `${rec.channel} · ${rec.program} — ${rec.qty}개` : '🎥 유튜브 인터뷰 촬영';
+    const amount = rec.productType==='reward' ? `${Number(rec.grandTotal||0).toLocaleString('ko-KR')}원` : '협의 후 안내';
+    return `<div class="result-card" style="padding:16px 18px;">
+      <div class="result-top">
+        <div>
+          <div class="result-client" style="font-size:1rem;">${escapeHtml(title)}</div>
+          <div class="result-phone">${prettyDate(fmt(new Date(rec.createdAt)))} 접수 · ${escapeHtml(rec.client)}</div>
+        </div>
+        <div class="result-amount" style="font-size:1rem;"><span class="lbl">금액</span>${amount}</div>
+      </div>
+      <div style="margin-top:12px;"><span class="pill ${st.cls}">${st.text}</span></div>
+    </div>`;
+  }).join('') + '</div>';
+}
+
+function populateChartSubmissionSelect(records){
+  const rewardRecords = records.filter(r => r.productType === 'reward');
+  const sel = document.getElementById('chart_submission');
+  if(rewardRecords.length === 0){
+    sel.innerHTML = '<option value="">순위 추적 대상이 없어요</option>';
+    document.getElementById('chart_keywords').innerHTML = '';
+    renderEmptyChart();
+    return;
+  }
+  sel.innerHTML = rewardRecords.map(r =>
+    `<option value="${r.id}">${escapeHtml(r.client)} · ${escapeHtml(r.channel)}/${escapeHtml(r.program)} (${prettyDate(r.acceptDate || fmt(new Date(r.createdAt)))} 접수)</option>`
+  ).join('');
+  sel._recordsCache = rewardRecords;
+  updateKeywordCheckboxes(rewardRecords[0]);
+  fetchAndRenderChart();
+}
+
+function updateKeywordCheckboxes(rec){
+  const wrap = document.getElementById('chart_keywords');
+  if(!rec){ wrap.innerHTML = ''; return; }
+  const kws = Array.isArray(rec.keywords) ? rec.keywords : String(rec.keywords||'').split(',').map(k=>k.trim()).filter(Boolean);
+  wrap.innerHTML = kws.map(k => `<label><input type="checkbox" value="${escapeHtml(k)}" checked/> ${escapeHtml(k)}</label>`).join('');
+}
+
+document.getElementById('chart_submission').addEventListener('change', (e)=>{
+  const records = e.target._recordsCache || [];
+  const rec = records.find(r => r.id === e.target.value);
+  updateKeywordCheckboxes(rec);
+  fetchAndRenderChart();
+});
+document.getElementById('chart_keywords').addEventListener('change', fetchAndRenderChart);
+document.querySelectorAll('#rangePresets button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('#rangePresets button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const days = parseInt(btn.dataset.days, 10);
+    const end = new Date();
+    const start = days === 0 ? new Date(2020,0,1) : addDays(end, -(days-1));
+    document.getElementById('chart_start').value = fmt(start);
+    document.getElementById('chart_end').value = fmt(end);
+    fetchAndRenderChart();
+  });
+});
+document.getElementById('chart_start').addEventListener('change', fetchAndRenderChart);
+document.getElementById('chart_end').addEventListener('change', fetchAndRenderChart);
+
+async function fetchAndRenderChart(){
+  const session = await getSession();
+  if(!session) return;
+  const submissionId = document.getElementById('chart_submission').value;
+  if(!submissionId){ renderEmptyChart(); return; }
+  const selectedKeywords = Array.from(document.querySelectorAll('#chart_keywords input:checked')).map(i=>i.value);
+  const startDate = document.getElementById('chart_start').value;
+  const endDate = document.getElementById('chart_end').value;
+
+  const res = await apiCall('getRankHistory', { token: session.token, submissionId, startDate, endDate });
+  if(!res.ok || !res.history || res.history.length === 0){ renderEmptyChart(); return; }
+
+  const byKeyword = {};
+  res.history.forEach(h=>{
+    if(selectedKeywords.length && !selectedKeywords.includes(h.keyword)) return;
+    if(!h.rank || isNaN(Number(h.rank))) return; // "100위 밖" 등은 그래프에서 제외(끊어보이게)
+    if(!byKeyword[h.keyword]) byKeyword[h.keyword] = [];
+    byKeyword[h.keyword].push({ x: h.checkedAt, y: Number(h.rank) });
+  });
+
+  const datasetKeys = Object.keys(byKeyword);
+  document.getElementById('chartEmptyHint').style.display = datasetKeys.length ? 'none' : 'block';
+  if(datasetKeys.length === 0){ if(rankChartInstance){ rankChartInstance.destroy(); rankChartInstance=null; } return; }
+
+  const palette = ['#FF6A00','#8F8AFF','#4ADE80','#FBBF24','#F87171'];
+  const datasets = datasetKeys.map((kw,i)=>({
+    label: kw, data: byKeyword[kw],
+    borderColor: palette[i%palette.length], backgroundColor: palette[i%palette.length],
+    tension:0.3, pointRadius:3, spanGaps:true, borderWidth:2.5
+  }));
+
+  const ctx = document.getElementById('rankChart').getContext('2d');
+  if(rankChartInstance) rankChartInstance.destroy();
+  rankChartInstance = new Chart(ctx, {
+    type:'line',
+    data:{ datasets },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{ mode:'nearest', intersect:false },
+      scales:{
+        x:{ type:'time', time:{ unit:'day', tooltipFormat:'M월 d일' }, ticks:{ color:'#ADAABF' }, grid:{ color:'#2B2C42' } },
+        y:{ reverse:true, beginAtZero:false,
+            title:{ display:true, text:'순위 (숫자가 작을수록 좋음)', color:'#ADAABF' },
+            ticks:{ color:'#ADAABF', precision:0 }, grid:{ color:'#2B2C42' } }
+      },
+      plugins:{ legend:{ labels:{ color:'#F4F3F8' } } }
+    }
+  });
+}
+function renderEmptyChart(){
+  document.getElementById('chartEmptyHint').style.display = 'block';
+  if(rankChartInstance){ rankChartInstance.destroy(); rankChartInstance = null; }
 }
 
 // ---------- 초기 로드 ----------
