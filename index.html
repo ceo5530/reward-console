@@ -145,12 +145,7 @@
   .authtabs button{flex:1; padding:11px; border:none; background:none; color:var(--muted); border-radius:9px; font-weight:600; font-size:0.95rem; cursor:pointer;}
   .authtabs button.active{background:var(--navy-2); color:#fff;}
 
-  .wizard-progress{display:flex; justify-content:center; gap:8px; margin-bottom:26px;}
-  .wizard-progress .dot{width:8px; height:8px; border-radius:50%; background:var(--line); transition:all .25s ease;}
-  .wizard-progress .dot.active{width:24px; background:var(--navy-2);}
-  .wizard-progress .dot.done{background:var(--amber-soft);}
-  .wizard-step{display:none;}
-  .wizard-step.active{display:block; animation:wizardSlideIn .38s cubic-bezier(.22,1,.36,1);}
+  #signupActive{animation:wizardSlideIn .38s cubic-bezier(.22,1,.36,1);}
   @keyframes wizardSlideIn{ from{opacity:0; transform:translateY(28px);} to{opacity:1; transform:translateY(0);} }
   .wizard-title{font-size:1.32rem; font-weight:800; margin:0 0 6px; color:var(--text); line-height:1.35;}
   .wizard-sub{font-size:0.88rem; color:var(--muted); margin:0 0 22px;}
@@ -158,6 +153,18 @@
   .back-link:hover{color:var(--navy-2);}
   .switch-link{margin-top:20px; text-align:center; font-size:0.88rem; color:var(--muted);}
   .switch-link a{color:var(--navy-2); font-weight:700; text-decoration:none; cursor:pointer;}
+
+  /* 답변이 위에 쌓이는 대화형 리스트 (토스 회원가입 참고) */
+  #signupAnswered{margin-bottom:4px;}
+  .answered-row{display:flex; justify-content:space-between; align-items:baseline; gap:12px; padding:12px 0; border-bottom:1.5px solid var(--line); animation:answeredIn .32s ease;}
+  .answered-row .q{font-size:0.82rem; color:var(--muted); flex-shrink:0;}
+  .answered-row .a{font-size:1rem; color:var(--text); font-weight:700; text-align:right; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  @keyframes answeredIn{ from{opacity:0; transform:translateY(-8px);} to{opacity:1; transform:translateY(0);} }
+
+  /* 토스풍 밑줄 인풋 (박스 없이 아래 선만) */
+  input.toss-input{background:none; border:none; border-bottom:2px solid var(--line); border-radius:0; padding:10px 2px; font-size:1.25rem; font-weight:700; box-shadow:none !important;}
+  input.toss-input:focus{border-bottom-color:var(--navy-2); box-shadow:none !important;}
+  input.toss-input::placeholder{font-weight:500; color:var(--muted);}
 
   #successOverlay{position:fixed; inset:0; background:#FFFFFF; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:22px; z-index:9998; opacity:0; visibility:hidden; transition:opacity .3s ease, visibility .3s ease;}
   #successOverlay.show{opacity:1; visibility:visible;}
@@ -245,59 +252,21 @@
     <div id="loginForm">
       <h2 class="wizard-title">로그인할게요</h2>
       <p class="wizard-sub">이메일과 비밀번호를 입력해주세요</p>
-      <input id="li_email" type="email" placeholder="이메일" />
-      <input id="li_password" type="password" placeholder="비밀번호" style="margin-top:10px;" />
+      <input id="li_email" class="toss-input" type="email" placeholder="이메일" />
+      <input id="li_password" class="toss-input" type="password" placeholder="비밀번호" style="margin-top:14px;" />
       <button class="btn" id="loginBtn">로그인</button>
       <div class="switch-link">처음이신가요? <a href="#" id="gotoSignupLink">회원가입</a></div>
     </div>
     <div id="signupForm" style="display:none;">
-      <div class="wizard-progress">
-        <span class="dot active" id="dot1"></span>
-        <span class="dot" id="dot2"></span>
-        <span class="dot" id="dot3"></span>
-        <span class="dot" id="dot4"></span>
-        <span class="dot" id="dot5"></span>
-      </div>
-
-      <div class="wizard-step active" id="step1">
-        <h2 class="wizard-title">업체명이 어떻게 되세요?</h2>
-        <p class="wizard-sub">접수 콘솔에 표시될 이름이에요</p>
-        <input id="su_company" type="text" placeholder="예: 경성매트" />
-        <button class="btn" id="toStep2">다음</button>
-        <div class="switch-link">이미 계정이 있으신가요? <a href="#" id="gotoLoginLink">로그인</a></div>
-      </div>
-
-      <div class="wizard-step" id="step2">
-        <button class="back-link" id="toStep1">‹ 이전</button>
-        <h2 class="wizard-title">이메일을 알려주세요</h2>
-        <p class="wizard-sub">로그인할 때 아이디로 사용해요</p>
-        <input id="su_email" type="email" placeholder="you@company.com" />
-        <button class="btn" id="toStep3">다음</button>
-      </div>
-
-      <div class="wizard-step" id="step3">
-        <button class="back-link" id="toStep2back">‹ 이전</button>
-        <h2 class="wizard-title">연락처를 남겨주세요</h2>
-        <p class="wizard-sub">캠페인 관련 안내를 드릴 때 사용해요</p>
-        <input id="su_phone" type="text" placeholder="010-0000-0000" />
-        <button class="btn" id="toStep4">다음</button>
-      </div>
-
-      <div class="wizard-step" id="step4">
-        <button class="back-link" id="toStep3back">‹ 이전</button>
-        <h2 class="wizard-title">비밀번호를 만들어주세요</h2>
-        <p class="wizard-sub">로그인할 때 사용할 비밀번호예요</p>
-        <input id="su_password" type="password" placeholder="••••••••" />
-        <button class="btn" id="toStep5">다음</button>
-      </div>
-
-      <div class="wizard-step" id="step5">
-        <button class="back-link" id="toStep4back">‹ 이전</button>
-        <h2 class="wizard-title">추천받으셨나요?</h2>
-        <p class="wizard-sub">추천인 코드가 있으면 입력해주세요, 없어도 괜찮아요</p>
-        <input id="su_ref" type="text" placeholder="예: AB12CD" style="text-transform:uppercase;" />
-        <button class="btn" id="signupBtn">가입하고 시작하기</button>
-        <div class="hint" style="text-align:center;">가입 즉시 고객 권한으로 로그인됩니다.</div>
+      <div id="signupAnswered"></div>
+      <div id="signupActive">
+        <button class="back-link" id="signupBack" style="display:none;">‹ 이전</button>
+        <h2 class="wizard-title" id="signupQTitle"></h2>
+        <p class="wizard-sub" id="signupQSub"></p>
+        <input id="signupInput" class="toss-input" type="text" />
+        <button class="btn" id="signupNext">다음</button>
+        <div class="switch-link" id="signupSwitchLink" style="display:none;">이미 계정이 있으신가요? <a href="#" id="gotoLoginLink">로그인</a></div>
+        <div class="hint" id="signupHint" style="display:none; text-align:center;">가입 즉시 고객 권한으로 로그인됩니다.</div>
       </div>
     </div>
     <div class="msg" id="authMsg"></div>
@@ -607,12 +576,12 @@ async function getSession(){ try{ const v = localStorage.getItem(SK_SESSION); re
 async function setSession(s){ localStorage.setItem(SK_SESSION, JSON.stringify(s)); }
 async function clearSession(){ localStorage.removeItem(SK_SESSION); }
 
-// ---------- 인증 탭 ----------
+// ---------- 인증 전환 ----------
 document.getElementById('gotoSignupLink').addEventListener('click', (e)=>{
   e.preventDefault();
   document.getElementById('loginForm').style.display='none';
   document.getElementById('signupForm').style.display='block';
-  goToStep(1);
+  resetSignup();
 });
 document.getElementById('gotoLoginLink').addEventListener('click', (e)=>{
   e.preventDefault();
@@ -620,49 +589,102 @@ document.getElementById('gotoLoginLink').addEventListener('click', (e)=>{
   document.getElementById('loginForm').style.display='block';
 });
 
-// ---------- 회원가입 위저드 단계 전환 (한 화면에 한 항목씩) ----------
-function goToStep(n){
-  [1,2,3,4,5].forEach(i=>{
-    document.getElementById('step'+i).classList.toggle('active', i===n);
-    const dot = document.getElementById('dot'+i);
-    dot.classList.toggle('active', i===n);
-    dot.classList.toggle('done', i<n);
-  });
-  const stepEl = document.getElementById('step'+n);
-  const firstInput = stepEl.querySelector('input');
-  if(firstInput) setTimeout(()=>firstInput.focus(), 350);
-}
-document.getElementById('toStep2').addEventListener('click', ()=>{
-  if(!document.getElementById('su_company').value.trim()){ showMsg('authMsg','업체명을 입력해 주세요.','warn'); return; }
-  goToStep(2);
-});
-document.getElementById('toStep1').addEventListener('click', ()=> goToStep(1));
-document.getElementById('toStep3').addEventListener('click', ()=>{
-  if(!document.getElementById('su_email').value.trim()){ showMsg('authMsg','이메일을 입력해 주세요.','warn'); return; }
-  goToStep(3);
-});
-document.getElementById('toStep2back').addEventListener('click', ()=> goToStep(2));
-document.getElementById('toStep4').addEventListener('click', ()=>{
-  if(!document.getElementById('su_phone').value.trim()){ showMsg('authMsg','연락처를 입력해 주세요.','warn'); return; }
-  goToStep(4);
-});
-document.getElementById('toStep3back').addEventListener('click', ()=> goToStep(3));
-document.getElementById('toStep5').addEventListener('click', ()=>{
-  if(!document.getElementById('su_password').value){ showMsg('authMsg','비밀번호를 입력해 주세요.','warn'); return; }
-  goToStep(5);
-});
-document.getElementById('toStep4back').addEventListener('click', ()=> goToStep(4));
+// ---------- 회원가입: 답변이 위로 쌓이고 새 질문이 이어지는 대화형 흐름 ----------
+const SIGNUP_QUESTIONS = [
+  { id:'company',  title:'업체명이 어떻게 되세요?',       sub:'접수 콘솔에 표시될 이름이에요',          type:'text',     placeholder:'예: 경성매트' },
+  { id:'email',    title:'이메일을 알려주세요',           sub:'로그인할 때 아이디로 사용해요',          type:'email',    placeholder:'you@company.com' },
+  { id:'phone',    title:'연락처를 남겨주세요',           sub:'캠페인 관련 안내를 드릴 때 사용해요',     type:'text',     placeholder:'010-0000-0000' },
+  { id:'password', title:'비밀번호를 만들어주세요',       sub:'로그인할 때 사용할 비밀번호예요',         type:'password', placeholder:'••••••••' },
+  { id:'ref',      title:'추천받으셨나요?',               sub:'추천인 코드가 있으면 입력해주세요, 없어도 괜찮아요', type:'text', placeholder:'예: AB12CD', optional:true },
+];
+let signupAnswers = {};
+let signupIndex = 0;
 
-// 인풋에서 엔터 누르면 바로 다음 단계로 (한 항목씩 빠르게 넘어가도록)
-document.querySelectorAll('#signupForm input').forEach(inp=>{
-  inp.addEventListener('keydown', (e)=>{
-    if(e.key !== 'Enter') return;
-    e.preventDefault();
-    const stepEl = inp.closest('.wizard-step');
-    const nextBtn = stepEl.querySelector('.btn:not(.secondary)');
-    if(nextBtn) nextBtn.click();
-  });
+function resetSignup(){
+  signupAnswers = {};
+  signupIndex = 0;
+  document.getElementById('signupAnswered').innerHTML = '';
+  renderSignupQuestion();
+}
+
+function renderSignupQuestion(){
+  const q = SIGNUP_QUESTIONS[signupIndex];
+  document.getElementById('signupQTitle').textContent = q.title;
+  document.getElementById('signupQSub').textContent = q.sub;
+  const input = document.getElementById('signupInput');
+  input.type = q.type;
+  input.placeholder = q.placeholder;
+  input.value = signupAnswers[q.id] || '';
+  input.style.textTransform = q.id === 'ref' ? 'uppercase' : 'none';
+  document.getElementById('signupBack').style.display = signupIndex > 0 ? 'inline-block' : 'none';
+  document.getElementById('signupSwitchLink').style.display = signupIndex === 0 ? 'block' : 'none';
+  document.getElementById('signupHint').style.display = signupIndex === SIGNUP_QUESTIONS.length-1 ? 'block' : 'none';
+  document.getElementById('signupNext').textContent = signupIndex === SIGNUP_QUESTIONS.length-1 ? '가입하고 시작하기' : '다음';
+  // 애니메이션 재실행
+  const active = document.getElementById('signupActive');
+  active.style.animation = 'none'; void active.offsetWidth; active.style.animation = '';
+  setTimeout(()=> input.focus(), 320);
+}
+
+function appendAnsweredRow(q, value){
+  const wrap = document.getElementById('signupAnswered');
+  const row = document.createElement('div');
+  row.className = 'answered-row';
+  row.id = 'answered-' + q.id;
+  const displayVal = q.type === 'password' ? '•'.repeat(Math.min(value.length,10)) : (value || '(선택 안 함)');
+  row.innerHTML = `<span class="q">${escapeHtml(q.title)}</span><span class="a">${escapeHtml(displayVal)}</span>`;
+  wrap.appendChild(row);
+}
+
+document.getElementById('signupBack').addEventListener('click', ()=>{
+  if(signupIndex === 0) return;
+  const prevQ = SIGNUP_QUESTIONS[signupIndex-1];
+  const row = document.getElementById('answered-'+prevQ.id);
+  if(row) row.remove();
+  signupIndex--;
+  renderSignupQuestion();
 });
+
+async function handleSignupNext(){
+  const q = SIGNUP_QUESTIONS[signupIndex];
+  const input = document.getElementById('signupInput');
+  const value = input.value.trim();
+  if(!q.optional && !value){ showMsg('authMsg', '입력해 주세요.', 'warn'); return; }
+  signupAnswers[q.id] = value;
+  appendAnsweredRow(q, value);
+
+  if(signupIndex === SIGNUP_QUESTIONS.length-1){
+    await submitSignup();
+    return;
+  }
+  signupIndex++;
+  renderSignupQuestion();
+}
+document.getElementById('signupNext').addEventListener('click', handleSignupNext);
+document.getElementById('signupInput').addEventListener('keydown', (e)=>{
+  if(e.key !== 'Enter') return;
+  e.preventDefault();
+  handleSignupNext();
+});
+
+async function submitSignup(){
+  const btn = document.getElementById('signupNext');
+  setBusy(btn, '가입 처리 중...');
+  const res = await apiCall('signup', {
+    companyName: signupAnswers.company, email: signupAnswers.email,
+    phone: signupAnswers.phone, password: signupAnswers.password,
+    referredByCode: (signupAnswers.ref || '').toUpperCase()
+  });
+  if(res.ok){ await setSession(res); showSuccessThen('회원가입 완료!', ()=> enterApp(res)); }
+  else {
+    showMsg('authMsg', res.error || '가입 실패', 'warn');
+    clearBusy(btn);
+    // 실패하면 마지막 답변 줄을 다시 지우고 그 질문으로 되돌림
+    const q = SIGNUP_QUESTIONS[signupIndex];
+    const row = document.getElementById('answered-'+q.id);
+    if(row) row.remove();
+  }
+}
 
 // 체크마크가 그려지는 성공 애니메이션 (토스 인증완료 화면 참고)
 function showSuccessThen(text, callback){
@@ -686,20 +708,6 @@ document.getElementById('loginBtn').addEventListener('click', async ()=>{
   const res = await apiCall('login', { email, password });
   if(res.ok){ await setSession(res); showSuccessThen('로그인 완료!', ()=> enterApp(res)); }
   else { showMsg('authMsg', res.error||'로그인 실패','warn'); clearBusy(btn); }
-});
-
-document.getElementById('signupBtn').addEventListener('click', async ()=>{
-  const companyName = document.getElementById('su_company').value.trim();
-  const email = document.getElementById('su_email').value.trim();
-  const phone = document.getElementById('su_phone').value.trim();
-  const password = document.getElementById('su_password').value;
-  const referredByCode = document.getElementById('su_ref').value.trim().toUpperCase();
-  if(!companyName||!email||!password){ showMsg('authMsg','업체명/이메일/비밀번호는 필수입니다.','warn'); return; }
-  const btn = document.getElementById('signupBtn');
-  setBusy(btn, '가입 처리 중...');
-  const res = await apiCall('signup', { companyName, email, phone, password, referredByCode });
-  if(res.ok){ await setSession(res); showSuccessThen('회원가입 완료!', ()=> enterApp(res)); }
-  else { showMsg('authMsg', res.error||'가입 실패','warn'); clearBusy(btn); }
 });
 
 document.getElementById('logoutBtn').addEventListener('click', async ()=>{
