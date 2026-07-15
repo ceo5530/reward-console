@@ -159,7 +159,9 @@
   .switch-link a{color:var(--navy-2); font-weight:700; text-decoration:none; cursor:pointer;}
 
   /* 답변이 위에 쌓이는 대화형 리스트 (토스 회원가입 참고) */
-  #signupAnswered{margin-bottom:4px;}
+  .chat-scroll{max-height:min(64vh, 560px); overflow-y:auto; scroll-behavior:smooth; -ms-overflow-style:none; scrollbar-width:none;}
+  .chat-scroll::-webkit-scrollbar{display:none;}
+  #signupAnswered, #resetAnswered{margin-bottom:4px;}
   .answered-row{display:flex; justify-content:space-between; align-items:baseline; gap:12px; padding:12px 0; border-bottom:1.5px solid var(--line); animation:answeredIn .4s cubic-bezier(.22,1,.36,1);}
   .answered-row .q{font-size:0.82rem; color:var(--muted); flex-shrink:0;}
   .answered-row .a{font-size:1rem; color:var(--text); font-weight:700; text-align:right; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
@@ -266,28 +268,32 @@
       <div class="switch-link">처음이신가요? <a href="#" id="gotoSignupLink">회원가입</a></div>
     </div>
     <div id="resetForm" style="display:none;">
-      <div id="resetAnswered"></div>
-      <div id="resetActive">
-        <button class="back-link" id="resetBack" style="display:none;">‹ 이전</button>
-        <h2 class="wizard-title" id="resetQTitle"></h2>
-        <p class="wizard-sub" id="resetQSub"></p>
-        <input id="resetInput" class="toss-input" type="text" />
-        <div class="switch-link" id="resetResend" style="display:none;">인증번호를 못 받으셨나요? <a href="#" id="resendResetCodeLink">다시 보내기</a></div>
-        <button class="btn" id="resetNext">다음</button>
-        <div class="switch-link">생각났어요! <a href="#" id="gotoLoginFromReset">로그인으로 돌아가기</a></div>
+      <div class="chat-scroll" id="resetScroll">
+        <div id="resetAnswered"></div>
+        <div id="resetActive">
+          <button class="back-link" id="resetBack" style="display:none;">‹ 이전</button>
+          <h2 class="wizard-title" id="resetQTitle"></h2>
+          <p class="wizard-sub" id="resetQSub"></p>
+          <input id="resetInput" class="toss-input" type="text" />
+          <div class="switch-link" id="resetResend" style="display:none;">인증번호를 못 받으셨나요? <a href="#" id="resendResetCodeLink">다시 보내기</a></div>
+          <button class="btn" id="resetNext">다음</button>
+          <div class="switch-link">생각났어요! <a href="#" id="gotoLoginFromReset">로그인으로 돌아가기</a></div>
+        </div>
       </div>
     </div>
     <div id="signupForm" style="display:none;">
-      <div id="signupAnswered"></div>
-      <div id="signupActive">
-        <button class="back-link" id="signupBack" style="display:none;">‹ 이전</button>
-        <h2 class="wizard-title" id="signupQTitle"></h2>
-        <p class="wizard-sub" id="signupQSub"></p>
-        <input id="signupInput" class="toss-input" type="text" />
-        <button class="btn" id="signupNext">다음</button>
-        <div class="switch-link" id="signupSwitchLink" style="display:none;">이미 계정이 있으신가요? <a href="#" id="gotoLoginLink">로그인</a></div>
-        <div class="switch-link" id="verifyResend" style="display:none;">인증번호를 못 받으셨나요? <a href="#" id="resendCodeLink">다시 보내기</a></div>
-        <div class="hint" id="signupHint" style="display:none; text-align:center;">가입 즉시 고객 권한으로 로그인됩니다.</div>
+      <div class="chat-scroll" id="signupScroll">
+        <div id="signupAnswered"></div>
+        <div id="signupActive">
+          <button class="back-link" id="signupBack" style="display:none;">‹ 이전</button>
+          <h2 class="wizard-title" id="signupQTitle"></h2>
+          <p class="wizard-sub" id="signupQSub"></p>
+          <input id="signupInput" class="toss-input" type="text" />
+          <button class="btn" id="signupNext">다음</button>
+          <div class="switch-link" id="signupSwitchLink" style="display:none;">이미 계정이 있으신가요? <a href="#" id="gotoLoginLink">로그인</a></div>
+          <div class="switch-link" id="verifyResend" style="display:none;">인증번호를 못 받으셨나요? <a href="#" id="resendCodeLink">다시 보내기</a></div>
+          <div class="hint" id="signupHint" style="display:none; text-align:center;">가입 즉시 고객 권한으로 로그인됩니다.</div>
+        </div>
       </div>
     </div>
     <div class="msg" id="authMsg"></div>
@@ -670,7 +676,17 @@ async function renderSignupQuestion(){
   active.style.transition = 'opacity .4s cubic-bezier(.22,1,.36,1), transform .4s cubic-bezier(.22,1,.36,1)';
   active.style.opacity = '1';
   active.style.transform = 'translateY(0)';
+  scrollChatToBottom('signupScroll');
   setTimeout(()=> input.focus(), 300);
+}
+
+// 채팅창처럼 새 내용이 생기면 항상 맨 아래(=활성 질문)가 보이도록 스크롤
+// (기존 답변들은 자연스럽게 위로 밀려 올라가며 스크롤 밖으로 사라짐)
+function scrollChatToBottom(scrollId){
+  const el = document.getElementById(scrollId);
+  requestAnimationFrame(()=>{
+    el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+  });
 }
 
 function appendAnsweredRow(q, value, labelOverride){
@@ -681,6 +697,7 @@ function appendAnsweredRow(q, value, labelOverride){
   const displayVal = q.type === 'password' ? '•'.repeat(Math.min(value.length,10)) : (value || '(선택 안 함)');
   row.innerHTML = `<span class="q">${escapeHtml(labelOverride || q.title)}</span><span class="a">${escapeHtml(displayVal)}</span>`;
   wrap.appendChild(row);
+  scrollChatToBottom('signupScroll');
 }
 
 document.getElementById('resendCodeLink').addEventListener('click', async (e)=>{
@@ -808,6 +825,7 @@ async function renderResetQuestion(){
   active.style.transition = 'opacity .4s cubic-bezier(.22,1,.36,1), transform .4s cubic-bezier(.22,1,.36,1)';
   active.style.opacity = '1';
   active.style.transform = 'translateY(0)';
+  scrollChatToBottom('resetScroll');
   setTimeout(()=> input.focus(), 300);
 }
 
@@ -819,6 +837,7 @@ function appendResetRow(q, value, labelOverride){
   const displayVal = q.type === 'password' ? '•'.repeat(Math.min(value.length,10)) : value;
   row.innerHTML = `<span class="q">${escapeHtml(labelOverride || q.title)}</span><span class="a">${escapeHtml(displayVal)}</span>`;
   wrap.appendChild(row);
+  scrollChatToBottom('resetScroll');
 }
 
 document.getElementById('resetBack').addEventListener('click', ()=>{
