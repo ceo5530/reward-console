@@ -135,19 +135,23 @@
   .splash-slogan{color:#fff; font-size:1.5rem; font-weight:800; margin:0; line-height:1.45;}
   @keyframes splashPop{ 0%{opacity:0; transform:scale(0.72);} 65%{opacity:1; transform:scale(1.06);} 100%{opacity:1; transform:scale(1);} }
 
-  #authScreen{min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px;}
-  .authcard{width:100%; max-width:420px; background:var(--surface); border:none; border-radius:24px; padding:34px; color:var(--text); box-shadow:0 8px 32px rgba(25,31,40,0.10);}
-  @media(max-width:600px){
-    #authScreen{padding:0; align-items:stretch;}
-    .authcard{max-width:100%; min-height:100vh; border-radius:0; box-shadow:none; padding:32px 24px; display:flex; flex-direction:column; justify-content:center;}
-  }
+  #authScreen{min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; background:var(--surface);}
+  .authcard{width:100%; max-width:440px; background:transparent; border:none; border-radius:0; padding:0; color:var(--text); box-shadow:none;}
   .authtabs{display:flex; gap:4px; background:var(--surface-2); border-radius:12px; padding:4px; margin-bottom:22px;}
   .authtabs button{flex:1; padding:11px; border:none; background:none; color:var(--muted); border-radius:9px; font-weight:600; font-size:0.95rem; cursor:pointer;}
   .authtabs button.active{background:var(--navy-2); color:#fff;}
 
   #signupActive{animation:wizardSlideIn .38s cubic-bezier(.22,1,.36,1);}
   @keyframes wizardSlideIn{ from{opacity:0; transform:translateY(28px);} to{opacity:1; transform:translateY(0);} }
-  .wizard-title{font-size:1.32rem; font-weight:800; margin:0 0 6px; color:var(--text); line-height:1.35;}
+  .wizard-title{font-size:1.15rem; font-weight:700; margin:0 0 4px; color:var(--text); line-height:1.4;}
+  .auth-title{font-size:1.2rem; font-weight:700; margin:0 0 22px; color:var(--text); line-height:1.4;}
+  .auth-brand{display:flex; align-items:center; justify-content:flex-start; gap:12px; margin-bottom:32px;}
+  .auth-brand .mark{width:58px; height:58px; border-radius:15px; background:var(--navy); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .auth-brand .mark svg{width:32px; height:32px;}
+  .auth-brand span{font-size:1.9rem; font-weight:800; color:var(--text); letter-spacing:0.02em;}
+  .forgot-link{text-align:right; margin-top:10px;}
+  .forgot-link a{font-size:0.8rem; color:var(--muted); text-decoration:none; cursor:pointer;}
+  .forgot-link a:hover{color:var(--navy-2);}
   .wizard-sub{font-size:0.88rem; color:var(--muted); margin:0 0 22px;}
   .back-link{display:inline-block; background:none; border:none; color:var(--muted); font-size:0.9rem; font-weight:600; padding:0; margin-bottom:18px; cursor:pointer;}
   .back-link:hover{color:var(--navy-2);}
@@ -156,13 +160,13 @@
 
   /* 답변이 위에 쌓이는 대화형 리스트 (토스 회원가입 참고) */
   #signupAnswered{margin-bottom:4px;}
-  .answered-row{display:flex; justify-content:space-between; align-items:baseline; gap:12px; padding:12px 0; border-bottom:1.5px solid var(--line); animation:answeredIn .32s ease;}
+  .answered-row{display:flex; justify-content:space-between; align-items:baseline; gap:12px; padding:12px 0; border-bottom:1.5px solid var(--line); animation:answeredIn .4s cubic-bezier(.22,1,.36,1);}
   .answered-row .q{font-size:0.82rem; color:var(--muted); flex-shrink:0;}
   .answered-row .a{font-size:1rem; color:var(--text); font-weight:700; text-align:right; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-  @keyframes answeredIn{ from{opacity:0; transform:translateY(-8px);} to{opacity:1; transform:translateY(0);} }
+  @keyframes answeredIn{ from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);} }
 
   /* 토스풍 밑줄 인풋 (박스 없이 아래 선만) */
-  input.toss-input{background:none; border:none; border-bottom:2px solid var(--line); border-radius:0; padding:10px 2px; font-size:1.25rem; font-weight:700; box-shadow:none !important;}
+  input.toss-input{background:none; border:none; border-bottom:2px solid var(--line); border-radius:0; padding:9px 2px; font-size:1.02rem; font-weight:600; box-shadow:none !important;}
   input.toss-input:focus{border-bottom-color:var(--navy-2); box-shadow:none !important;}
   input.toss-input::placeholder{font-weight:500; color:var(--muted);}
 
@@ -249,13 +253,29 @@
 <!-- ===================== 로그인/회원가입 ===================== -->
 <div id="authScreen">
   <div class="authcard">
+    <div class="auth-brand">
+      <div class="mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 18L12 5L20 18" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 18L12 9.5L20 18" stroke="#B7B0E8" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/></svg></div>
+      <span>OLLIM COMPANY</span>
+    </div>
     <div id="loginForm">
-      <h2 class="wizard-title">로그인할게요</h2>
-      <p class="wizard-sub">이메일과 비밀번호를 입력해주세요</p>
-      <input id="li_email" class="toss-input" type="email" placeholder="이메일" />
-      <input id="li_password" class="toss-input" type="password" placeholder="비밀번호" style="margin-top:14px;" />
+      <h2 class="auth-title">Sign in to your account</h2>
+      <input id="li_email" class="toss-input" type="email" placeholder="이메일" style="margin-top:4px;" />
+      <input id="li_password" class="toss-input" type="password" placeholder="비밀번호" style="margin-top:12px;" />
+      <div class="forgot-link"><a href="#" id="forgotPasswordLink">비밀번호를 잊으셨나요?</a></div>
       <button class="btn" id="loginBtn">로그인</button>
       <div class="switch-link">처음이신가요? <a href="#" id="gotoSignupLink">회원가입</a></div>
+    </div>
+    <div id="resetForm" style="display:none;">
+      <div id="resetAnswered"></div>
+      <div id="resetActive">
+        <button class="back-link" id="resetBack" style="display:none;">‹ 이전</button>
+        <h2 class="wizard-title" id="resetQTitle"></h2>
+        <p class="wizard-sub" id="resetQSub"></p>
+        <input id="resetInput" class="toss-input" type="text" />
+        <div class="switch-link" id="resetResend" style="display:none;">인증번호를 못 받으셨나요? <a href="#" id="resendResetCodeLink">다시 보내기</a></div>
+        <button class="btn" id="resetNext">다음</button>
+        <div class="switch-link">생각났어요! <a href="#" id="gotoLoginFromReset">로그인으로 돌아가기</a></div>
+      </div>
     </div>
     <div id="signupForm" style="display:none;">
       <div id="signupAnswered"></div>
@@ -266,6 +286,7 @@
         <input id="signupInput" class="toss-input" type="text" />
         <button class="btn" id="signupNext">다음</button>
         <div class="switch-link" id="signupSwitchLink" style="display:none;">이미 계정이 있으신가요? <a href="#" id="gotoLoginLink">로그인</a></div>
+        <div class="switch-link" id="verifyResend" style="display:none;">인증번호를 못 받으셨나요? <a href="#" id="resendCodeLink">다시 보내기</a></div>
         <div class="hint" id="signupHint" style="display:none; text-align:center;">가입 즉시 고객 권한으로 로그인됩니다.</div>
       </div>
     </div>
@@ -577,6 +598,17 @@ async function setSession(s){ localStorage.setItem(SK_SESSION, JSON.stringify(s)
 async function clearSession(){ localStorage.removeItem(SK_SESSION); }
 
 // ---------- 인증 전환 ----------
+document.getElementById('forgotPasswordLink').addEventListener('click', (e)=>{
+  e.preventDefault();
+  document.getElementById('loginForm').style.display='none';
+  document.getElementById('resetForm').style.display='block';
+  resetResetFlow();
+});
+document.getElementById('gotoLoginFromReset').addEventListener('click', (e)=>{
+  e.preventDefault();
+  document.getElementById('resetForm').style.display='none';
+  document.getElementById('loginForm').style.display='block';
+});
 document.getElementById('gotoSignupLink').addEventListener('click', (e)=>{
   e.preventDefault();
   document.getElementById('loginForm').style.display='none';
@@ -591,11 +623,12 @@ document.getElementById('gotoLoginLink').addEventListener('click', (e)=>{
 
 // ---------- 회원가입: 답변이 위로 쌓이고 새 질문이 이어지는 대화형 흐름 ----------
 const SIGNUP_QUESTIONS = [
-  { id:'company',  title:'업체명이 어떻게 되세요?',       sub:'접수 콘솔에 표시될 이름이에요',          type:'text',     placeholder:'예: 경성매트' },
-  { id:'email',    title:'이메일을 알려주세요',           sub:'로그인할 때 아이디로 사용해요',          type:'email',    placeholder:'you@company.com' },
-  { id:'phone',    title:'연락처를 남겨주세요',           sub:'캠페인 관련 안내를 드릴 때 사용해요',     type:'text',     placeholder:'010-0000-0000' },
-  { id:'password', title:'비밀번호를 만들어주세요',       sub:'로그인할 때 사용할 비밀번호예요',         type:'password', placeholder:'••••••••' },
-  { id:'ref',      title:'추천받으셨나요?',               sub:'추천인 코드가 있으면 입력해주세요, 없어도 괜찮아요', type:'text', placeholder:'예: AB12CD', optional:true },
+  { id:'company',    title:'업체명이 어떻게 되세요?',       sub:'접수 콘솔에 표시될 이름이에요',          type:'text',     placeholder:'예: 경성매트' },
+  { id:'email',      title:'이메일을 알려주세요',           sub:'로그인할 때 아이디로 사용해요',          type:'email',    placeholder:'you@company.com' },
+  { id:'phone',      title:'연락처를 남겨주세요',           sub:'문자로 인증번호를 보내드릴게요',         type:'text',     placeholder:'010-0000-0000' },
+  { id:'verifyCode', title:'인증번호를 입력해주세요',       sub:'',                                       type:'text',     placeholder:'6자리 숫자' },
+  { id:'password',   title:'비밀번호를 만들어주세요',       sub:'로그인할 때 사용할 비밀번호예요',         type:'password', placeholder:'••••••••' },
+  { id:'ref',        title:'추천받으셨나요?',               sub:'추천인 코드가 있으면 입력해주세요, 없어도 괜찮아요', type:'text', placeholder:'예: AB12CD', optional:true },
 ];
 let signupAnswers = {};
 let signupIndex = 0;
@@ -607,11 +640,19 @@ function resetSignup(){
   renderSignupQuestion();
 }
 
-function renderSignupQuestion(){
+async function renderSignupQuestion(){
   const q = SIGNUP_QUESTIONS[signupIndex];
-  document.getElementById('signupQTitle').textContent = q.title;
-  document.getElementById('signupQSub').textContent = q.sub;
+  const active = document.getElementById('signupActive');
   const input = document.getElementById('signupInput');
+
+  // 기존 질문을 부드럽게 내려보내며 사라지게
+  active.style.transition = 'opacity .18s ease, transform .18s ease';
+  active.style.opacity = '0';
+  active.style.transform = 'translateY(8px)';
+  await new Promise(r=>setTimeout(r, 180));
+
+  document.getElementById('signupQTitle').textContent = q.title;
+  document.getElementById('signupQSub').textContent = q.id === 'verifyCode' ? `${signupAnswers.phone}로 보낸 인증번호를 입력해주세요` : q.sub;
   input.type = q.type;
   input.placeholder = q.placeholder;
   input.value = signupAnswers[q.id] || '';
@@ -619,22 +660,34 @@ function renderSignupQuestion(){
   document.getElementById('signupBack').style.display = signupIndex > 0 ? 'inline-block' : 'none';
   document.getElementById('signupSwitchLink').style.display = signupIndex === 0 ? 'block' : 'none';
   document.getElementById('signupHint').style.display = signupIndex === SIGNUP_QUESTIONS.length-1 ? 'block' : 'none';
+  document.getElementById('verifyResend').style.display = q.id === 'verifyCode' ? 'block' : 'none';
   document.getElementById('signupNext').textContent = signupIndex === SIGNUP_QUESTIONS.length-1 ? '가입하고 시작하기' : '다음';
-  // 애니메이션 재실행
-  const active = document.getElementById('signupActive');
-  active.style.animation = 'none'; void active.offsetWidth; active.style.animation = '';
-  setTimeout(()=> input.focus(), 320);
+
+  // 새 질문이 아래에서 위로 떠오르며 부드럽게 등장
+  active.style.transition = 'none';
+  active.style.transform = 'translateY(20px)';
+  void active.offsetWidth;
+  active.style.transition = 'opacity .4s cubic-bezier(.22,1,.36,1), transform .4s cubic-bezier(.22,1,.36,1)';
+  active.style.opacity = '1';
+  active.style.transform = 'translateY(0)';
+  setTimeout(()=> input.focus(), 300);
 }
 
-function appendAnsweredRow(q, value){
+function appendAnsweredRow(q, value, labelOverride){
   const wrap = document.getElementById('signupAnswered');
   const row = document.createElement('div');
   row.className = 'answered-row';
   row.id = 'answered-' + q.id;
   const displayVal = q.type === 'password' ? '•'.repeat(Math.min(value.length,10)) : (value || '(선택 안 함)');
-  row.innerHTML = `<span class="q">${escapeHtml(q.title)}</span><span class="a">${escapeHtml(displayVal)}</span>`;
+  row.innerHTML = `<span class="q">${escapeHtml(labelOverride || q.title)}</span><span class="a">${escapeHtml(displayVal)}</span>`;
   wrap.appendChild(row);
 }
+
+document.getElementById('resendCodeLink').addEventListener('click', async (e)=>{
+  e.preventDefault();
+  const res = await apiCall('sendVerificationCode', { phone: signupAnswers.phone });
+  showMsg('authMsg', res.ok ? '인증번호를 다시 보냈어요.' : (res.error||'재전송 실패'), res.ok ? 'ok' : 'warn');
+});
 
 document.getElementById('signupBack').addEventListener('click', ()=>{
   if(signupIndex === 0) return;
@@ -650,6 +703,35 @@ async function handleSignupNext(){
   const input = document.getElementById('signupInput');
   const value = input.value.trim();
   if(!q.optional && !value){ showMsg('authMsg', '입력해 주세요.', 'warn'); return; }
+  const btn = document.getElementById('signupNext');
+
+  // 연락처 입력 다음 -> 인증번호 문자 발송
+  if(q.id === 'phone'){
+    setBusy(btn, '인증번호 전송 중...');
+    const res = await apiCall('sendVerificationCode', { phone: value });
+    clearBusy(btn);
+    if(!res.ok){ showMsg('authMsg', res.error||'인증번호 전송에 실패했어요.', 'warn'); return; }
+    signupAnswers.phone = value;
+    appendAnsweredRow(q, value);
+    signupIndex++;
+    await new Promise(r=>setTimeout(r, 160));
+    renderSignupQuestion();
+    return;
+  }
+
+  // 인증번호 확인
+  if(q.id === 'verifyCode'){
+    setBusy(btn, '확인 중...');
+    const res = await apiCall('verifyCode', { phone: signupAnswers.phone, code: value });
+    clearBusy(btn);
+    if(!res.ok){ showMsg('authMsg', res.error||'인증번호가 올바르지 않아요.', 'warn'); return; }
+    appendAnsweredRow(q, '완료 ✓', '휴대폰 인증');
+    signupIndex++;
+    await new Promise(r=>setTimeout(r, 160));
+    renderSignupQuestion();
+    return;
+  }
+
   signupAnswers[q.id] = value;
   appendAnsweredRow(q, value);
 
@@ -658,6 +740,7 @@ async function handleSignupNext(){
     return;
   }
   signupIndex++;
+  await new Promise(r=>setTimeout(r, 160)); // 답변이 자리잡는 동안 살짝 텀을 줘서 순차적으로 느껴지게
   renderSignupQuestion();
 }
 document.getElementById('signupNext').addEventListener('click', handleSignupNext);
@@ -685,6 +768,125 @@ async function submitSignup(){
     if(row) row.remove();
   }
 }
+
+// ---------- 비밀번호 찾기: 연락처 인증 후 새 비밀번호 설정 ----------
+const RESET_QUESTIONS = [
+  { id:'phone',       title:'가입하신 연락처를 입력해주세요', sub:'인증번호를 보내드릴게요',        type:'text',     placeholder:'010-0000-0000' },
+  { id:'verifyCode',  title:'인증번호를 입력해주세요',        sub:'',                               type:'text',     placeholder:'6자리 숫자' },
+  { id:'newPassword', title:'새 비밀번호를 설정해주세요',     sub:'로그인할 때 사용할 새 비밀번호예요', type:'password', placeholder:'••••••••' },
+];
+let resetAnswers = {};
+let resetIndex = 0;
+
+function resetResetFlow(){
+  resetAnswers = {};
+  resetIndex = 0;
+  document.getElementById('resetAnswered').innerHTML = '';
+  renderResetQuestion();
+}
+
+async function renderResetQuestion(){
+  const q = RESET_QUESTIONS[resetIndex];
+  const active = document.getElementById('resetActive');
+  const input = document.getElementById('resetInput');
+
+  active.style.transition = 'opacity .18s ease, transform .18s ease';
+  active.style.opacity = '0';
+  active.style.transform = 'translateY(8px)';
+  await new Promise(r=>setTimeout(r, 180));
+
+  document.getElementById('resetQTitle').textContent = q.title;
+  document.getElementById('resetQSub').textContent = q.id === 'verifyCode' ? `${resetAnswers.phone}로 보낸 인증번호를 입력해주세요` : q.sub;
+  input.type = q.type; input.placeholder = q.placeholder; input.value = '';
+  document.getElementById('resetBack').style.display = resetIndex > 0 ? 'inline-block' : 'none';
+  document.getElementById('resetResend').style.display = q.id === 'verifyCode' ? 'block' : 'none';
+  document.getElementById('resetNext').textContent = resetIndex === RESET_QUESTIONS.length-1 ? '비밀번호 변경하기' : '다음';
+
+  active.style.transition = 'none';
+  active.style.transform = 'translateY(20px)';
+  void active.offsetWidth;
+  active.style.transition = 'opacity .4s cubic-bezier(.22,1,.36,1), transform .4s cubic-bezier(.22,1,.36,1)';
+  active.style.opacity = '1';
+  active.style.transform = 'translateY(0)';
+  setTimeout(()=> input.focus(), 300);
+}
+
+function appendResetRow(q, value, labelOverride){
+  const wrap = document.getElementById('resetAnswered');
+  const row = document.createElement('div');
+  row.className = 'answered-row';
+  row.id = 'reset-answered-' + q.id;
+  const displayVal = q.type === 'password' ? '•'.repeat(Math.min(value.length,10)) : value;
+  row.innerHTML = `<span class="q">${escapeHtml(labelOverride || q.title)}</span><span class="a">${escapeHtml(displayVal)}</span>`;
+  wrap.appendChild(row);
+}
+
+document.getElementById('resetBack').addEventListener('click', ()=>{
+  if(resetIndex === 0) return;
+  const prevQ = RESET_QUESTIONS[resetIndex-1];
+  const row = document.getElementById('reset-answered-'+prevQ.id);
+  if(row) row.remove();
+  resetIndex--;
+  renderResetQuestion();
+});
+
+document.getElementById('resendResetCodeLink').addEventListener('click', async (e)=>{
+  e.preventDefault();
+  const res = await apiCall('sendVerificationCode', { phone: resetAnswers.phone });
+  showMsg('authMsg', res.ok ? '인증번호를 다시 보냈어요.' : (res.error||'재전송 실패'), res.ok ? 'ok' : 'warn');
+});
+
+async function handleResetNext(){
+  const q = RESET_QUESTIONS[resetIndex];
+  const input = document.getElementById('resetInput');
+  const value = input.value.trim();
+  if(!value){ showMsg('authMsg','입력해 주세요.','warn'); return; }
+  const btn = document.getElementById('resetNext');
+
+  if(q.id === 'phone'){
+    setBusy(btn, '인증번호 전송 중...');
+    const res = await apiCall('sendVerificationCode', { phone: value });
+    clearBusy(btn);
+    if(!res.ok){ showMsg('authMsg', res.error||'전송에 실패했어요.', 'warn'); return; }
+    resetAnswers.phone = value;
+    appendResetRow(q, value);
+    resetIndex++;
+    await new Promise(r=>setTimeout(r,160));
+    renderResetQuestion();
+    return;
+  }
+
+  if(q.id === 'verifyCode'){
+    setBusy(btn, '확인 중...');
+    const res = await apiCall('verifyCode', { phone: resetAnswers.phone, code: value });
+    clearBusy(btn);
+    if(!res.ok){ showMsg('authMsg', res.error||'인증번호가 올바르지 않아요.', 'warn'); return; }
+    resetAnswers.code = value;
+    appendResetRow(q, '완료 ✓', '휴대폰 인증');
+    resetIndex++;
+    await new Promise(r=>setTimeout(r,160));
+    renderResetQuestion();
+    return;
+  }
+
+  // 마지막 단계: 새 비밀번호로 변경 요청
+  setBusy(btn, '변경 처리 중...');
+  const res = await apiCall('resetPassword', { phone: resetAnswers.phone, code: resetAnswers.code, newPassword: value });
+  clearBusy(btn);
+  if(!res.ok){ showMsg('authMsg', res.error||'비밀번호 변경에 실패했어요.', 'warn'); return; }
+  showSuccessThen('비밀번호 변경 완료!', ()=>{
+    document.getElementById('resetForm').style.display = 'none';
+    document.getElementById('loginForm').style.display = 'block';
+    document.getElementById('li_email').value = res.email || '';
+    document.getElementById('li_password').value = '';
+  });
+}
+document.getElementById('resetNext').addEventListener('click', handleResetNext);
+document.getElementById('resetInput').addEventListener('keydown', (e)=>{
+  if(e.key !== 'Enter') return;
+  e.preventDefault();
+  handleResetNext();
+});
 
 // 체크마크가 그려지는 성공 애니메이션 (토스 인증완료 화면 참고)
 function showSuccessThen(text, callback){
