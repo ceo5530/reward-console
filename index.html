@@ -113,6 +113,8 @@
   .pill.done{background:rgba(139,149,161,0.12); color:var(--muted);}
 
   .empty{color:var(--muted); font-size:0.95rem; padding:30px 0; text-align:center;}
+  .spinner{width:22px; height:22px; margin:0 auto 10px; border:2.5px solid var(--line); border-top-color:var(--navy-2); border-radius:50%; animation:spin .7s linear infinite;}
+  @keyframes spin{ to{ transform:rotate(360deg); } }
   .toolbar{display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; align-items:center;}
   .config{background:var(--bg); border:none; border-radius:16px; padding:16px; margin-top:18px;}
   .config summary{cursor:pointer; font-size:0.85rem; color:var(--muted); font-weight:600;}
@@ -339,7 +341,7 @@
 </div>
 
 <!-- ===================== 진단 챗봇 화면 ===================== -->
-<div id="diagnosticScreen" style="display:none;">
+<div id="diagnosticScreen">
   <div class="diag-header">
     <button class="back-link" id="diagBack" style="margin:0;">‹ 처음으로</button>
   </div>
@@ -1337,6 +1339,24 @@ async function renderTable(){
       bottomHtml = `<div class="result-period"><span class="lbl">촬영 희망일</span>${prettyDate(rec.requestedDate)}</div>`;
     }
 
+    let taxHtml = '';
+    if(rec.productType === 'reward' && (rec.status === 'approved' || rec.status === 'confirmed')){
+      if(rec.taxInvoiceRequested === 'Y'){
+        taxHtml = `<div style="margin-top:10px;"><span class="pill approved">세금계산서 신청완료</span></div>`;
+      } else {
+        taxHtml = `
+          <div style="margin-top:10px;">
+            <button class="btn small secondary taxToggleBtn" data-id="${rec.id}">세금계산서 요청</button>
+            <div class="tax-form" id="taxForm-${rec.id}" style="display:none; margin-top:10px; max-width:320px;">
+              <input type="email" placeholder="계산서 받을 이메일" id="taxEmail-${rec.id}" style="margin-bottom:8px;" />
+              <input type="file" accept="image/*" id="taxFile-${rec.id}" style="margin-bottom:8px;" />
+              <div class="hint" style="margin-bottom:8px;">사업자등록증 사진 1장을 첨부해 주세요 (5MB 이하 권장)</div>
+              <button class="btn small taxSubmitBtn" data-id="${rec.id}">제출하기</button>
+            </div>
+          </div>`;
+      }
+    }
+
     html += `<div class="result-card">
       <div class="result-top">
         <div>
@@ -1353,6 +1373,7 @@ async function renderTable(){
           ${approveBtn}
         </div>
       </div>
+      ${taxHtml}
     </div>`;
   }
   html += '</div>';
@@ -1365,6 +1386,40 @@ async function renderTable(){
       const res = await apiCall('approveSubmission', { token:s.token, submissionId: btn.dataset.id });
       if(res.ok){ showMsg('submitMsg','승인 완료. 롤링 일정이 반영되었습니다.','ok'); renderTable(); }
       else { showMsg('submitMsg', res.error||'승인 실패','warn'); btn.disabled=false; btn.textContent='입금확인 · 승인하기'; }
+    });
+  });
+
+  document.querySelectorAll('.taxToggleBtn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const form = document.getElementById('taxForm-'+btn.dataset.id);
+      form.style.display = form.style.display==='none' ? 'block' : 'none';
+    });
+  });
+  document.querySelectorAll('.taxSubmitBtn').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const id = btn.dataset.id;
+      const email = document.getElementById('taxEmail-'+id).value.trim();
+      const fileInput = document.getElementById('taxFile-'+id);
+      const file = fileInput.files[0];
+      if(!email || !file){ showMsg('submitMsg','이메일과 사업자등록증 파일을 모두 입력해 주세요.','warn'); return; }
+      if(file.size > 5*1024*1024){ showMsg('submitMsg','파일 용량이 너무 커요. 5MB 이하로 올려주세요.','warn'); return; }
+      setBusy(btn, '업로드 중...');
+      try{
+        const base64 = await new Promise((resolve,reject)=>{
+          const reader = new FileReader();
+          reader.onload = ()=> resolve(reader.result.split(',')[1]);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+        const s = await getSession();
+        const res = await apiCall('requestTaxInvoice', { token:s.token, submissionId:id, invoiceEmail:email, certImageBase64:base64, certFileName:file.name, certMimeType:file.type });
+        clearBusy(btn);
+        if(res.ok){ showMsg('submitMsg','세금계산서 요청이 접수됐어요.','ok'); renderTable(); }
+        else { showMsg('submitMsg', res.error||'요청 실패','warn'); }
+      }catch(e){
+        clearBusy(btn);
+        showMsg('submitMsg','파일 처리 중 오류가 발생했어요.','warn');
+      }
     });
   });
 }
