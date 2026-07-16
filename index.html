@@ -135,6 +135,35 @@
   .splash-slogan{color:#fff; font-size:1.5rem; font-weight:800; margin:0; line-height:1.45;}
   @keyframes splashPop{ 0%{opacity:0; transform:scale(0.72);} 65%{opacity:1; transform:scale(1.06);} 100%{opacity:1; transform:scale(1);} }
 
+  /* ---- 게이트웨이(입장) 화면 ---- */
+  @keyframes hintLeft{0%,100%{transform:translateX(0);opacity:0.5}50%{transform:translateX(-8px);opacity:1}}
+  @keyframes hintUp{0%,100%{transform:translateY(0);opacity:0.45}50%{transform:translateY(-8px);opacity:1}}
+  #gatewayScreen{position:fixed; inset:0; background:#FFFFFF; z-index:500; display:none; overflow:hidden; touch-action:none;}
+  #gatewayScreen.active{display:block;}
+  #gatewayScreen::before{content:''; position:absolute; top:22%; left:47%; width:400px; height:400px; transform:translate(-50%,-50%); border-radius:50%; background:radial-gradient(circle, rgba(58,49,160,0.14), rgba(122,109,230,0.06) 55%, rgba(122,109,230,0) 75%);}
+  .gateway-headline{position:relative; font-size:1.7rem; font-weight:800; color:var(--page-text); line-height:1.5; letter-spacing:-0.01em;}
+  .gateway-sub{position:relative; font-size:0.85rem; color:#9AA0A6; margin-top:14px; font-weight:500;}
+  .gateway-hint-right{position:absolute; top:50%; right:38px; transform:translateY(-50%); display:flex; flex-direction:column; align-items:center; gap:8px; cursor:pointer;}
+  .gateway-hint-label{font-size:0.66rem; color:#9AA0A6; font-weight:600; letter-spacing:0.05em;}
+  .gateway-hint-bottom{position:absolute; bottom:0; left:0; right:0; padding:0 24px 32px; text-align:center; cursor:pointer;}
+  .gateway-peek{position:absolute; top:14%; bottom:14%; right:0; width:26px; background:var(--bg); border-radius:18px 0 0 18px; box-shadow:-8px 0 24px rgba(20,20,45,0.10); overflow:hidden;}
+
+  /* ---- 진단 챗봇 화면 ---- */
+  #diagnosticScreen{position:fixed; inset:0; background:var(--bg); z-index:500; display:none; flex-direction:column; overflow-y:auto;}
+  #diagnosticScreen.active{display:flex;}
+  .diag-header{padding:20px 22px 0;}
+  .diag-chat-body{flex:1; padding:16px 22px 40px; display:flex; flex-direction:column; gap:12px;}
+  .diag-bubble-bot{background:#fff; border-radius:18px 18px 18px 4px; padding:13px 17px; max-width:85%; font-size:0.95rem; color:var(--page-text); line-height:1.6; animation:answeredIn .35s cubic-bezier(.22,1,.36,1);}
+  .diag-bubble-user{align-self:flex-end; background:var(--navy-2); color:#fff; border-radius:18px 18px 4px 18px; padding:12px 16px; max-width:72%; font-size:0.9rem; animation:answeredIn .3s ease;}
+  .diag-input-row{display:flex; gap:8px; margin-top:6px;}
+  .diag-input-row input{flex:1;}
+  .diag-result-card{background:#fff; border-radius:18px; padding:20px; animation:answeredIn .4s cubic-bezier(.22,1,.36,1);}
+  .diag-choice{background:#fff; border:1.5px solid var(--page-line); color:var(--page-text); border-radius:14px; padding:13px 17px; font-size:0.9rem; font-weight:700; cursor:pointer; margin-top:8px;}
+  .diag-choice:hover{border-color:var(--navy-2);}
+  .diag-thumb-row{display:flex; gap:8px; margin-top:8px;}
+  .diag-thumb{width:56px;height:56px;border-radius:10px; background:var(--bg); object-fit:cover; flex-shrink:0;}
+  .diag-trial-badge{background:#EEECFB; border-radius:16px; padding:15px 17px; display:flex; align-items:center; gap:12px; margin-top:4px;}
+
   #authScreen{min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; background:var(--surface);}
   .authcard{width:100%; max-width:440px; background:transparent; border:none; border-radius:0; padding:0; color:var(--text); box-shadow:none;}
   .authtabs{display:flex; gap:4px; background:var(--surface-2); border-radius:12px; padding:4px; margin-bottom:22px;}
@@ -159,8 +188,6 @@
   .switch-link a{color:var(--navy-2); font-weight:700; text-decoration:none; cursor:pointer;}
 
   /* 답변이 위에 쌓이는 대화형 리스트 (토스 회원가입 참고) */
-  .chat-scroll{max-height:min(64vh, 560px); overflow-y:auto; scroll-behavior:smooth; -ms-overflow-style:none; scrollbar-width:none;}
-  .chat-scroll::-webkit-scrollbar{display:none;}
   #signupAnswered, #resetAnswered{margin-bottom:4px;}
   .answered-row{display:flex; justify-content:space-between; align-items:baseline; gap:12px; padding:12px 0; border-bottom:1.5px solid var(--line); animation:answeredIn .4s cubic-bezier(.22,1,.36,1);}
   .answered-row .q{font-size:0.82rem; color:var(--muted); flex-shrink:0;}
@@ -231,6 +258,33 @@
   .donut-legend .row{display:flex; justify-content:space-between; align-items:center; font-size:0.82rem;}
   .donut-legend .dot{display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:7px; flex-shrink:0;}
   .donut-legend .empty-mini{font-size:0.8rem; color:var(--muted); text-align:center;}
+
+  /* ---- 홈 화면 (연라벤더 배경 + 흰카드, 핀트 스타일 참고) ---- */
+  .home-wrap{background:#F3F1FB; min-height:100vh; padding:24px 20px 40px; display:flex; flex-direction:column; gap:14px;}
+  .home-header{display:flex; align-items:center; justify-content:space-between; margin-bottom:2px;}
+  .home-greeting{font-size:1.05rem; font-weight:800; color:#191F28;}
+  .home-sub{font-size:0.8rem; color:#9AA0A6; margin-top:3px;}
+  .home-card{background:#fff; border-radius:20px; padding:20px 18px; box-shadow:0 8px 22px rgba(90,80,160,0.09);}
+  .home-ticker-card{padding:14px 0; overflow:hidden;}
+  .home-ticker-card .ticker-track{display:flex; width:max-content; animation:tickerScroll 16s linear infinite;}
+  @keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+  .home-tick-item{display:flex; align-items:baseline; gap:5px; white-space:nowrap; padding:0 14px;}
+  .home-hero-label{font-size:0.72rem; color:#9AA0A6; font-weight:600;}
+  .home-hero-row{display:flex; align-items:baseline; gap:10px; margin:6px 0 0;}
+  .home-hero-rank{font-size:2rem; font-weight:800; color:#191F28;}
+  .home-hero-badge{font-size:0.72rem; font-weight:800; padding:4px 9px; border-radius:8px;}
+  .home-hero-badge.up{background:#E6F9F1; color:#0D9463;}
+  .home-hero-badge.down{background:#FCEBEB; color:#E24B4A;}
+  .home-hero-badge.flat{background:#F2F4F6; color:#9AA0A6;}
+  .home-progress-note{background:#F3F1FB; border-radius:10px; padding:9px 12px; margin-top:16px; font-size:0.7rem; color:#4E5968; font-weight:600;}
+  .home-action-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .home-action-card{background:#fff; border-radius:16px; padding:15px; box-shadow:0 6px 16px rgba(90,80,160,0.08); cursor:pointer;}
+  .home-action-icon{width:28px;height:28px;border-radius:9px;background:#EEECFB;display:flex;align-items:center;justify-content:center; font-size:13px;}
+  .home-action-label{font-size:0.75rem; font-weight:800; color:#191F28; margin-top:8px; line-height:1.4;}
+  .home-status-card{background:#fff; border-radius:16px; padding:13px 15px; box-shadow:0 6px 16px rgba(90,80,160,0.08); display:flex; align-items:center; gap:10px;}
+  .home-status-dot{width:22px;height:22px;border-radius:50%;background:#3A31A0;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+  .home-status-dot div{width:5px;height:5px;border-radius:50%;background:#fff;}
+  #homeStatusText{font-size:0.7rem; color:#4E5968; font-weight:600;}
   .chart-controls{display:flex; flex-direction:column; gap:14px;}
   .kw-check-group{display:flex; flex-wrap:wrap; gap:8px;}
   .kw-check-group label{display:flex; align-items:center; gap:6px; background:var(--surface-2); border:none; border-radius:10px; padding:9px 13px; font-size:0.85rem; color:var(--text); margin:0; cursor:pointer;}
@@ -252,6 +306,46 @@
   </div>
 </div>
 
+<!-- ===================== 게이트웨이(입장) 화면 ===================== -->
+<div id="gatewayScreen">
+  <div style="position:relative; text-align:center; padding-top:14vh;">
+    <div class="mark" style="width:40px;height:40px;border-radius:11px;background:#272058; margin:0 auto 30px; display:flex; align-items:center; justify-content:center;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 18L12 5L20 18" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 18L12 9.5L20 18" stroke="#B7ACFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="gateway-headline">내 상품,<br>몇 등일까요?</div>
+    <div class="gateway-sub">스마트스토어 링크 하나면 충분해요</div>
+  </div>
+
+  <div class="gateway-peek">
+    <div style="height:64px; background:#272058;"></div>
+    <div style="margin:18px 0 0 -34px; width:52px; height:20px; background:#fff; border-radius:10px;"></div>
+    <div style="margin:8px 0 0 -34px; width:40px; height:16px; background:#fff; border-radius:8px;"></div>
+  </div>
+
+  <div id="gatewayRightHint" class="gateway-hint-right">
+    <div class="gateway-chevron" style="animation:hintLeft 1.6s ease-in-out infinite;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="transform:rotate(-90deg);"><path d="M4 18L12 5L20 18" stroke="#3A31A0" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 18L12 9.5L20 18" stroke="#B7ACFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="gateway-hint-label" style="writing-mode:vertical-rl;">밀어서 진단 시작</div>
+  </div>
+
+  <div id="gatewayBottomHint" class="gateway-hint-bottom">
+    <div style="font-size:13.5px; color:#191F28; font-weight:700; margin-bottom:12px;">우리의 상위 랭커님이세요?</div>
+    <div class="gateway-chevron" style="animation:hintUp 1.6s ease-in-out infinite; display:inline-block;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 18L12 5L20 18" stroke="#9AA0A6" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 18L12 9.5L20 18" stroke="#C4C8CC" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="gateway-hint-label">위로 밀어서 로그인</div>
+  </div>
+</div>
+
+<!-- ===================== 진단 챗봇 화면 ===================== -->
+<div id="diagnosticScreen" style="display:none;">
+  <div class="diag-header">
+    <button class="back-link" id="diagBack" style="margin:0;">‹ 처음으로</button>
+  </div>
+  <div id="diagChatBody" class="diag-chat-body"></div>
+</div>
+
 <!-- ===================== 로그인/회원가입 ===================== -->
 <div id="authScreen">
   <div class="authcard">
@@ -268,32 +362,28 @@
       <div class="switch-link">처음이신가요? <a href="#" id="gotoSignupLink">회원가입</a></div>
     </div>
     <div id="resetForm" style="display:none;">
-      <div class="chat-scroll" id="resetScroll">
-        <div id="resetAnswered"></div>
-        <div id="resetActive">
-          <button class="back-link" id="resetBack" style="display:none;">‹ 이전</button>
-          <h2 class="wizard-title" id="resetQTitle"></h2>
-          <p class="wizard-sub" id="resetQSub"></p>
-          <input id="resetInput" class="toss-input" type="text" />
-          <div class="switch-link" id="resetResend" style="display:none;">인증번호를 못 받으셨나요? <a href="#" id="resendResetCodeLink">다시 보내기</a></div>
-          <button class="btn" id="resetNext">다음</button>
-          <div class="switch-link">생각났어요! <a href="#" id="gotoLoginFromReset">로그인으로 돌아가기</a></div>
-        </div>
+      <div id="resetAnswered"></div>
+      <div id="resetActive">
+        <button class="back-link" id="resetBack" style="display:none;">‹ 이전</button>
+        <h2 class="wizard-title" id="resetQTitle"></h2>
+        <p class="wizard-sub" id="resetQSub"></p>
+        <input id="resetInput" class="toss-input" type="text" />
+        <div class="switch-link" id="resetResend" style="display:none;">인증번호를 못 받으셨나요? <a href="#" id="resendResetCodeLink">다시 보내기</a></div>
+        <button class="btn" id="resetNext">다음</button>
+        <div class="switch-link">생각났어요! <a href="#" id="gotoLoginFromReset">로그인으로 돌아가기</a></div>
       </div>
     </div>
     <div id="signupForm" style="display:none;">
-      <div class="chat-scroll" id="signupScroll">
-        <div id="signupAnswered"></div>
-        <div id="signupActive">
-          <button class="back-link" id="signupBack" style="display:none;">‹ 이전</button>
-          <h2 class="wizard-title" id="signupQTitle"></h2>
-          <p class="wizard-sub" id="signupQSub"></p>
-          <input id="signupInput" class="toss-input" type="text" />
-          <button class="btn" id="signupNext">다음</button>
-          <div class="switch-link" id="signupSwitchLink" style="display:none;">이미 계정이 있으신가요? <a href="#" id="gotoLoginLink">로그인</a></div>
-          <div class="switch-link" id="verifyResend" style="display:none;">인증번호를 못 받으셨나요? <a href="#" id="resendCodeLink">다시 보내기</a></div>
-          <div class="hint" id="signupHint" style="display:none; text-align:center;">가입 즉시 고객 권한으로 로그인됩니다.</div>
-        </div>
+      <div id="signupAnswered"></div>
+      <div id="signupActive">
+        <button class="back-link" id="signupBack" style="display:none;">‹ 이전</button>
+        <h2 class="wizard-title" id="signupQTitle"></h2>
+        <p class="wizard-sub" id="signupQSub"></p>
+        <input id="signupInput" class="toss-input" type="text" />
+        <button class="btn" id="signupNext">다음</button>
+        <div class="switch-link" id="signupSwitchLink" style="display:none;">이미 계정이 있으신가요? <a href="#" id="gotoLoginLink">로그인</a></div>
+        <div class="switch-link" id="verifyResend" style="display:none;">인증번호를 못 받으셨나요? <a href="#" id="resendCodeLink">다시 보내기</a></div>
+        <div class="hint" id="signupHint" style="display:none; text-align:center;">가입 즉시 고객 권한으로 로그인됩니다.</div>
       </div>
     </div>
     <div class="msg" id="authMsg"></div>
@@ -333,7 +423,8 @@
       <div class="sp-ref">내 추천코드 <span class="refcode" id="myRefCode">-</span></div>
     </div>
     <nav class="sidebar-nav">
-      <button class="navtab active" data-panel="panelMain" data-label="접수 / 현황">📝 접수 / 현황</button>
+      <button class="navtab active" data-panel="panelHome" data-label="홈">🏠 홈</button>
+      <button class="navtab" data-panel="panelMain" data-label="접수 / 현황">📝 접수 / 현황</button>
       <button class="navtab" data-panel="panelDashboard" data-label="내 현황판">📊 내 현황판</button>
       <button class="navtab" data-panel="panelCoupons" data-label="보유 쿠폰함">🎟 보유 쿠폰함</button>
       <button class="navtab admin-only" data-panel="panelReferrals" data-label="추천 현황" style="display:none;">👥 추천 현황(관리자)</button>
@@ -354,7 +445,56 @@
     </div>
 
     <div class="content-body">
-    <main id="panelMain" class="panel active" style="display:grid;">
+    <div id="panelHome" class="panel active" style="display:block;">
+      <div class="home-wrap">
+        <div class="home-header">
+          <div>
+            <div class="home-greeting" id="homeGreeting">-</div>
+            <div class="home-sub" id="homeSub">-</div>
+          </div>
+        </div>
+
+        <div class="home-card home-ticker-card" id="homeTickerCard" style="display:none;">
+          <div class="ticker-track" id="homeTickerTrack"></div>
+        </div>
+
+        <div class="home-card home-hero-card" id="homeHeroCard" style="display:none;">
+          <div class="home-hero-label" id="homeHeroLabel">-</div>
+          <div class="home-hero-row">
+            <div class="home-hero-rank" id="homeHeroRank">-</div>
+            <div class="home-hero-badge" id="homeHeroBadge" style="display:none;"></div>
+          </div>
+        </div>
+
+        <div class="home-card" id="homeProgressCard" style="display:none;">
+          <div style="font-size:0.8rem; font-weight:800; color:#191F28; margin-bottom:16px;">캠페인 진행상황</div>
+          <div style="position:relative; padding:0 4px;">
+            <div style="position:absolute; top:9px; left:16px; right:16px; height:2px; background:#EBEDF0;"></div>
+            <div id="homeProgressLine" style="position:absolute; top:9px; left:16px; width:0%; height:2px; background:#3A31A0;"></div>
+            <div style="display:flex; justify-content:space-between; position:relative;" id="homeProgressSteps"></div>
+          </div>
+          <div class="home-progress-note" id="homeProgressNote"></div>
+        </div>
+
+        <div class="home-action-grid">
+          <div class="home-action-card" id="homeActionNew">
+            <div class="home-action-icon">🚀</div>
+            <div class="home-action-label">새 캠페인<br>시작하기</div>
+          </div>
+          <div class="home-action-card" id="homeActionCoupon">
+            <div class="home-action-icon">🎟️</div>
+            <div class="home-action-label">쿠폰함<br>확인하기</div>
+          </div>
+        </div>
+
+        <div class="home-status-card" id="homeStatusCard" style="display:none;">
+          <div class="home-status-dot"><div></div></div>
+          <div id="homeStatusText">지금도 순위를 계속 끌어올리는 중이에요</div>
+        </div>
+      </div>
+    </div>
+
+    <main id="panelMain" class="panel" style="display:grid;">
   <section class="card">
     <h2><span class="n">01</span> 어떤 캠페인을 시작할까요?</h2>
 
@@ -387,6 +527,13 @@
         <input id="f_kw3" type="text" placeholder="키워드 3" /><input id="f_kw4" type="text" placeholder="키워드 4" />
         <input id="f_kw5" type="text" placeholder="키워드 5" />
       </div>
+
+      <label>경쟁사 상품도 같이 추적할까요? (선택, 최대 3개)</label>
+      <div class="kw-grid">
+        <input id="f_comp1" type="url" placeholder="경쟁사 링크 1" /><input id="f_comp2" type="url" placeholder="경쟁사 링크 2" />
+        <input id="f_comp3" type="url" placeholder="경쟁사 링크 3" />
+      </div>
+      <div class="hint">등록하면 순위 그래프에 내 순위와 함께 표시돼요</div>
 
       <div id="couponPickWrap" style="display:none;">
         <label>보유 쿠폰 적용</label>
@@ -642,6 +789,7 @@ let signupIndex = 0;
 function resetSignup(){
   signupAnswers = {};
   signupIndex = 0;
+  if(window.pendingDiagData && window.pendingDiagData.email){ signupAnswers.email = window.pendingDiagData.email; }
   document.getElementById('signupAnswered').innerHTML = '';
   renderSignupQuestion();
 }
@@ -676,17 +824,7 @@ async function renderSignupQuestion(){
   active.style.transition = 'opacity .4s cubic-bezier(.22,1,.36,1), transform .4s cubic-bezier(.22,1,.36,1)';
   active.style.opacity = '1';
   active.style.transform = 'translateY(0)';
-  scrollChatToBottom('signupScroll');
   setTimeout(()=> input.focus(), 300);
-}
-
-// 채팅창처럼 새 내용이 생기면 항상 맨 아래(=활성 질문)가 보이도록 스크롤
-// (기존 답변들은 자연스럽게 위로 밀려 올라가며 스크롤 밖으로 사라짐)
-function scrollChatToBottom(scrollId){
-  const el = document.getElementById(scrollId);
-  requestAnimationFrame(()=>{
-    el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
-  });
 }
 
 function appendAnsweredRow(q, value, labelOverride){
@@ -697,7 +835,6 @@ function appendAnsweredRow(q, value, labelOverride){
   const displayVal = q.type === 'password' ? '•'.repeat(Math.min(value.length,10)) : (value || '(선택 안 함)');
   row.innerHTML = `<span class="q">${escapeHtml(labelOverride || q.title)}</span><span class="a">${escapeHtml(displayVal)}</span>`;
   wrap.appendChild(row);
-  scrollChatToBottom('signupScroll');
 }
 
 document.getElementById('resendCodeLink').addEventListener('click', async (e)=>{
@@ -825,7 +962,6 @@ async function renderResetQuestion(){
   active.style.transition = 'opacity .4s cubic-bezier(.22,1,.36,1), transform .4s cubic-bezier(.22,1,.36,1)';
   active.style.opacity = '1';
   active.style.transform = 'translateY(0)';
-  scrollChatToBottom('resetScroll');
   setTimeout(()=> input.focus(), 300);
 }
 
@@ -837,7 +973,6 @@ function appendResetRow(q, value, labelOverride){
   const displayVal = q.type === 'password' ? '•'.repeat(Math.min(value.length,10)) : value;
   row.innerHTML = `<span class="q">${escapeHtml(labelOverride || q.title)}</span><span class="a">${escapeHtml(displayVal)}</span>`;
   wrap.appendChild(row);
-  scrollChatToBottom('resetScroll');
 }
 
 document.getElementById('resetBack').addEventListener('click', ()=>{
@@ -936,9 +1071,7 @@ document.getElementById('logoutBtn').addEventListener('click', async ()=>{
   const app = document.getElementById('app');
   app.classList.remove('visible');
   app.style.display='none';
-  const auth = document.getElementById('authScreen');
-  auth.style.display='flex';
-  auth.style.opacity='1';
+  showGateway();
 });
 
 // ---------- 탭 네비게이션 ----------
@@ -957,8 +1090,15 @@ document.querySelectorAll('.navtab').forEach(btn=>{
     if(btn.dataset.panel === 'panelCoupons') renderCoupons();
     if(btn.dataset.panel === 'panelReferrals') renderReferrals();
     if(btn.dataset.panel === 'panelDashboard') loadDashboard();
+    if(btn.dataset.panel === 'panelHome') loadHome();
   });
 });
+function switchToPanel(panelName){
+  const btn = document.querySelector(`.navtab[data-panel="${panelName}"]`);
+  if(btn) btn.click();
+}
+document.getElementById('homeActionNew').addEventListener('click', ()=> switchToPanel('panelMain'));
+document.getElementById('homeActionCoupon').addEventListener('click', ()=> switchToPanel('panelCoupons'));
 
 // ---------- 사이드바 열기/닫기 (모바일) ----------
 function openSidebar(){ document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebarBackdrop').classList.add('open'); }
@@ -1011,11 +1151,22 @@ function refreshPriceBox(){
   if(!product || qty<1){ document.getElementById('p_slots').textContent='-'; document.getElementById('p_supply').textContent='-'; document.getElementById('p_vat').textContent='-'; document.getElementById('p_total').textContent='-'; return; }
   const couponId = document.getElementById('f_coupon').value;
   const coupon = COUPONS_CACHE.find(c=>c.id===couponId);
-  let bonus = 0;
-  if(coupon){ const req = coupon.type==='3+1'?3:5; if(qty>=req) bonus = coupon.type==='3+1'?1:2; }
-  const supply = product.unitPrice * qty * cycles;
+  let bonus = 0, discountQty = 0;
+  if(coupon){
+    const req = req_(coupon);
+    if(qty>=req){
+      if(coupon.type==='3+1') bonus = 1;
+      else if(coupon.type==='5+2') bonus = 2;
+      else if(coupon.type==='trial1') discountQty = 1;
+    }
+  }
+  const billableQty = Math.max(0, qty - discountQty);
+  const supply = product.unitPrice * billableQty * cycles;
   const vat = Math.round(supply*0.1);
-  document.getElementById('p_slots').textContent = `${qty}개${bonus?` (+${bonus} 보너스, 총 ${qty+bonus}개)`:''}`;
+  let slotsLabel = `${qty}개`;
+  if(bonus) slotsLabel += ` (+${bonus} 보너스, 총 ${qty+bonus}개)`;
+  if(discountQty) slotsLabel += ` (무료체험 ${discountQty}개 적용)`;
+  document.getElementById('p_slots').textContent = slotsLabel;
   document.getElementById('p_supply').textContent = supply.toLocaleString('ko-KR')+'원';
   document.getElementById('p_vat').textContent = vat.toLocaleString('ko-KR')+'원';
   document.getElementById('p_total').textContent = (supply+vat).toLocaleString('ko-KR')+'원';
@@ -1032,7 +1183,7 @@ function refreshCouponOptions(){
   sel.innerHTML = '<option value="">사용 안 함</option>' + usable.map(c=>`<option value="${c.id}">${c.type} 쿠폰 (${req_(c)}개 이상)</option>`).join('');
   if(usable.length===0){ sel.innerHTML += '<option disabled>주문 갯수를 늘리면 사용 가능</option>'; }
 }
-function req_(c){ return c.type==='3+1'?3:5; }
+function req_(c){ return c.type==='3+1'?3 : c.type==='5+2'?5 : c.type==='trial1'?1 : 999; }
 
 // ---------- 세션 진입 ----------
 async function enterApp(session){
@@ -1063,8 +1214,21 @@ async function enterApp(session){
 
   await loadCatalog();
   await loadCoupons();
+
+  // 진단 챗봇에서 넘어온 경우, 링크/키워드/무료체험 쿠폰을 접수 폼에 자동 반영
+  if(window.pendingDiagData){
+    if(window.pendingDiagData.link) document.getElementById('f_link').value = window.pendingDiagData.link;
+    if(window.pendingDiagData.keyword) document.getElementById('f_kw1').value = window.pendingDiagData.keyword;
+    const trial = COUPONS_CACHE.find(c=>c.type==='trial1');
+    if(trial) document.getElementById('f_qty').value = '1';
+    window.pendingDiagData = null;
+    refreshCouponOptions();
+    if(trial) document.getElementById('f_coupon').value = trial.id;
+  }
+
   refreshPriceBox();
   renderTable();
+  loadHome();
 }
 
 // ---------- 접수 제출 ----------
@@ -1091,9 +1255,10 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
     const qty = document.getElementById('f_qty').value;
     const cycles = document.getElementById('f_cycles').value;
     const keywords = [1,2,3,4,5].map(n=>document.getElementById('f_kw'+n).value.trim()).filter(Boolean);
+    const competitorLinks = [1,2,3].map(n=>document.getElementById('f_comp'+n).value.trim()).filter(Boolean);
     const couponId = document.getElementById('f_coupon').value;
     if(!client || !link || !qty || keywords.length<1){ showMsg('submitMsg','필수 항목을 모두 입력해 주세요 (업체명/링크/갯수/키워드 최소 1개).','warn'); return; }
-    Object.assign(payload, { client, phone, link, productId, qty: Number(qty), cycles: Number(cycles), keywords, couponId });
+    Object.assign(payload, { client, phone, link, productId, qty: Number(qty), cycles: Number(cycles), keywords, competitorLinks, couponId });
   }
 
   const submitBtn = document.getElementById('submitBtn');
@@ -1105,7 +1270,7 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
     document.getElementById('bankBanner').style.display = isYoutube ? 'none' : 'block';
     if(res.bank) document.getElementById('bankAcc').textContent = `${res.bank.bank} ${res.bank.account} (${res.bank.holder})`;
     if(isYoutube){ ['y_phone','y_date','y_location','y_notes'].forEach(id=>document.getElementById(id).value=''); }
-    else { ['f_phone','f_link','f_qty','f_kw1','f_kw2','f_kw3','f_kw4','f_kw5'].forEach(id=>document.getElementById(id).value=''); document.getElementById('f_coupon').value=''; refreshPriceBox(); }
+    else { ['f_phone','f_link','f_qty','f_kw1','f_kw2','f_kw3','f_kw4','f_kw5','f_comp1','f_comp2','f_comp3'].forEach(id=>document.getElementById(id).value=''); document.getElementById('f_coupon').value=''; refreshPriceBox(); }
     await loadCoupons();
     renderTable();
   } else showMsg('submitMsg', res.error || '접수 실패','warn');
@@ -1267,6 +1432,107 @@ async function renderReferrals(){
   });
 }
 
+// ---------- 홈 ----------
+async function loadHome(){
+  const session = await getSession();
+  if(!session) return;
+  document.getElementById('homeGreeting').textContent = `${session.companyName}님의 소식`;
+
+  const listRes = await apiCall('listSubmissions', { token: session.token });
+  const records = (listRes.ok ? listRes.submissions : []) || [];
+  const rewardApproved = records.filter(r=> r.productType==='reward' && r.status==='approved');
+  const today = fmt(new Date());
+  const active = rewardApproved.filter(r=> !r.endDate || today <= r.endDate);
+
+  document.getElementById('homeSub').textContent = active.length
+    ? `${active[0].channel}·${active[0].program} 캠페인 진행중`
+    : '진행중인 캠페인이 아직 없어요';
+
+  renderHomeTicker(active);
+  renderHomeHero(active);
+  renderHomeProgress(active[0]);
+  document.getElementById('homeStatusCard').style.display = active.length ? 'flex' : 'none';
+}
+
+function renderHomeTicker(active){
+  const card = document.getElementById('homeTickerCard');
+  const track = document.getElementById('homeTickerTrack');
+  const items = [];
+  active.forEach(r=>{
+    let ranks = {}, prev = {};
+    try{ ranks = r.ranksJson ? JSON.parse(r.ranksJson) : {}; }catch(e){}
+    try{ prev = r.prevRanksJson ? JSON.parse(r.prevRanksJson) : {}; }catch(e){}
+    const kws = Array.isArray(r.keywords) ? r.keywords : String(r.keywords||'').split(',').map(k=>k.trim()).filter(Boolean);
+    kws.forEach(kw=>{
+      const cur = ranks[kw] ? ranks[kw].rank : null;
+      const prv = prev[kw] ? prev[kw].rank : null;
+      items.push({ kw, cur, prv });
+    });
+  });
+  if(items.length === 0){ card.style.display='none'; return; }
+  card.style.display = 'block';
+  const buildRow = ()=> items.map(it=>{
+    const rankText = typeof it.cur === 'number' ? `${it.cur}위` : (it.cur || '확인중');
+    let deltaHtml = '<span style="font-size:0.68rem; color:#9AA0A6; font-weight:700;">-</span>';
+    if(typeof it.cur === 'number' && typeof it.prv === 'number'){
+      const diff = it.prv - it.cur;
+      if(diff>0) deltaHtml = `<span style="font-size:0.68rem; color:#E24B4A; font-weight:700;">▲${diff}</span>`;
+      else if(diff<0) deltaHtml = `<span style="font-size:0.68rem; color:#378ADD; font-weight:700;">▼${Math.abs(diff)}</span>`;
+    }
+    return `<div class="home-tick-item"><span style="font-size:0.72rem; color:#4E5968; font-weight:600;">${escapeHtml(it.kw)}</span><span style="font-size:0.78rem; color:#191F28; font-weight:800;">${rankText}</span>${deltaHtml}</div>`;
+  }).join('');
+  track.innerHTML = buildRow() + buildRow();
+}
+
+function renderHomeHero(active){
+  const heroCard = document.getElementById('homeHeroCard');
+  let best = null, bestKw = null, bestPrev = null;
+  active.forEach(r=>{
+    let ranks = {}, prev = {};
+    try{ ranks = r.ranksJson ? JSON.parse(r.ranksJson) : {}; }catch(e){}
+    try{ prev = r.prevRanksJson ? JSON.parse(r.prevRanksJson) : {}; }catch(e){}
+    Object.keys(ranks).forEach(kw=>{
+      const v = ranks[kw].rank;
+      if(typeof v === 'number' && (best === null || v < best)){ best = v; bestKw = kw; bestPrev = prev[kw] ? prev[kw].rank : null; }
+    });
+  });
+  if(best === null){ heroCard.style.display = 'none'; return; }
+  heroCard.style.display = 'block';
+  document.getElementById('homeHeroLabel').textContent = `'${bestKw}' 최고 순위`;
+  document.getElementById('homeHeroRank').innerHTML = `${best}<span style="font-size:0.9rem;">위</span>`;
+  const badge = document.getElementById('homeHeroBadge');
+  if(typeof bestPrev === 'number'){
+    const diff = bestPrev - best;
+    badge.style.display = 'inline-block';
+    if(diff>0){ badge.className='home-hero-badge up'; badge.textContent = `▲ ${diff}단계`; }
+    else if(diff<0){ badge.className='home-hero-badge down'; badge.textContent = `▼ ${Math.abs(diff)}단계`; }
+    else { badge.className='home-hero-badge flat'; badge.textContent = '전일 동일'; }
+  } else { badge.style.display = 'none'; }
+}
+
+function renderHomeProgress(rec){
+  const card = document.getElementById('homeProgressCard');
+  if(!rec){ card.style.display='none'; return; }
+  card.style.display = 'block';
+  const today = fmt(new Date());
+  let stepIndex = 2; // 0접수 1입금확인 2진행중 3종료 - approved 상태는 최소 입금확인까지 완료
+  if(rec.endDate && today > rec.endDate) stepIndex = 3;
+  else if(rec.startDate && today < rec.startDate) stepIndex = 1;
+
+  const steps = ['접수완료','입금확인','순위상승중','캠페인종료'];
+  document.getElementById('homeProgressLine').style.width = (stepIndex/ (steps.length-1) * 82) + '%';
+  document.getElementById('homeProgressSteps').innerHTML = steps.map((label,i)=>{
+    const done = i < stepIndex, curr = i === stepIndex;
+    const dot = done ? `<div style="width:18px;height:18px;border-radius:50%;background:#3A31A0; display:flex; align-items:center; justify-content:center; font-size:10px; color:#fff;">✓</div>`
+      : curr ? `<div style="width:18px;height:18px;border-radius:50%;background:#3A31A0;"></div>`
+      : `<div style="width:18px;height:18px;border-radius:50%;background:#fff; border:2px solid #EBEDF0;"></div>`;
+    const color = curr ? '#3A31A0' : done ? '#191F28' : '#B0B4BC';
+    const weight = curr ? 800 : 700;
+    return `<div style="display:flex; flex-direction:column; align-items:center; gap:7px; width:25%;">${dot}<div style="font-size:0.6rem; color:${color}; font-weight:${weight};">${label}</div></div>`;
+  }).join('');
+  document.getElementById('homeProgressNote').textContent = rec.endDate ? `${rec.endDate} 종료 예정` : '승인 후 일정이 확정돼요';
+}
+
 // ---------- 현황판 ----------
 let rankChartInstance = null;
 const donutCharts = {};
@@ -1425,24 +1691,38 @@ async function fetchAndRenderChart(){
   const res = await apiCall('getRankHistory', { token: session.token, submissionId, startDate, endDate });
   if(!res.ok || !res.history || res.history.length === 0){ renderEmptyChart(); return; }
 
-  const byKeyword = {};
+  // 키워드별 -> 대상(내 상품 / 경쟁사 A,B,C)별로 그룹핑
+  const grouped = {};
   res.history.forEach(h=>{
     if(selectedKeywords.length && !selectedKeywords.includes(h.keyword)) return;
     if(!h.rank || isNaN(Number(h.rank))) return; // "100위 밖" 등은 그래프에서 제외(끊어보이게)
-    if(!byKeyword[h.keyword]) byKeyword[h.keyword] = [];
-    byKeyword[h.keyword].push({ x: h.checkedAt, y: Number(h.rank) });
+    const subj = h.subject || 'me';
+    if(!grouped[h.keyword]) grouped[h.keyword] = {};
+    if(!grouped[h.keyword][subj]) grouped[h.keyword][subj] = { label: h.subjectLabel || '내 상품', points: [] };
+    grouped[h.keyword][subj].points.push({ x: h.checkedAt, y: Number(h.rank) });
   });
 
-  const datasetKeys = Object.keys(byKeyword);
-  document.getElementById('chartEmptyHint').style.display = datasetKeys.length ? 'none' : 'block';
-  if(datasetKeys.length === 0){ if(rankChartInstance){ rankChartInstance.destroy(); rankChartInstance=null; } return; }
+  const keywordList = Object.keys(grouped);
+  document.getElementById('chartEmptyHint').style.display = keywordList.length ? 'none' : 'block';
+  if(keywordList.length === 0){ if(rankChartInstance){ rankChartInstance.destroy(); rankChartInstance=null; } return; }
 
   const palette = ['#3A31A0','#8B7FFF','#12B886','#FF9500','#F04452'];
-  const datasets = datasetKeys.map((kw,i)=>({
-    label: kw, data: byKeyword[kw],
-    borderColor: palette[i%palette.length], backgroundColor: palette[i%palette.length],
-    tension:0.3, pointRadius:3, spanGaps:true, borderWidth:2.5
-  }));
+  const dashBySubject = { me:[], comp1:[6,4], comp2:[2,3], comp3:[1,3] };
+  const datasets = [];
+  keywordList.forEach((kw, ki)=>{
+    const color = palette[ki % palette.length];
+    Object.keys(grouped[kw]).forEach(subj=>{
+      const g = grouped[kw][subj];
+      datasets.push({
+        label: subj==='me' ? kw : `${kw} · ${g.label}`,
+        data: g.points,
+        borderColor: color, backgroundColor: color,
+        borderDash: dashBySubject[subj] || [3,3],
+        borderWidth: subj==='me' ? 2.5 : 1.6,
+        tension:0.3, pointRadius: subj==='me' ? 3 : 1.5, spanGaps:true
+      });
+    });
+  });
 
   const ctx = document.getElementById('rankChart').getContext('2d');
   if(rankChartInstance) rankChartInstance.destroy();
@@ -1467,12 +1747,232 @@ function renderEmptyChart(){
   if(rankChartInstance){ rankChartInstance.destroy(); rankChartInstance = null; }
 }
 
+// ---------- 게이트웨이(입장) 화면 ----------
+function showGateway(){
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('diagnosticScreen').classList.remove('active');
+  document.getElementById('gatewayScreen').classList.add('active');
+}
+function openDiagnostic(){
+  document.getElementById('gatewayScreen').classList.remove('active');
+  document.getElementById('diagnosticScreen').classList.add('active');
+  resetDiagnostic();
+}
+function openLoginFromGateway(){
+  document.getElementById('gatewayScreen').classList.remove('active');
+  document.getElementById('diagnosticScreen').classList.remove('active');
+  document.getElementById('authScreen').style.display = 'flex';
+  document.getElementById('authScreen').style.opacity = '1';
+  document.getElementById('loginForm').style.display = 'block';
+  document.getElementById('signupForm').style.display = 'none';
+}
+document.getElementById('gatewayRightHint').addEventListener('click', openDiagnostic);
+document.getElementById('gatewayBottomHint').addEventListener('click', openLoginFromGateway);
+document.getElementById('diagBack').addEventListener('click', showGateway);
+
+// 스와이프 제스처 감지 (오른→왼: 진단, 아래→위: 로그인). 터치 미지원 기기는 힌트 탭으로 대체 가능
+(function(){
+  const gw = document.getElementById('gatewayScreen');
+  let sx=0, sy=0;
+  gw.addEventListener('touchstart', e=>{ sx=e.touches[0].clientX; sy=e.touches[0].clientY; }, {passive:true});
+  gw.addEventListener('touchend', e=>{
+    const dx = e.changedTouches[0].clientX - sx;
+    const dy = e.changedTouches[0].clientY - sy;
+    if(Math.abs(dx) > Math.abs(dy) && dx < -50) openDiagnostic();
+    else if(Math.abs(dy) > Math.abs(dx) && dy < -50) openLoginFromGateway();
+  }, {passive:true});
+})();
+
+// ---------- 진단 챗봇 ----------
+let diagData = {};
+function resetDiagnostic(){
+  diagData = {};
+  document.getElementById('diagChatBody').innerHTML = '';
+  diagAskLink();
+}
+function diagAppendBot(html){
+  const body = document.getElementById('diagChatBody');
+  const div = document.createElement('div');
+  div.className = 'diag-bubble-bot';
+  div.innerHTML = html;
+  body.appendChild(div);
+  body.scrollTop = body.scrollHeight;
+  return div;
+}
+function diagAppendUser(text){
+  const body = document.getElementById('diagChatBody');
+  const div = document.createElement('div');
+  div.className = 'diag-bubble-user';
+  div.textContent = text;
+  body.appendChild(div);
+  body.scrollTop = body.scrollHeight;
+}
+function diagAppendInput(placeholder, onSubmit, type){
+  const body = document.getElementById('diagChatBody');
+  const row = document.createElement('div');
+  row.className = 'diag-input-row';
+  row.innerHTML = `<input type="${type||'text'}" placeholder="${placeholder}" class="toss-input" /><button class="btn" style="margin-top:0;width:auto;padding:0 18px;">전송</button>`;
+  body.appendChild(row);
+  body.scrollTop = body.scrollHeight;
+  const input = row.querySelector('input');
+  const btn = row.querySelector('button');
+  setTimeout(()=>input.focus(), 200);
+  const submit = ()=>{ const v = input.value.trim(); if(!v) return; row.remove(); onSubmit(v); };
+  btn.addEventListener('click', submit);
+  input.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); submit(); } });
+}
+function diagAskLink(){
+  diagAppendBot('안녕하세요<br>내 상품이 지금 몇 등인지 30초면 알 수 있어요');
+  diagAppendBot('스마트스토어 상품 링크를 알려주세요');
+  diagAppendInput('https://smartstore.naver.com/...', (v)=>{ diagAppendUser(v); diagData.link=v; diagAskKeyword(); }, 'url');
+}
+function diagAskKeyword(){
+  diagAppendBot('검색 키워드도 하나 알려주세요');
+  diagAppendInput('예: 인조잔디', (v)=>{ diagAppendUser(v); diagData.keyword=v; diagAskEmail(); });
+}
+function diagAskEmail(){
+  diagAppendBot('결과를 보내드릴 이메일을 알려주세요');
+  diagAppendInput('you@company.com', (v)=>{ diagAppendUser(v); diagData.email=v; diagRunDiagnosis(); }, 'email');
+}
+// 상품명에 키워드가 포함되어 있는지, 상위권 상품들과 비교해서 인사이트 생성
+function buildTitleInsight(myTitle, keyword, top3){
+  const hasKeyword = myTitle.includes(keyword);
+  const posRatio = hasKeyword ? myTitle.indexOf(keyword) / myTitle.length : null;
+  const topWithKeyword = top3.filter(t => t.title && t.title.includes(keyword)).length;
+
+  let headline, tone;
+  if(!hasKeyword){
+    headline = `상품명에 '${keyword}' 키워드가 없어요`;
+    tone = 'bad';
+  } else if(posRatio !== null && posRatio > 0.5){
+    headline = `'${keyword}' 키워드가 상품명 뒤쪽에 있어요`;
+    tone = 'warn';
+  } else {
+    headline = `'${keyword}' 키워드가 상품명 앞쪽에 잘 배치되어 있어요`;
+    tone = 'good';
+  }
+  const sub = topWithKeyword > 0
+    ? `상위 3개 상품 중 ${topWithKeyword}개가 상품명에 이 키워드를 포함하고 있어요`
+    : `상위권 상품들도 이 키워드를 상품명에 꼭 넣진 않았어요`;
+
+  const color = tone==='good' ? '#0D9463' : tone==='warn' ? '#B7791F' : '#E24B4A';
+  const bg = tone==='good' ? '#E6F9F1' : tone==='warn' ? '#FFF6E5' : '#FCEBEB';
+
+  const card = document.createElement('div');
+  card.className = 'diag-result-card';
+  card.innerHTML = `
+    <div style="font-size:0.7rem; color:var(--muted); font-weight:600;">상품명 키워드 배치 진단</div>
+    <div style="background:${bg}; color:${color}; border-radius:12px; padding:12px 14px; margin-top:8px; font-size:0.85rem; font-weight:700; line-height:1.5;">${escapeHtml(headline)}</div>
+    <div style="font-size:0.78rem; color:#4E5968; margin-top:10px; line-height:1.6;">${escapeHtml(sub)}</div>
+    <div style="font-size:0.7rem; color:var(--muted); margin-top:12px; word-break:break-all;">내 상품명: ${escapeHtml(myTitle)}</div>`;
+  return card;
+}
+
+async function diagRunDiagnosis(){
+  const loadingEl = diagAppendBot('잠시만요, 분석 중이에요...');
+  const res = await apiCall('diagnose', { email: diagData.email, link: diagData.link, keyword: diagData.keyword });
+  loadingEl.remove();
+  if(!res.ok){
+    diagAppendBot(escapeHtml(res.error || '진단에 실패했어요. 링크를 다시 확인해 주세요.'));
+    diagAppendInput('https://smartstore.naver.com/...', (v)=>{ diagAppendUser(v); diagData.link=v; diagRunDiagnosis(); }, 'url');
+    return;
+  }
+  diagData.rank = res.rank;
+  const rankText = res.rank ? `${res.rank}위` : '100위 밖';
+  const myThumb = res.myImage ? `<img class="diag-thumb" src="${res.myImage}" style="border:2px solid var(--bad);" />` : `<div class="diag-thumb" style="border:2px solid var(--bad);"></div>`;
+  const compThumbs = (res.top3||[]).map(t=> t.image ? `<img class="diag-thumb" src="${t.image}" />` : `<div class="diag-thumb"></div>`).join('');
+  const card = document.createElement('div');
+  card.className = 'diag-result-card';
+  card.innerHTML = `
+    <div style="font-size:0.7rem; color:var(--muted); font-weight:600;">'${escapeHtml(diagData.keyword)}' 검색 시 순위</div>
+    <div style="font-size:2rem; font-weight:800; color:var(--page-text); margin:4px 0 12px;">${rankText}</div>
+    <div style="font-size:0.7rem; color:var(--muted); margin-top:10px;">내 썸네일 vs 상위 3개 비교</div>
+    <div class="diag-thumb-row">${myThumb}${compThumbs}</div>`;
+  document.getElementById('diagChatBody').appendChild(card);
+  document.getElementById('diagChatBody').scrollTop = document.getElementById('diagChatBody').scrollHeight;
+
+  // 상품명 키워드 최적화 인사이트 (리뷰/평점 대신 확보 가능한 데이터로 구성)
+  if(res.myTitle){
+    const titleCard = buildTitleInsight(res.myTitle, diagData.keyword, res.top3||[]);
+    setTimeout(()=>{
+      document.getElementById('diagChatBody').appendChild(titleCard);
+      document.getElementById('diagChatBody').scrollTop = document.getElementById('diagChatBody').scrollHeight;
+    }, 500);
+  }
+
+  setTimeout(diagAskNeeds, 1300);
+}
+function diagAskNeeds(){
+  diagAppendBot('가장 먼저 해결하고 싶은 게 뭐예요?');
+  const body = document.getElementById('diagChatBody');
+  const wrap = document.createElement('div');
+  [['search','검색해도 내 상품이 안 보여요'], ['trust','봐도 신뢰가 안 가나봐요'], ['both','둘 다예요']].forEach(([key,label])=>{
+    const btn = document.createElement('div');
+    btn.className = 'diag-choice';
+    btn.textContent = label;
+    btn.addEventListener('click', ()=>{ wrap.remove(); diagAppendUser(label); diagData.need = key; diagShowSolution(); });
+    wrap.appendChild(btn);
+  });
+  body.appendChild(wrap);
+  body.scrollTop = body.scrollHeight;
+}
+function diagShowSolution(){
+  let title, desc;
+  if(diagData.need === 'trust'){
+    title = '브랜드 PR 영상 제작 추천';
+    desc = '상품 또는 대표님 인터뷰 영상으로 신뢰도와 구매전환을 높여드려요.';
+  } else {
+    title = '리워드 프로그램 추천';
+    desc = `검색 키워드 상위권으로 노출을 끌어올려 드려요. ${diagData.rank?diagData.rank+'위':'100위 밖'} → 상위권 진입을 목표로 진행해요.`;
+  }
+  const body = document.getElementById('diagChatBody');
+  const card = document.createElement('div');
+  card.className = 'diag-result-card';
+  card.innerHTML = `<div style="font-size:0.88rem; font-weight:700; color:var(--navy-2); margin-bottom:6px;">${escapeHtml(title)}</div><div style="font-size:0.82rem; color:#4E5968; line-height:1.7;">${escapeHtml(desc)}</div>`;
+  body.appendChild(card);
+
+  diagAppendBot('이미 함께하고 계신 사장님들, 실제로 순위가 오르고 있어요');
+
+  const trialWrap = document.createElement('div');
+  trialWrap.className = 'diag-trial-badge';
+  trialWrap.innerHTML = `<div style="width:34px;height:34px;border-radius:10px;background:var(--navy-2);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:800;">1</div><div style="font-size:0.85rem; color:var(--navy-2); font-weight:700; line-height:1.5;">가입하면 슬롯 1개, 무료로 체험해보세요</div>`;
+  body.appendChild(trialWrap);
+
+  const ctaBtn = document.createElement('div');
+  ctaBtn.className = 'btn';
+  ctaBtn.style.textAlign = 'center';
+  ctaBtn.textContent = '1슬롯 무료체험 받기 →';
+  ctaBtn.addEventListener('click', diagGotoSignup);
+  body.appendChild(ctaBtn);
+
+  const loginLink = document.createElement('div');
+  loginLink.className = 'switch-link';
+  loginLink.innerHTML = '이미 계정이 있으신가요? <a href="#">로그인</a>';
+  loginLink.querySelector('a').addEventListener('click', (e)=>{ e.preventDefault(); openLoginFromGateway(); });
+  body.appendChild(loginLink);
+
+  body.scrollTop = body.scrollHeight;
+}
+function diagGotoSignup(){
+  document.getElementById('diagnosticScreen').classList.remove('active');
+  document.getElementById('authScreen').style.display = 'flex';
+  document.getElementById('authScreen').style.opacity = '1';
+  document.getElementById('loginForm').style.display = 'none';
+  document.getElementById('signupForm').style.display = 'block';
+  window.pendingDiagData = diagData;
+  resetSignup();
+}
+
 // ---------- 초기 로드 ----------
 // ?admin=1 로 접속했을 때만 서버 연결 설정(고급 옵션)을 노출
 if(new URLSearchParams(window.location.search).get('admin') === '1'){
   document.getElementById('serverConfigBox').style.display = 'block';
 }
-(async ()=>{ const session = await getSession(); if(session) await enterApp(session); })();
+(async ()=>{
+  const session = await getSession();
+  if(session){ await enterApp(session); }
+  else { showGateway(); }
+})();
 // 스플래시 로고 화면 잠깐 보여주고 부드럽게 사라짐
 // 새로고침(당겨서새로고침 포함)으로 들어온 건지, 처음 접속한 건지 구분해서
 // 새로고침이면 스플래시를 생략하고, 처음 접속일 때만 정상적으로 보여줌
