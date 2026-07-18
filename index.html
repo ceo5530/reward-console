@@ -11,9 +11,9 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 <style>
   :root{
-    --bg:#F2F4F6; --surface:#FFFFFF; --surface-2:#F2F4F6; --line:#EBEDF0;
+    --bg:#FFFFFF; --surface:#FFFFFF; --surface-2:#F5F5F5; --line:#EEEEEE;
     --text:#191F28; --muted:#8B95A1;
-    --page-bg:#F2F4F6; --page-text:#191F28; --page-muted:#8B95A1; --page-line:#EBEDF0;
+    --page-bg:#FFFFFF; --page-text:#191F28; --page-muted:#8B95A1; --page-line:#EEEEEE;
     --navy:#272058; --navy-2:#3A31A0; --amber:#3A31A0; --amber-soft:#6A5FD1;
     --ok:#12B886; --warn:#FF9500; --bad:#F04452;
     --mono:'JetBrains Mono', ui-monospace, monospace; --sans:'Pretendard', -apple-system, sans-serif;
@@ -70,10 +70,10 @@
   main{display:grid; grid-template-columns:440px 1fr; gap:24px;}
   @media(max-width:1000px){ main{grid-template-columns:1fr;} .content-body{padding:16px 14px 40px;} }
 
-  .card{background:var(--surface); border:none; border-radius:22px; padding:28px; box-shadow:0 2px 20px rgba(25,31,40,0.07); color:var(--text);}
+  .card{background:var(--surface); border:1px solid var(--page-line); border-radius:16px; padding:26px; box-shadow:none; color:var(--text);}
   .card + .card{margin-top:24px;}
   .card h2{font-size:1.25rem; margin:0 0 20px; letter-spacing:-0.01em; color:var(--text); text-transform:none; display:flex; align-items:center; gap:9px; font-weight:800;}
-  .card h2 .n{font-family:var(--mono); color:var(--muted); font-size:0.68rem; font-weight:600; background:var(--bg); padding:2px 8px; border-radius:6px; letter-spacing:0;}
+  .card h2 .n{font-family:var(--mono); color:var(--muted); font-size:0.68rem; font-weight:600; background:var(--surface-2); padding:2px 8px; border-radius:6px; letter-spacing:0;}
 
   label{display:block; font-size:0.88rem; color:var(--muted); margin-bottom:7px; margin-top:16px; font-weight:500;}
   label:first-of-type{margin-top:0;}
@@ -90,7 +90,7 @@
   .seg button{flex:1; padding:11px; border:none; background:none; color:var(--muted); border-radius:9px; font-weight:600; font-size:0.92rem; cursor:pointer; transition:background-color .15s ease, color .15s ease;}
   .seg button.active{background:var(--navy-2); color:#fff;}
 
-  .price-box{margin-top:18px; background:var(--bg); border:none; border-radius:16px; padding:18px 20px;}
+  .price-box{margin-top:18px; background:var(--surface-2); border:none; border-radius:16px; padding:18px 20px;}
   .price-box .row{display:flex; justify-content:space-between; align-items:baseline; padding:5px 0; font-size:0.92rem;}
   .price-box .row span:first-child{color:var(--muted);}
   .price-box .row span:last-child{font-family:var(--mono); font-weight:600;}
@@ -116,7 +116,7 @@
   .spinner{width:22px; height:22px; margin:0 auto 10px; border:2.5px solid var(--line); border-top-color:var(--navy-2); border-radius:50%; animation:spin .7s linear infinite;}
   @keyframes spin{ to{ transform:rotate(360deg); } }
   .toolbar{display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; align-items:center;}
-  .config{background:var(--bg); border:none; border-radius:16px; padding:16px; margin-top:18px;}
+  .config{background:var(--surface-2); border:none; border-radius:16px; padding:16px; margin-top:18px;}
   .config summary{cursor:pointer; font-size:0.85rem; color:var(--muted); font-weight:600;}
   .msg{font-size:0.88rem; padding:12px 14px; border-radius:10px; margin-top:14px; display:none; line-height:1.5;}
   .msg.show{display:block;}
@@ -142,16 +142,22 @@
   @keyframes hintUp{0%,100%{transform:translateY(0);opacity:0.45}50%{transform:translateY(-8px);opacity:1}}
   #gatewayScreen{position:fixed; inset:0; background:#FFFFFF; z-index:500; display:none; overflow:hidden; touch-action:none;}
   #gatewayScreen.active{display:block;}
-  #gatewayScreen::before{content:''; position:absolute; top:22%; left:47%; width:400px; height:400px; transform:translate(-50%,-50%); border-radius:50%; background:radial-gradient(circle, rgba(58,49,160,0.14), rgba(122,109,230,0.06) 55%, rgba(122,109,230,0) 75%);}
+  .gateway-glow{position:absolute; border-radius:50%; filter:blur(2px); pointer-events:none;}
+  .gateway-glow-1{top:16%; left:32%; width:280px; height:280px; background:radial-gradient(circle, rgba(58,49,160,0.16), rgba(58,49,160,0) 70%); animation:glowDrift1 9s ease-in-out infinite;}
+  .gateway-glow-2{top:26%; left:60%; width:220px; height:220px; background:radial-gradient(circle, rgba(139,127,255,0.14), rgba(139,127,255,0) 70%); animation:glowDrift2 12s ease-in-out infinite;}
+  .gateway-glow-3{top:10%; left:52%; width:160px; height:160px; background:radial-gradient(circle, rgba(183,172,255,0.18), rgba(183,172,255,0) 70%); animation:glowDrift3 7s ease-in-out infinite;}
+  @keyframes glowDrift1{0%,100%{transform:translate(0,0) scale(1);} 33%{transform:translate(30px,-20px) scale(1.15);} 66%{transform:translate(-20px,15px) scale(0.9);}}
+  @keyframes glowDrift2{0%,100%{transform:translate(0,0) scale(1);} 40%{transform:translate(-25px,20px) scale(0.85);} 70%{transform:translate(15px,-25px) scale(1.2);}}
+  @keyframes glowDrift3{0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(20px,15px) scale(1.3);}}
   .gateway-headline{position:relative; font-size:1.7rem; font-weight:800; color:var(--page-text); line-height:1.5; letter-spacing:-0.01em;}
   .gateway-sub{position:relative; font-size:0.85rem; color:#9AA0A6; margin-top:14px; font-weight:500;}
   .gateway-hint-right{position:absolute; top:50%; right:38px; transform:translateY(-50%); display:flex; flex-direction:column; align-items:center; gap:8px; cursor:pointer;}
   .gateway-hint-label{font-size:0.66rem; color:#9AA0A6; font-weight:600; letter-spacing:0.05em;}
   .gateway-hint-bottom{position:absolute; bottom:0; left:0; right:0; padding:0 24px 32px; text-align:center; cursor:pointer;}
-  .gateway-peek{position:absolute; top:14%; bottom:14%; right:0; width:26px; background:var(--bg); border-radius:18px 0 0 18px; box-shadow:-8px 0 24px rgba(20,20,45,0.10); overflow:hidden;}
+  .gateway-peek{position:absolute; top:14%; bottom:14%; right:0; width:26px; background:var(--surface-2); border-radius:18px 0 0 18px; box-shadow:-8px 0 24px rgba(20,20,45,0.10); overflow:hidden;}
 
   /* ---- 진단 챗봇 화면 ---- */
-  #diagnosticScreen{position:fixed; inset:0; background:var(--bg); z-index:500; display:none; flex-direction:column; overflow-y:auto;}
+  #diagnosticScreen{position:fixed; inset:0; background:var(--surface-2); z-index:500; display:none; flex-direction:column; overflow-y:auto;}
   #diagnosticScreen.active{display:flex;}
   .diag-header{padding:20px 22px 0;}
   .diag-chat-body{flex:1; padding:16px 22px 40px; display:flex; flex-direction:column; gap:12px;}
@@ -163,7 +169,7 @@
   .diag-choice{background:#fff; border:1.5px solid var(--page-line); color:var(--page-text); border-radius:14px; padding:13px 17px; font-size:0.9rem; font-weight:700; cursor:pointer; margin-top:8px;}
   .diag-choice:hover{border-color:var(--navy-2);}
   .diag-thumb-row{display:flex; gap:8px; margin-top:8px;}
-  .diag-thumb{width:56px;height:56px;border-radius:10px; background:var(--bg); object-fit:cover; flex-shrink:0;}
+  .diag-thumb{width:56px;height:56px;border-radius:10px; background:#fff; border:1px solid var(--page-line); object-fit:cover; flex-shrink:0;}
   .diag-trial-badge{background:#EEECFB; border-radius:16px; padding:15px 17px; display:flex; align-items:center; gap:12px; margin-top:4px;}
 
   #authScreen{min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; background:var(--surface);}
@@ -188,6 +194,10 @@
   .back-link:hover{color:var(--navy-2);}
   .switch-link{margin-top:20px; text-align:center; font-size:0.88rem; color:var(--muted);}
   .switch-link a{color:var(--navy-2); font-weight:700; text-decoration:none; cursor:pointer;}
+  .ref-promo-card{background:linear-gradient(135deg,#2E2768,#3A31A0); border-radius:16px; padding:18px 20px; margin:4px 0 18px; animation:answeredIn .4s cubic-bezier(.22,1,.36,1);}
+  .ref-promo-badge{font-size:1.4rem; margin-bottom:8px;}
+  .ref-promo-title{color:#fff; font-size:0.92rem; font-weight:800; line-height:1.4; margin-bottom:6px;}
+  .ref-promo-desc{color:rgba(255,255,255,0.7); font-size:0.78rem; line-height:1.6;}
 
   /* 답변이 위에 쌓이는 대화형 리스트 (토스 회원가입 참고) */
   #signupAnswered, #resetAnswered{margin-bottom:4px;}
@@ -221,6 +231,23 @@
 
   /* ---- 접수현황 카드 리스트 (표 대신) ---- */
   .result-list{display:flex; flex-direction:column; gap:14px;}
+  .status-list{display:flex; flex-direction:column;}
+  .status-row{display:flex; align-items:center; justify-content:space-between; gap:14px; padding:16px 6px; border-bottom:1px solid var(--page-line); cursor:pointer;}
+  .status-row:hover{background:var(--surface-2);}
+  .status-row-title{font-weight:700; font-size:0.92rem; color:var(--page-text);}
+  .status-row-sub{font-size:0.76rem; color:var(--muted); margin-top:3px;}
+  .status-row-right{display:flex; align-items:center; gap:8px; flex-shrink:0;}
+  .status-chevron{color:var(--muted); font-size:1.15rem; transition:transform .2s ease; display:inline-block;}
+  .status-row.expanded .status-chevron{transform:rotate(90deg);}
+  .status-detail{padding:0 6px 22px; border-bottom:1px solid var(--page-line); animation:answeredIn .3s ease;}
+  .dday-badge{font-size:0.7rem; font-weight:800; padding:3px 8px; border-radius:8px; white-space:nowrap;}
+  .dday-badge.soon{background:#FFF3E0; color:#B7791F;}
+  .dday-badge.normal{background:var(--surface-2); color:var(--muted);}
+  .dday-badge.done{background:var(--surface-2); color:#B0B4BC;}
+  .detail-kw-list{display:flex; flex-direction:column; gap:6px;}
+  .detail-kw-row{display:flex; justify-content:space-between; font-size:0.82rem; padding:8px 10px; background:var(--surface-2); border-radius:8px;}
+  .detail-kw-row span:first-child{color:var(--muted);}
+  .detail-kw-row span:last-child{font-weight:700; color:var(--page-text);}
   .result-card{background:var(--surface-2); border:none; border-radius:16px; padding:20px 22px;}
   .result-top{display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;}
   .result-client{font-size:1.05rem; font-weight:700;}
@@ -231,7 +258,7 @@
   .result-product{font-size:0.98rem; font-weight:600; margin-bottom:6px;}
   .result-link{font-size:0.82rem; color:var(--amber-soft); text-decoration:none;}
   .kw-tags{display:flex; flex-wrap:wrap; gap:6px; margin-top:10px;}
-  .kw-tags span{display:inline-block; background:var(--bg); border:none; border-radius:8px; padding:6px 12px; font-size:0.82rem; font-weight:500;}
+  .kw-tags span{display:inline-block; background:var(--surface-2); border:none; border-radius:8px; padding:6px 12px; font-size:0.82rem; font-weight:500;}
   .result-bottom{margin-top:14px; padding-top:14px; border-top:1px dashed var(--line); display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;}
   .result-period{font-size:0.88rem; color:var(--text);}
   .result-period .lbl{color:var(--muted); font-size:0.78rem; display:block; margin-bottom:3px;}
@@ -311,6 +338,9 @@
 
 <!-- ===================== 게이트웨이(입장) 화면 ===================== -->
 <div id="gatewayScreen">
+  <div class="gateway-glow gateway-glow-1"></div>
+  <div class="gateway-glow gateway-glow-2"></div>
+  <div class="gateway-glow gateway-glow-3"></div>
   <div style="position:relative; text-align:center; padding-top:14vh;">
     <div class="mark" style="width:40px;height:40px;border-radius:11px;background:#272058; margin:0 auto 30px; display:flex; align-items:center; justify-content:center;">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 18L12 5L20 18" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 18L12 9.5L20 18" stroke="#B7ACFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -382,6 +412,11 @@
         <button class="back-link" id="signupBack" style="display:none;">‹ 이전</button>
         <h2 class="wizard-title" id="signupQTitle"></h2>
         <p class="wizard-sub" id="signupQSub"></p>
+        <div class="ref-promo-card" id="refPromoCard" style="display:none;">
+          <div class="ref-promo-badge">🎉</div>
+          <div class="ref-promo-title">추천으로 오셨다면, 특별한 시작이에요</div>
+          <div class="ref-promo-desc">이미 저희와 함께 성장 중인 사장님이 추천해주신 거예요. 코드를 입력하면 그분과 연결돼서, 나중에 서로에게 무료 슬롯 혜택이 돌아가요.</div>
+        </div>
         <input id="signupInput" class="toss-input" type="text" />
         <button class="btn" id="signupNext">다음</button>
         <div class="switch-link" id="signupSwitchLink" style="display:none;">이미 계정이 있으신가요? <a href="#" id="gotoLoginLink">로그인</a></div>
@@ -439,7 +474,7 @@
     <div class="content-header">
       <div style="display:flex; align-items:center; gap:12px;">
         <button id="sidebarToggle" class="hamburger" aria-label="메뉴 열기">☰</button>
-        <div class="breadcrumb">홈 / <span id="breadcrumbText">접수 / 현황</span></div>
+        <div class="breadcrumb" id="breadcrumbText">홈</div>
       </div>
       <div class="ticker">
         <div><div class="lbl">접수 마감까지</div><div class="val" id="countdown">--:--:--</div></div>
@@ -470,8 +505,36 @@
         </div>
 
         <div class="home-card home-graph-card" id="homeGraphCard" style="display:none;">
-          <div class="home-graph-title">최근 30일 순위 추이</div>
-          <div style="height:160px;"><canvas id="homeRankChart"></canvas></div>
+          <div class="home-graph-title">순위는 어떻게 움직이고 있을까요?</div>
+          <div class="chart-controls">
+            <div>
+              <label>상품 선택</label>
+              <select id="home_chart_submission"></select>
+            </div>
+            <div>
+              <label>표시할 키워드 (여러 개 선택 가능)</label>
+              <div class="kw-check-group" id="home_chart_keywords"></div>
+            </div>
+            <div>
+              <label>기간</label>
+              <div class="seg" id="home_rangePresets">
+                <button data-days="7">최근 7일</button>
+                <button data-days="30" class="active">최근 30일</button>
+                <button data-days="90">최근 90일</button>
+                <button data-days="0">전체</button>
+              </div>
+            </div>
+            <div class="row2">
+              <div><label>시작일</label><input type="date" id="home_chart_start" /></div>
+              <div><label>종료일</label><input type="date" id="home_chart_end" /></div>
+            </div>
+          </div>
+          <div style="position:relative; height:260px; margin-top:20px;">
+            <canvas id="home_rankChart"></canvas>
+          </div>
+          <div class="hint" id="home_chartEmptyHint" style="display:none; text-align:center; padding:20px 0;">
+            아직 그래프로 보여줄 데이터가 부족해요. 순위조회는 6시간마다 자동으로 진행되니, 시간이 지나면 점점 채워집니다.
+          </div>
         </div>
 
         <div class="home-card" id="homeProgressCard" style="display:none;">
@@ -818,7 +881,7 @@ const SIGNUP_QUESTIONS = [
   { id:'phone',      title:'연락처를 남겨주세요',           sub:'문자로 인증번호를 보내드릴게요',         type:'text',     placeholder:'010-0000-0000' },
   { id:'verifyCode', title:'인증번호를 입력해주세요',       sub:'',                                       type:'text',     placeholder:'6자리 숫자' },
   { id:'password',   title:'비밀번호를 만들어주세요',       sub:'로그인할 때 사용할 비밀번호예요',         type:'password', placeholder:'••••••••' },
-  { id:'ref',        title:'추천받으셨나요?',               sub:'추천인 코드가 있으면 입력해주세요, 없어도 괜찮아요', type:'text', placeholder:'예: AB12CD', optional:true },
+  { id:'ref',        title:'혹시, 추천코드가 있나요?',       sub:'있으면 입력해주세요, 없어도 전혀 괜찮아요', type:'text', placeholder:'예: AB12CD', optional:true },
 ];
 let signupAnswers = {};
 let signupIndex = 0;
@@ -852,6 +915,7 @@ async function renderSignupQuestion(){
   document.getElementById('signupBack').style.display = signupIndex > 0 ? 'inline-block' : 'none';
   document.getElementById('signupSwitchLink').style.display = signupIndex === 0 ? 'block' : 'none';
   document.getElementById('signupHint').style.display = signupIndex === SIGNUP_QUESTIONS.length-1 ? 'block' : 'none';
+  document.getElementById('refPromoCard').style.display = q.id === 'ref' ? 'block' : 'none';
   document.getElementById('verifyResend').style.display = q.id === 'verifyCode' ? 'block' : 'none';
   document.getElementById('signupNext').textContent = signupIndex === SIGNUP_QUESTIONS.length-1 ? '가입하고 시작하기' : '다음';
 
@@ -1116,28 +1180,35 @@ document.getElementById('logoutBtn').addEventListener('click', async ()=>{
 });
 
 // ---------- 탭 네비게이션 ----------
-document.querySelectorAll('.navtab').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('.navtab').forEach(b=>b.classList.remove('active'));
-    // 모든 패널을 명시적으로 숨김 (인라인 style이 CSS class보다 우선순위가 높아서 꼭 여기서 꺼줘야 함)
-    document.querySelectorAll('.panel').forEach(p=>{ p.classList.remove('active'); p.style.display='none'; });
-    btn.classList.add('active');
-    const panel = document.getElementById(btn.dataset.panel);
-    panel.classList.add('active');
-    panel.style.display = (btn.dataset.panel === 'panelMain') ? 'grid' : 'block';
-    document.getElementById('breadcrumbText').textContent = btn.dataset.label || btn.textContent;
-    closeSidebar();
-    window.scrollTo({ top:0, behavior:'smooth' });
-    if(btn.dataset.panel === 'panelCoupons') renderCoupons();
-    if(btn.dataset.panel === 'panelReferrals') renderReferrals();
-    if(btn.dataset.panel === 'panelDashboard') loadDashboard();
-    if(btn.dataset.panel === 'panelHome') loadHome();
-  });
-});
-function switchToPanel(panelName){
+function switchPanelDOM(panelName){
   const btn = document.querySelector(`.navtab[data-panel="${panelName}"]`);
-  if(btn) btn.click();
+  if(!btn) return;
+  document.querySelectorAll('.navtab').forEach(b=>b.classList.remove('active'));
+  // 모든 패널을 명시적으로 숨김 (인라인 style이 CSS class보다 우선순위가 높아서 꼭 여기서 꺼줘야 함)
+  document.querySelectorAll('.panel').forEach(p=>{ p.classList.remove('active'); p.style.display='none'; });
+  btn.classList.add('active');
+  const panel = document.getElementById(panelName);
+  panel.classList.add('active');
+  panel.style.display = (panelName === 'panelMain') ? 'grid' : 'block';
+  document.getElementById('breadcrumbText').textContent = btn.dataset.label || btn.textContent;
+  closeSidebar();
+  window.scrollTo({ top:0, behavior:'smooth' });
+  if(panelName === 'panelCoupons') renderCoupons();
+  if(panelName === 'panelReferrals') renderReferrals();
+  if(panelName === 'panelDashboard') loadDashboard();
+  if(panelName === 'panelHome') loadHome();
 }
+function switchToPanel(panelName, push){
+  switchPanelDOM(panelName);
+  // 탭 이동도 히스토리에 남겨서, 뒤로가기 누르면 로그인 화면으로 바로 튕기지 않고
+  // 방금 봤던 탭으로 먼저 돌아가게 한다
+  if(push !== false){
+    history.pushState({ screen:'app', panel: panelName }, '', '#app-' + panelName);
+  }
+}
+document.querySelectorAll('.navtab').forEach(btn=>{
+  btn.addEventListener('click', ()=> switchToPanel(btn.dataset.panel));
+});
 document.getElementById('homeActionNew').addEventListener('click', ()=> switchToPanel('panelMain'));
 document.getElementById('homeActionCoupon').addEventListener('click', ()=> switchToPanel('panelCoupons'));
 
@@ -1160,14 +1231,14 @@ document.getElementById('pt_youtube').addEventListener('click', ()=>{
 // ---------- 카탈로그 로드 ----------
 async function loadCatalog(){
   const res = await apiCall('getCatalog', {});
-  if(res.ok){ CATALOG = { products: res.products, bank: res.bank }; }
+  if(res.ok && Array.isArray(res.products) && res.products.length){ CATALOG = { products: res.products, bank: res.bank }; }
   else {
-    // 폴백 (서버 미설정 시에도 폼은 볼 수 있게)
+    // 폴백 (서버 미설정/일시 오류/빈 응답이어도 폼은 볼 수 있게)
     CATALOG = { products: [
       { id:'naver_rankon', channel:'네이버', program:'랭크온', workDays:10, unitPrice:50000 },
       { id:'naver_jump', channel:'네이버', program:'점프', workDays:10, unitPrice:45000 },
       { id:'coupang_best', channel:'쿠팡', program:'베스트', workDays:30, unitPrice:30000 }
-    ], bank:{ bank:'-', account:'-', holder:'-' } };
+    ], bank: res.bank || { bank:'-', account:'-', holder:'-' } };
   }
   const sel = document.getElementById('f_product');
   sel.innerHTML = CATALOG.products.map(p=>`<option value="${p.id}">${p.channel} · ${p.program} (${p.workDays}일 / ${p.unitPrice.toLocaleString('ko-KR')}원)</option>`).join('');
@@ -1175,6 +1246,7 @@ async function loadCatalog(){
   document.getElementById('bankAcc').textContent = `${CATALOG.bank.bank} ${CATALOG.bank.account} (${CATALOG.bank.holder})`;
 }
 function updateCyclesOptions(){
+  if(!CATALOG.products || !CATALOG.products.length) return; // 카탈로그가 아직 없으면 조용히 넘어감(다음 로드 때 다시 호출됨)
   const product = CATALOG.products.find(p=>p.id===document.getElementById('f_product').value) || CATALOG.products[0];
   const maxCycles = product.workDays >= 30 ? 3 : 9;
   const sel = document.getElementById('f_cycles');
@@ -1336,6 +1408,40 @@ function statusLabel(rec){
   return {cls:'done', text:rec.status};
 }
 
+function ddayInfo(rec){
+  if(!rec.endDate) return { text:'일정 확정 전', cls:'normal' };
+  const today = new Date(); today.setHours(0,0,0,0);
+  const end = new Date(rec.endDate); end.setHours(0,0,0,0);
+  const diff = Math.round((end - today) / 86400000);
+  if(diff < 0) return { text:'종료됨', cls:'done' };
+  if(diff === 0) return { text:'오늘 마감', cls:'soon' };
+  if(diff <= 3) return { text:`D-${diff}`, cls:'soon' };
+  return { text:`D-${diff}`, cls:'normal' };
+}
+
+function buildExtendButton(rec){
+  if(rec.productType !== 'reward' || (rec.status !== 'approved' && rec.status !== 'confirmed')) return '';
+  return `<button class="btn small secondary extendBtn" data-id="${rec.id}" title="이전과 동일한 조건으로 다시 접수">🔁 연장하기</button>`;
+}
+
+// 연장하기: 이전 접수 내용을 신규접수 폼에 그대로 채워서 바로 재접수할 수 있게 한다
+function extendRecord(rec){
+  switchToPanel('panelMain'); // 홈/현황판 어디서 눌러도 접수 탭으로 이동
+  document.getElementById('pt_reward').click();
+  const product = CATALOG.products.find(p => p.channel === rec.channel && p.program === rec.program);
+  if(product) document.getElementById('f_product').value = product.id;
+  document.getElementById('f_link').value = rec.link || '';
+  const kws = Array.isArray(rec.keywords) ? rec.keywords : String(rec.keywords||'').split(',').map(k=>k.trim()).filter(Boolean);
+  [1,2,3,4,5].forEach(n => { document.getElementById('f_kw'+n).value = kws[n-1] || ''; });
+  document.getElementById('f_qty').value = rec.qty || 1;
+  document.getElementById('f_cycles').value = 1;
+  refreshPriceBox();
+  setTimeout(()=>{
+    document.getElementById('f_link').scrollIntoView({ behavior:'smooth', block:'center' });
+    showMsg('submitMsg', '이전 접수 내용을 불러왔어요. 확인하고 접수해주세요.', 'ok');
+  }, 300);
+}
+
 async function renderTable(){
   const session = await getSession();
   const wrap = document.getElementById('tableWrap');
@@ -1359,10 +1465,12 @@ async function renderTable(){
 
   if(records.length===0){ wrap.innerHTML='<div class="empty">아직 접수된 건이 없습니다.</div>'; return; }
 
-  let html = '<div class="result-list">';
+  let html = '<div class="status-list">';
   for(const rec of records){
     const st = statusLabel(rec);
     const amount = rec.productType==='reward' ? `${Number(rec.grandTotal||0).toLocaleString('ko-KR')}원` : '협의 후 안내';
+    const title = rec.productType==='reward' ? `${rec.channel} · ${rec.program} — ${rec.qty}개` : '🎥 유튜브 인터뷰 촬영';
+    const dday = rec.productType==='reward' ? ddayInfo(rec) : null;
     const approveBtn = (session.role==='admin' && rec.status==='payment_pending')
       ? `<button class="btn small approveBtn" data-id="${rec.id}">입금확인 · 승인하기</button>` : '';
 
@@ -1402,21 +1510,28 @@ async function renderTable(){
       }
     }
 
-    html += `<div class="result-card">
+    html += `
+    <div class="status-row" data-toggle="${rec.id}">
+      <div class="status-row-main">
+        <div class="status-row-title">${escapeHtml(title)}</div>
+        <div class="status-row-sub">${escapeHtml(rec.client)} · ${amount}</div>
+      </div>
+      <div class="status-row-right">
+        ${dday ? `<span class="dday-badge ${dday.cls}">${dday.text}</span>` : ''}
+        <span class="pill ${st.cls}">${st.text}</span>
+        ${buildExtendButton(rec)}
+        <span class="status-chevron">›</span>
+      </div>
+    </div>
+    <div class="status-detail" id="detail-${rec.id}" style="display:none;">
       <div class="result-top">
-        <div>
-          <div class="result-client">${escapeHtml(rec.client)}</div>
-          <div class="result-phone">${escapeHtml(rec.phone||'-')}</div>
-        </div>
+        <div><div class="result-phone">${escapeHtml(rec.phone||'-')}</div></div>
         <div class="result-amount"><span class="lbl">금액</span>${amount}</div>
       </div>
       <div class="result-mid">${midHtml}</div>
       <div class="result-bottom">
         ${bottomHtml}
-        <div style="display:flex; align-items:center; gap:10px;">
-          <span class="pill ${st.cls}">${st.text}</span>
-          ${approveBtn}
-        </div>
+        <div style="display:flex; align-items:center; gap:10px;">${approveBtn}</div>
       </div>
       ${taxHtml}
     </div>`;
@@ -1424,8 +1539,27 @@ async function renderTable(){
   html += '</div>';
   wrap.innerHTML = html;
 
+  document.querySelectorAll('.status-row').forEach(row=>{
+    row.addEventListener('click', (e)=>{
+      if(e.target.closest('.extendBtn') || e.target.closest('.approveBtn')) return; // 버튼 클릭은 펼침과 별개로 처리
+      const id = row.dataset.toggle;
+      const detail = document.getElementById('detail-'+id);
+      const willShow = detail.style.display === 'none';
+      detail.style.display = willShow ? 'block' : 'none';
+      row.classList.toggle('expanded', willShow);
+    });
+  });
+  document.querySelectorAll('.extendBtn').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const rec = records.find(r=>r.id===btn.dataset.id);
+      if(rec) extendRecord(rec);
+    });
+  });
+
   document.querySelectorAll('.approveBtn').forEach(btn=>{
-    btn.addEventListener('click', async ()=>{
+    btn.addEventListener('click', async (e)=>{
+      e.stopPropagation();
       const s = await getSession();
       btn.disabled = true; btn.textContent='처리중...';
       const res = await apiCall('approveSubmission', { token:s.token, submissionId: btn.dataset.id });
@@ -1435,13 +1569,15 @@ async function renderTable(){
   });
 
   document.querySelectorAll('.taxToggleBtn').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
       const form = document.getElementById('taxForm-'+btn.dataset.id);
       form.style.display = form.style.display==='none' ? 'block' : 'none';
     });
   });
   document.querySelectorAll('.taxSubmitBtn').forEach(btn=>{
-    btn.addEventListener('click', async ()=>{
+    btn.addEventListener('click', async (e)=>{
+      e.stopPropagation();
       const id = btn.dataset.id;
       const email = document.getElementById('taxEmail-'+id).value.trim();
       const fileInput = document.getElementById('taxFile-'+id);
@@ -1550,37 +1686,17 @@ async function loadHome(){
 
   renderHomeTicker(active);
   renderHomeHero(active);
-  renderHomeGraph(active, session);
+
+  const graphCard = document.getElementById('homeGraphCard');
+  const hasRewardData = records.some(r => r.productType === 'reward');
+  graphCard.style.display = hasRewardData ? 'block' : 'none';
+  if(hasRewardData){
+    initChartDefaultDates('home_');
+    populateChartSubmissionSelect(records, 'home_'); // 현황판과 완전히 동일한 그래프 컨트롤/로직 재사용
+  }
+
   renderHomeProgress(active[0]);
   document.getElementById('homeStatusCard').style.display = active.length ? 'flex' : 'none';
-}
-
-let homeChartInstance = null;
-async function renderHomeGraph(active, session){
-  const card = document.getElementById('homeGraphCard');
-  if(!active.length){ card.style.display = 'none'; return; }
-  const rec = active[0];
-  const res = await apiCall('getRankHistory', { token: session.token, submissionId: rec.id });
-  const points = (res.ok && res.history ? res.history : [])
-    .filter(h => (h.subject||'me')==='me' && h.rank && !isNaN(Number(h.rank)))
-    .map(h => ({ x: h.checkedAt, y: Number(h.rank) }));
-  if(points.length < 2){ card.style.display = 'none'; return; }
-
-  card.style.display = 'block';
-  const ctx = document.getElementById('homeRankChart').getContext('2d');
-  if(homeChartInstance) homeChartInstance.destroy();
-  homeChartInstance = new Chart(ctx, {
-    type: 'line',
-    data: { datasets: [{ data: points, borderColor:'#191F28', backgroundColor:'rgba(25,31,40,0.04)', fill:true, borderWidth:1.6, pointRadius:0, tension:0.3 }] },
-    options: {
-      responsive:true, maintainAspectRatio:false,
-      plugins:{ legend:{ display:false } },
-      scales:{
-        x:{ type:'time', time:{ unit:'day' }, grid:{ display:false }, ticks:{ color:'#B0B4BC', font:{ size:10 }, maxTicksLimit:4 } },
-        y:{ reverse:true, grid:{ color:'#F5F5F5' }, ticks:{ color:'#B0B4BC', font:{ size:10 } } }
-      }
-    }
-  });
 }
 
 function renderHomeTicker(active){
@@ -1663,7 +1779,7 @@ function renderHomeProgress(rec){
 }
 
 // ---------- 현황판 ----------
-let rankChartInstance = null;
+const rankChartInstances = {}; // prefix별로 별도 Chart 인스턴스 보관 ('' = 현황판, 'home_' = 홈)
 const donutCharts = {};
 
 async function loadDashboard(){
@@ -1674,13 +1790,17 @@ async function loadDashboard(){
   const records = (listRes.ok ? listRes.submissions : []) || [];
   renderSlotDonuts(records);
   renderHistoryList(records);
+  initChartDefaultDates('');
+  populateChartSubmissionSelect(records, '');
+}
 
-  if(!document.getElementById('chart_start').value){
+function initChartDefaultDates(prefix){
+  const startEl = document.getElementById(prefix+'chart_start');
+  if(!startEl.value){
     const end = new Date(); const start = addDays(end, -29);
-    document.getElementById('chart_start').value = fmt(start);
-    document.getElementById('chart_end').value = fmt(end);
+    startEl.value = fmt(start);
+    document.getElementById(prefix+'chart_end').value = fmt(end);
   }
-  populateChartSubmissionSelect(records);
 }
 
 // 채널/프로그램별로 슬롯수(갯수+보너스)를 합산
@@ -1744,81 +1864,146 @@ function renderHistoryList(records){
   const wrap = document.getElementById('historyListWrap');
   if(records.length===0){ wrap.innerHTML='<div class="empty">아직 접수 내역이 없습니다.</div>'; return; }
   const sorted = [...records].sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
-  wrap.innerHTML = '<div class="result-list">' + sorted.map(rec=>{
+
+  let html = '<div class="status-list">';
+  sorted.forEach(rec=>{
     const st = statusLabel(rec);
     const title = rec.productType==='reward' ? `${rec.channel} · ${rec.program} — ${rec.qty}개` : '🎥 유튜브 인터뷰 촬영';
     const amount = rec.productType==='reward' ? `${Number(rec.grandTotal||0).toLocaleString('ko-KR')}원` : '협의 후 안내';
-    return `<div class="result-card" style="padding:16px 18px;">
-      <div class="result-top">
-        <div>
-          <div class="result-client" style="font-size:1rem;">${escapeHtml(title)}</div>
-          <div class="result-phone">${prettyDate(fmt(new Date(rec.createdAt)))} 접수 · ${escapeHtml(rec.client)}</div>
-        </div>
-        <div class="result-amount" style="font-size:1rem;"><span class="lbl">금액</span>${amount}</div>
+    const dday = rec.productType==='reward' ? ddayInfo(rec) : null;
+
+    let detailHtml;
+    if(rec.productType === 'reward'){
+      let ranks = {};
+      try{ ranks = rec.ranksJson ? JSON.parse(rec.ranksJson) : {}; }catch(e){}
+      const kws = Array.isArray(rec.keywords) ? rec.keywords : String(rec.keywords||'').split(',').map(k=>k.trim()).filter(Boolean);
+      const kwRows = kws.map(k=>{
+        const r = ranks[k];
+        const rankText = (r && typeof r.rank === 'number') ? `${r.rank}위` : (r ? r.rank : '조회중');
+        return `<div class="detail-kw-row"><span>${escapeHtml(k)}</span><span>${escapeHtml(String(rankText))}</span></div>`;
+      }).join('');
+      const compCount = String(rec.competitorLinks||'').split(',').map(s=>s.trim()).filter(Boolean).length;
+      detailHtml = `
+        <div class="result-phone" style="margin-bottom:10px;">${prettyDate(fmt(new Date(rec.createdAt)))} 접수 · ${escapeHtml(rec.client)}</div>
+        <div class="detail-kw-list">${kwRows || '<div class="empty-mini">등록된 키워드가 없어요</div>'}</div>
+        ${compCount ? `<div class="hint" style="margin-top:8px;">경쟁사 ${compCount}개 함께 추적중 · 아래 그래프에서 점선으로 표시돼요</div>` : ''}
+        <a class="result-link" href="${escapeHtml(rec.link)}" target="_blank" style="margin-top:8px; display:inline-block;">상품링크 열기 ↗</a>`;
+    } else {
+      detailHtml = `<div class="result-yt-meta">📍 ${escapeHtml(rec.location||'장소 미정')}<br/>${escapeHtml(rec.notes||'')}</div>`;
+    }
+
+    html += `
+    <div class="status-row" data-toggle="hist-${rec.id}" data-hist-id="${rec.id}">
+      <div class="status-row-main">
+        <div class="status-row-title">${escapeHtml(title)}</div>
+        <div class="status-row-sub">${escapeHtml(rec.client)} · ${amount}</div>
       </div>
-      <div style="margin-top:12px;"><span class="pill ${st.cls}">${st.text}</span></div>
-    </div>`;
-  }).join('') + '</div>';
+      <div class="status-row-right">
+        ${dday ? `<span class="dday-badge ${dday.cls}">${dday.text}</span>` : ''}
+        <span class="pill ${st.cls}">${st.text}</span>
+        ${buildExtendButton(rec)}
+        <span class="status-chevron">›</span>
+      </div>
+    </div>
+    <div class="status-detail" id="detail-hist-${rec.id}" style="display:none;">${detailHtml}</div>`;
+  });
+  html += '</div>';
+  wrap.innerHTML = html;
+
+  document.querySelectorAll('#historyListWrap .status-row').forEach(row=>{
+    row.addEventListener('click', (e)=>{
+      if(e.target.closest('.extendBtn')) return;
+      const key = row.dataset.toggle;
+      const detail = document.getElementById('detail-'+key);
+      const willShow = detail.style.display === 'none';
+      // 아코디언처럼 한 번에 하나만 펼쳐지게
+      document.querySelectorAll('#historyListWrap .status-detail').forEach(d=>d.style.display='none');
+      document.querySelectorAll('#historyListWrap .status-row').forEach(r=>r.classList.remove('expanded'));
+      if(willShow){ detail.style.display='block'; row.classList.add('expanded'); }
+
+      // 클릭한 상품에 맞게 위쪽 그래프도 자동으로 그 상품 기준으로 갱신
+      const recId = row.dataset.histId;
+      const sel = document.getElementById('chart_submission');
+      if(recId && sel.querySelector(`option[value="${recId}"]`)){
+        sel.value = recId;
+        const rec = (sel._recordsCache||[]).find(r=>r.id===recId);
+        updateKeywordCheckboxes(rec, '');
+        fetchAndRenderChart('');
+        document.getElementById('rankChart').scrollIntoView({ behavior:'smooth', block:'center' });
+      }
+    });
+  });
+  document.querySelectorAll('#historyListWrap .extendBtn').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const rec = sorted.find(r=>r.id===btn.dataset.id);
+      if(rec) extendRecord(rec);
+    });
+  });
 }
 
-function populateChartSubmissionSelect(records){
+// prefix: '' = 현황판, 'home_' = 홈. 컨트롤 구조가 완전히 동일해서 이 함수 하나로 둘 다 처리
+function populateChartSubmissionSelect(records, prefix){
   const rewardRecords = records.filter(r => r.productType === 'reward');
-  const sel = document.getElementById('chart_submission');
+  const sel = document.getElementById(prefix+'chart_submission');
   if(rewardRecords.length === 0){
     sel.innerHTML = '<option value="">순위 추적 대상이 없어요</option>';
-    document.getElementById('chart_keywords').innerHTML = '';
-    renderEmptyChart();
+    document.getElementById(prefix+'chart_keywords').innerHTML = '';
+    renderEmptyChart(prefix);
     return;
   }
   sel.innerHTML = rewardRecords.map(r =>
     `<option value="${r.id}">${escapeHtml(r.client)} · ${escapeHtml(r.channel)}/${escapeHtml(r.program)} (${prettyDate(r.acceptDate || fmt(new Date(r.createdAt)))} 접수)</option>`
   ).join('');
   sel._recordsCache = rewardRecords;
-  updateKeywordCheckboxes(rewardRecords[0]);
-  fetchAndRenderChart();
+  updateKeywordCheckboxes(rewardRecords[0], prefix);
+  fetchAndRenderChart(prefix);
 }
 
-function updateKeywordCheckboxes(rec){
-  const wrap = document.getElementById('chart_keywords');
+function updateKeywordCheckboxes(rec, prefix){
+  const wrap = document.getElementById(prefix+'chart_keywords');
   if(!rec){ wrap.innerHTML = ''; return; }
   const kws = Array.isArray(rec.keywords) ? rec.keywords : String(rec.keywords||'').split(',').map(k=>k.trim()).filter(Boolean);
   wrap.innerHTML = kws.map(k => `<label><input type="checkbox" value="${escapeHtml(k)}" checked/> ${escapeHtml(k)}</label>`).join('');
 }
 
-document.getElementById('chart_submission').addEventListener('change', (e)=>{
-  const records = e.target._recordsCache || [];
-  const rec = records.find(r => r.id === e.target.value);
-  updateKeywordCheckboxes(rec);
-  fetchAndRenderChart();
-});
-document.getElementById('chart_keywords').addEventListener('change', fetchAndRenderChart);
-document.querySelectorAll('#rangePresets button').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('#rangePresets button').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    const days = parseInt(btn.dataset.days, 10);
-    const end = new Date();
-    const start = days === 0 ? new Date(2020,0,1) : addDays(end, -(days-1));
-    document.getElementById('chart_start').value = fmt(start);
-    document.getElementById('chart_end').value = fmt(end);
-    fetchAndRenderChart();
+// 현황판(prefix='')과 홈(prefix='home_') 양쪽 컨트롤에 동일하게 이벤트 연결
+['', 'home_'].forEach(prefix=>{
+  document.getElementById(prefix+'chart_submission').addEventListener('change', (e)=>{
+    const records = e.target._recordsCache || [];
+    const rec = records.find(r => r.id === e.target.value);
+    updateKeywordCheckboxes(rec, prefix);
+    fetchAndRenderChart(prefix);
   });
+  document.getElementById(prefix+'chart_keywords').addEventListener('change', ()=>fetchAndRenderChart(prefix));
+  document.querySelectorAll(`#${prefix}rangePresets button`).forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll(`#${prefix}rangePresets button`).forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const days = parseInt(btn.dataset.days, 10);
+      const end = new Date();
+      const start = days === 0 ? new Date(2020,0,1) : addDays(end, -(days-1));
+      document.getElementById(prefix+'chart_start').value = fmt(start);
+      document.getElementById(prefix+'chart_end').value = fmt(end);
+      fetchAndRenderChart(prefix);
+    });
+  });
+  document.getElementById(prefix+'chart_start').addEventListener('change', ()=>fetchAndRenderChart(prefix));
+  document.getElementById(prefix+'chart_end').addEventListener('change', ()=>fetchAndRenderChart(prefix));
 });
-document.getElementById('chart_start').addEventListener('change', fetchAndRenderChart);
-document.getElementById('chart_end').addEventListener('change', fetchAndRenderChart);
-document.getElementById('chartSearchBtn').addEventListener('click', fetchAndRenderChart);
+document.getElementById('chartSearchBtn').addEventListener('click', ()=>fetchAndRenderChart(''));
 
-async function fetchAndRenderChart(){
+async function fetchAndRenderChart(prefix){
   const session = await getSession();
   if(!session) return;
-  const submissionId = document.getElementById('chart_submission').value;
-  if(!submissionId){ renderEmptyChart(); return; }
-  const selectedKeywords = Array.from(document.querySelectorAll('#chart_keywords input:checked')).map(i=>i.value);
-  const startDate = document.getElementById('chart_start').value;
-  const endDate = document.getElementById('chart_end').value;
+  const submissionId = document.getElementById(prefix+'chart_submission').value;
+  if(!submissionId){ renderEmptyChart(prefix); return; }
+  const selectedKeywords = Array.from(document.querySelectorAll(`#${prefix}chart_keywords input:checked`)).map(i=>i.value);
+  const startDate = document.getElementById(prefix+'chart_start').value;
+  const endDate = document.getElementById(prefix+'chart_end').value;
 
   const res = await apiCall('getRankHistory', { token: session.token, submissionId, startDate, endDate });
-  if(!res.ok || !res.history || res.history.length === 0){ renderEmptyChart(); return; }
+  if(!res.ok || !res.history || res.history.length === 0){ renderEmptyChart(prefix); return; }
 
   // 키워드별 -> 대상(내 상품 / 경쟁사 A,B,C)별로 그룹핑
   const grouped = {};
@@ -1832,8 +2017,8 @@ async function fetchAndRenderChart(){
   });
 
   const keywordList = Object.keys(grouped);
-  document.getElementById('chartEmptyHint').style.display = keywordList.length ? 'none' : 'block';
-  if(keywordList.length === 0){ if(rankChartInstance){ rankChartInstance.destroy(); rankChartInstance=null; } return; }
+  document.getElementById(prefix+'chartEmptyHint').style.display = keywordList.length ? 'none' : 'block';
+  if(keywordList.length === 0){ if(rankChartInstances[prefix]){ rankChartInstances[prefix].destroy(); rankChartInstances[prefix]=null; } return; }
 
   const palette = ['#3A31A0','#8B7FFF','#12B886','#FF9500','#F04452'];
   const dashBySubject = { me:[], comp1:[6,4], comp2:[2,3], comp3:[1,3] };
@@ -1853,9 +2038,9 @@ async function fetchAndRenderChart(){
     });
   });
 
-  const ctx = document.getElementById('rankChart').getContext('2d');
-  if(rankChartInstance) rankChartInstance.destroy();
-  rankChartInstance = new Chart(ctx, {
+  const ctx = document.getElementById(prefix+'rankChart').getContext('2d');
+  if(rankChartInstances[prefix]) rankChartInstances[prefix].destroy();
+  rankChartInstances[prefix] = new Chart(ctx, {
     type:'line',
     data:{ datasets },
     options:{
@@ -1871,9 +2056,9 @@ async function fetchAndRenderChart(){
     }
   });
 }
-function renderEmptyChart(){
-  document.getElementById('chartEmptyHint').style.display = 'block';
-  if(rankChartInstance){ rankChartInstance.destroy(); rankChartInstance = null; }
+function renderEmptyChart(prefix){
+  document.getElementById(prefix+'chartEmptyHint').style.display = 'block';
+  if(rankChartInstances[prefix]){ rankChartInstances[prefix].destroy(); rankChartInstances[prefix] = null; }
 }
 
 // ---------- 게이트웨이(입장) 화면 ----------
@@ -1913,12 +2098,14 @@ function goToScreen(screen, push){
 window.addEventListener('popstate', async (e)=>{
   const app = document.getElementById('app');
   const screen = (e.state && e.state.screen) || null;
+  const panel = e.state && e.state.panel;
 
   if(screen === 'app'){
     if(!app.classList.contains('visible')){
       const s = await getSession();
-      if(s) await enterApp(s); else goToScreen('gateway', false);
+      if(s) await enterApp(s); else { goToScreen('gateway', false); return; }
     }
+    if(panel) switchPanelDOM(panel); // 탭 이동으로 쌓인 히스토리면 그 탭으로 복원
     return;
   }
   if(screen){
