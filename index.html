@@ -262,31 +262,32 @@
   .donut-legend .empty-mini{font-size:0.8rem; color:var(--muted); text-align:center;}
 
   /* ---- 홈 화면 (연라벤더 배경 + 흰카드, 핀트 스타일 참고) ---- */
-  .home-wrap{background:#F3F1FB; min-height:100vh; padding:24px 20px 40px; display:flex; flex-direction:column; gap:14px;}
-  .home-header{display:flex; align-items:center; justify-content:space-between; margin-bottom:2px;}
-  .home-greeting{font-size:1.05rem; font-weight:800; color:#191F28;}
-  .home-sub{font-size:0.8rem; color:#9AA0A6; margin-top:3px;}
-  .home-card{background:#fff; border-radius:20px; padding:20px 18px; box-shadow:0 8px 22px rgba(90,80,160,0.09);}
-  .home-ticker-card{padding:14px 0; overflow:hidden;}
-  .home-ticker-card .ticker-track{display:flex; width:max-content; animation:tickerScroll 16s linear infinite;}
+  .home-wrap{background:#FFFFFF; min-height:100vh; padding:28px 20px 40px; display:flex; flex-direction:column; gap:22px; max-width:520px; margin:0 auto;}
+  .home-header{display:flex; align-items:center; justify-content:space-between; margin-bottom:0;}
+  .home-greeting{font-size:1.15rem; font-weight:800; color:#191F28; letter-spacing:-0.01em;}
+  .home-sub{font-size:0.78rem; color:#9AA0A6; margin-top:4px; font-weight:500;}
+  .home-card{background:#fff; border-radius:16px; padding:22px 0; border-top:1px solid #EEEEEE;}
+  .home-ticker-card{padding:16px 0; overflow:hidden; border-top:1px solid #EEEEEE;}
+  .home-ticker-card .ticker-track{display:flex; width:max-content; animation:tickerScroll 18s linear infinite;}
   @keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-  .home-tick-item{display:flex; align-items:baseline; gap:5px; white-space:nowrap; padding:0 14px;}
-  .home-hero-label{font-size:0.72rem; color:#9AA0A6; font-weight:600;}
-  .home-hero-row{display:flex; align-items:baseline; gap:10px; margin:6px 0 0;}
-  .home-hero-rank{font-size:2rem; font-weight:800; color:#191F28;}
-  .home-hero-badge{font-size:0.72rem; font-weight:800; padding:4px 9px; border-radius:8px;}
-  .home-hero-badge.up{background:#E6F9F1; color:#0D9463;}
-  .home-hero-badge.down{background:#FCEBEB; color:#E24B4A;}
-  .home-hero-badge.flat{background:#F2F4F6; color:#9AA0A6;}
-  .home-progress-note{background:#F3F1FB; border-radius:10px; padding:9px 12px; margin-top:16px; font-size:0.7rem; color:#4E5968; font-weight:600;}
-  .home-action-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
-  .home-action-card{background:#fff; border-radius:16px; padding:15px; box-shadow:0 6px 16px rgba(90,80,160,0.08); cursor:pointer;}
-  .home-action-icon{width:28px;height:28px;border-radius:9px;background:#EEECFB;display:flex;align-items:center;justify-content:center; font-size:13px;}
-  .home-action-label{font-size:0.75rem; font-weight:800; color:#191F28; margin-top:8px; line-height:1.4;}
-  .home-status-card{background:#fff; border-radius:16px; padding:13px 15px; box-shadow:0 6px 16px rgba(90,80,160,0.08); display:flex; align-items:center; gap:10px;}
-  .home-status-dot{width:22px;height:22px;border-radius:50%;background:#3A31A0;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
-  .home-status-dot div{width:5px;height:5px;border-radius:50%;background:#fff;}
-  #homeStatusText{font-size:0.7rem; color:#4E5968; font-weight:600;}
+  .home-tick-item{display:flex; align-items:baseline; gap:5px; white-space:nowrap; padding:0 16px;}
+  .home-hero-label{font-size:0.72rem; color:#9AA0A6; font-weight:600; text-transform:uppercase; letter-spacing:0.04em;}
+  .home-hero-row{display:flex; align-items:baseline; gap:10px; margin:8px 0 0;}
+  .home-hero-rank{font-size:2.6rem; font-weight:800; color:#191F28; letter-spacing:-0.02em;}
+  .home-hero-badge{font-size:0.72rem; font-weight:700; padding:3px 0;}
+  .home-hero-badge.up{color:#E0483E;}
+  .home-hero-badge.down{color:#2F6FE0;}
+  .home-hero-badge.flat{color:#9AA0A6;}
+  .home-graph-card{padding-top:22px;}
+  .home-graph-title{font-size:0.78rem; color:#9AA0A6; font-weight:600; margin-bottom:14px;}
+  .home-progress-note{color:#9AA0A6; padding:0; margin-top:16px; font-size:0.72rem; font-weight:500;}
+  .home-action-grid{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:#EEEEEE; border-top:1px solid #EEEEEE; border-radius:16px; overflow:hidden;}
+  .home-action-card{background:#fff; padding:20px 16px; cursor:pointer;}
+  .home-action-icon{width:26px;height:26px; display:flex;align-items:center;justify-content:center; color:#191F28;}
+  .home-action-label{font-size:0.78rem; font-weight:700; color:#191F28; margin-top:12px; line-height:1.4;}
+  .home-status-card{border-top:1px solid #EEEEEE; padding:16px 0; display:flex; align-items:center; gap:10px;}
+  .home-status-dot{width:8px;height:8px;border-radius:50%;background:#191F28;flex-shrink:0;}
+  #homeStatusText{font-size:0.75rem; color:#9AA0A6; font-weight:500;}
   .chart-controls{display:flex; flex-direction:column; gap:14px;}
   .kw-check-group{display:flex; flex-wrap:wrap; gap:8px;}
   .kw-check-group label{display:flex; align-items:center; gap:6px; background:var(--surface-2); border:none; border-radius:10px; padding:9px 13px; font-size:0.85rem; color:var(--text); margin:0; cursor:pointer;}
@@ -468,6 +469,11 @@
           </div>
         </div>
 
+        <div class="home-card home-graph-card" id="homeGraphCard" style="display:none;">
+          <div class="home-graph-title">최근 30일 순위 추이</div>
+          <div style="height:160px;"><canvas id="homeRankChart"></canvas></div>
+        </div>
+
         <div class="home-card" id="homeProgressCard" style="display:none;">
           <div style="font-size:0.8rem; font-weight:800; color:#191F28; margin-bottom:16px;">캠페인 진행상황</div>
           <div style="position:relative; padding:0 4px;">
@@ -480,11 +486,11 @@
 
         <div class="home-action-grid">
           <div class="home-action-card" id="homeActionNew">
-            <div class="home-action-icon">🚀</div>
+            <div class="home-action-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg></div>
             <div class="home-action-label">새 캠페인<br>시작하기</div>
           </div>
           <div class="home-action-card" id="homeActionCoupon">
-            <div class="home-action-icon">🎟️</div>
+            <div class="home-action-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 000 4v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2a2 2 0 000-4V8z"/></svg></div>
             <div class="home-action-label">쿠폰함<br>확인하기</div>
           </div>
         </div>
@@ -762,6 +768,19 @@ async function apiCall(action, payload){
     return await res.json();
   }catch(e){ return { ok:false, error:'서버 통신 실패: '+e }; }
 }
+
+// 접수내역(listSubmissions)은 홈/접수현황/현황판 세 군데에서 다 필요해서,
+// 로그인 직후처럼 짧은 시간 안에 여러 화면이 동시에 요청하면 캐시된 걸 재사용해 중복 호출을 줄인다.
+let _submissionsCache = null;
+let _submissionsCacheAt = 0;
+async function fetchSubmissionsCached(session, forceRefresh){
+  const fresh = !forceRefresh && _submissionsCache && (Date.now() - _submissionsCacheAt < 10000);
+  if(fresh) return _submissionsCache;
+  const res = await apiCall('listSubmissions', { token: session.token });
+  if(res.ok){ _submissionsCache = res; _submissionsCacheAt = Date.now(); }
+  return res;
+}
+function invalidateSubmissionsCache(){ _submissionsCache = null; }
 
 // ---------- 세션 ----------
 async function getSession(){ try{ const v = localStorage.getItem(SK_SESSION); return v?JSON.parse(v):null; }catch(e){ return null; } }
@@ -1294,6 +1313,7 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
     if(isYoutube){ ['y_phone','y_date','y_location','y_notes'].forEach(id=>document.getElementById(id).value=''); }
     else { ['f_phone','f_link','f_qty','f_kw1','f_kw2','f_kw3','f_kw4','f_kw5','f_comp1','f_comp2','f_comp3'].forEach(id=>document.getElementById(id).value=''); document.getElementById('f_coupon').value=''; refreshPriceBox(); }
     await loadCoupons();
+    invalidateSubmissionsCache();
     renderTable();
   } else showMsg('submitMsg', res.error || '접수 실패','warn');
 });
@@ -1316,7 +1336,7 @@ async function renderTable(){
   const wrap = document.getElementById('tableWrap');
   if(!session){ wrap.innerHTML='<div class="empty">로그인이 필요합니다.</div>'; return; }
   wrap.innerHTML = '<div class="empty"><div class="spinner"></div>불러오는 중...</div>';
-  const [listRes, rankRes] = await Promise.all([ apiCall('listSubmissions',{token:session.token}), apiCall('ranks',{token:session.token}) ]);
+  const [listRes, rankRes] = await Promise.all([ fetchSubmissionsCached(session), apiCall('ranks',{token:session.token}) ]);
   if(!listRes.ok){ wrap.innerHTML = `<div class="empty">${escapeHtml(listRes.error||'조회 실패')}</div>`; return; }
   const records = (listRes.submissions||[]).sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt));
   const ranksMap = (rankRes.ok && rankRes.ranks) ? rankRes.ranks : {};
@@ -1404,7 +1424,7 @@ async function renderTable(){
       const s = await getSession();
       btn.disabled = true; btn.textContent='처리중...';
       const res = await apiCall('approveSubmission', { token:s.token, submissionId: btn.dataset.id });
-      if(res.ok){ showMsg('submitMsg','승인 완료. 롤링 일정이 반영되었습니다.','ok'); renderTable(); }
+      if(res.ok){ showMsg('submitMsg','승인 완료. 롤링 일정이 반영되었습니다.','ok'); invalidateSubmissionsCache(); renderTable(); }
       else { showMsg('submitMsg', res.error||'승인 실패','warn'); btn.disabled=false; btn.textContent='입금확인 · 승인하기'; }
     });
   });
@@ -1434,7 +1454,7 @@ async function renderTable(){
         const s = await getSession();
         const res = await apiCall('requestTaxInvoice', { token:s.token, submissionId:id, invoiceEmail:email, certImageBase64:base64, certFileName:file.name, certMimeType:file.type });
         clearBusy(btn);
-        if(res.ok){ showMsg('submitMsg','세금계산서 요청이 접수됐어요.','ok'); renderTable(); }
+        if(res.ok){ showMsg('submitMsg','세금계산서 요청이 접수됐어요.','ok'); invalidateSubmissionsCache(); renderTable(); }
         else { showMsg('submitMsg', res.error||'요청 실패','warn'); }
       }catch(e){
         clearBusy(btn);
@@ -1513,7 +1533,7 @@ async function loadHome(){
   if(!session) return;
   document.getElementById('homeGreeting').textContent = `${session.companyName}님의 소식`;
 
-  const listRes = await apiCall('listSubmissions', { token: session.token });
+  const listRes = await fetchSubmissionsCached(session);
   const records = (listRes.ok ? listRes.submissions : []) || [];
   const rewardApproved = records.filter(r=> r.productType==='reward' && r.status==='approved');
   const today = fmt(new Date());
@@ -1525,8 +1545,37 @@ async function loadHome(){
 
   renderHomeTicker(active);
   renderHomeHero(active);
+  renderHomeGraph(active, session);
   renderHomeProgress(active[0]);
   document.getElementById('homeStatusCard').style.display = active.length ? 'flex' : 'none';
+}
+
+let homeChartInstance = null;
+async function renderHomeGraph(active, session){
+  const card = document.getElementById('homeGraphCard');
+  if(!active.length){ card.style.display = 'none'; return; }
+  const rec = active[0];
+  const res = await apiCall('getRankHistory', { token: session.token, submissionId: rec.id });
+  const points = (res.ok && res.history ? res.history : [])
+    .filter(h => (h.subject||'me')==='me' && h.rank && !isNaN(Number(h.rank)))
+    .map(h => ({ x: h.checkedAt, y: Number(h.rank) }));
+  if(points.length < 2){ card.style.display = 'none'; return; }
+
+  card.style.display = 'block';
+  const ctx = document.getElementById('homeRankChart').getContext('2d');
+  if(homeChartInstance) homeChartInstance.destroy();
+  homeChartInstance = new Chart(ctx, {
+    type: 'line',
+    data: { datasets: [{ data: points, borderColor:'#191F28', backgroundColor:'rgba(25,31,40,0.04)', fill:true, borderWidth:1.6, pointRadius:0, tension:0.3 }] },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ display:false } },
+      scales:{
+        x:{ type:'time', time:{ unit:'day' }, grid:{ display:false }, ticks:{ color:'#B0B4BC', font:{ size:10 }, maxTicksLimit:4 } },
+        y:{ reverse:true, grid:{ color:'#F5F5F5' }, ticks:{ color:'#B0B4BC', font:{ size:10 } } }
+      }
+    }
+  });
 }
 
 function renderHomeTicker(active){
@@ -1616,7 +1665,7 @@ async function loadDashboard(){
   const session = await getSession();
   if(!session) return;
   document.getElementById('historyListWrap').innerHTML = '<div class="empty"><div class="spinner"></div>로딩중...</div>';
-  const listRes = await apiCall('listSubmissions', { token: session.token });
+  const listRes = await fetchSubmissionsCached(session);
   const records = (listRes.ok ? listRes.submissions : []) || [];
   renderSlotDonuts(records);
   renderHistoryList(records);
