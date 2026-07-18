@@ -959,6 +959,10 @@ async function handleSignupNext(){
   const input = document.getElementById('signupInput');
   const value = input.value.trim();
   if(!q.optional && !value){ showMsg('authMsg', '입력해 주세요.', 'warn'); return; }
+  if(q.id === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)){
+    showMsg('authMsg', '이메일 형식을 확인해 주세요. (예: name@example.com)', 'warn');
+    return;
+  }
   const btn = document.getElementById('signupNext');
 
   // 연락처 입력 다음 -> 인증번호 문자 발송
