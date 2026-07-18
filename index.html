@@ -1907,22 +1907,41 @@ function goToScreen(screen, push){
     history.pushState({ screen }, '', '#' + screen);
   }
 }
-window.addEventListener('popstate', (e)=>{
-  const screen = (e.state && e.state.screen) || 'gateway';
+// 뒤로가기/앞으로가기 처리. history.state를 우선 신뢰하되,
+// 혹시 state가 비어있거나 예상 못한 상황이어도 "빈 화면"이 뜨지 않도록
+// 실제 로그인 세션 여부를 기준으로 항상 안전하게 복구한다.
+window.addEventListener('popstate', async (e)=>{
   const app = document.getElementById('app');
+  const screen = (e.state && e.state.screen) || null;
+
   if(screen === 'app'){
     if(!app.classList.contains('visible')){
-      // 뒤로갔다가 다시 앞으로가기로 돌아온 경우 - 세션 남아있으면 앱 다시 보여줌
-      getSession().then(s => { if(s) enterApp(s); });
+      const s = await getSession();
+      if(s) await enterApp(s); else goToScreen('gateway', false);
     }
     return;
   }
-  // 앱 화면에서 뒤로가기로 빠져나온 경우, 앱을 먼저 닫고 로그인 전 화면을 보여준다
-  if(app.classList.contains('visible')){
-    app.classList.remove('visible');
-    app.style.display = 'none';
+  if(screen){
+    if(app.classList.contains('visible')){ app.classList.remove('visible'); app.style.display = 'none'; }
+    goToScreen(screen, false);
+    return;
   }
-  goToScreen(screen, false); // 브라우저가 이미 이동한 거라 다시 push하지 않음
+  // state를 못 받은 경우 - 세션 있으면 앱으로, 없으면 게이트웨이로 안전하게 복구
+  const s = await getSession();
+  if(s){ if(!app.classList.contains('visible')) await enterApp(s); }
+  else {
+    if(app.classList.contains('visible')){ app.classList.remove('visible'); app.style.display = 'none'; }
+    goToScreen('gateway', false);
+  }
+});
+
+// 모바일 브라우저의 bfcache(뒤로가기 시 페이지를 새로 안 그리고 스냅샷 복원하는 기능) 대응:
+// 캐시에서 복원된 경우 화면 상태가 실제와 어긋날 수 있어, 세션 기준으로 한번 더 맞춰준다
+window.addEventListener('pageshow', async (e)=>{
+  if(!e.persisted) return; // bfcache에서 복원된 경우만 처리
+  const app = document.getElementById('app');
+  const s = await getSession();
+  if(s && !app.classList.contains('visible')) await enterApp(s);
 });
 
 function showGateway(){ goToScreen('gateway'); }
