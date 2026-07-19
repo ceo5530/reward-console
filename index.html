@@ -191,6 +191,9 @@
   .forgot-link a:hover{color:var(--navy-2);}
   .wizard-sub{font-size:0.88rem; color:var(--muted); margin:0 0 22px;}
   .back-link{display:inline-block; background:none; border:none; color:var(--muted); font-size:0.9rem; font-weight:600; padding:0; margin-bottom:18px; cursor:pointer;}
+  .wizard-nav-row{display:flex; gap:8px; margin-top:16px;}
+  .wizard-nav-row .back-btn{flex:1; background:#fff; color:var(--bad); border:1.5px solid var(--bad); box-shadow:none;}
+  .wizard-nav-row #signupNext, .wizard-nav-row #resetNext{flex:3; margin-top:0;}
   .back-link:hover{color:var(--navy-2);}
   .switch-link{margin-top:20px; text-align:center; font-size:0.88rem; color:var(--muted);}
   .switch-link a{color:var(--navy-2); font-weight:700; text-decoration:none; cursor:pointer;}
@@ -421,19 +424,20 @@
     <div id="resetForm" style="display:none;">
       <div id="resetAnswered"></div>
       <div id="resetActive">
-        <button class="back-link" id="resetBack" style="display:none;">‹ 이전</button>
         <h2 class="wizard-title" id="resetQTitle"></h2>
         <p class="wizard-sub" id="resetQSub"></p>
         <input id="resetInput" class="toss-input" type="text" />
         <div class="switch-link" id="resetResend" style="display:none;">인증번호를 못 받으셨나요? <a href="#" id="resendResetCodeLink">다시 보내기</a></div>
-        <button class="btn" id="resetNext">다음</button>
+        <div class="wizard-nav-row">
+          <button class="btn back-btn" id="resetBack" style="display:none;">‹ 이전</button>
+          <button class="btn" id="resetNext">다음</button>
+        </div>
         <div class="switch-link">생각났어요! <a href="#" id="gotoLoginFromReset">로그인으로 돌아가기</a></div>
       </div>
     </div>
     <div id="signupForm" style="display:none;">
       <div id="signupAnswered"></div>
       <div id="signupActive">
-        <button class="back-link" id="signupBack" style="display:none;">‹ 이전</button>
         <h2 class="wizard-title" id="signupQTitle"></h2>
         <p class="wizard-sub" id="signupQSub"></p>
         <div class="ref-promo-card" id="refPromoCard" style="display:none;">
@@ -442,7 +446,10 @@
           <div class="ref-promo-desc">이미 저희와 함께 성장 중인 사장님이 추천해주신 거예요. 코드를 입력하면 그분과 연결돼서, 나중에 서로에게 무료 슬롯 혜택이 돌아가요.</div>
         </div>
         <input id="signupInput" class="toss-input" type="text" />
-        <button class="btn" id="signupNext">다음</button>
+        <div class="wizard-nav-row">
+          <button class="btn back-btn" id="signupBack" style="display:none;">‹ 이전</button>
+          <button class="btn" id="signupNext">다음</button>
+        </div>
         <div class="switch-link" id="signupSwitchLink" style="display:none;">이미 계정이 있으신가요? <a href="#" id="gotoLoginLink">로그인</a></div>
         <div class="switch-link" id="verifyResend" style="display:none;">인증번호를 못 받으셨나요? <a href="#" id="resendCodeLink">다시 보내기</a></div>
         <div class="hint" id="signupHint" style="display:none; text-align:center;">가입 즉시 고객 권한으로 로그인됩니다.</div>
