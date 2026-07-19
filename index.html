@@ -248,6 +248,29 @@
   .detail-kw-row{display:flex; justify-content:space-between; font-size:0.82rem; padding:8px 10px; background:var(--surface-2); border-radius:8px;}
   .detail-kw-row span:first-child{color:var(--muted);}
   .detail-kw-row span:last-child{font-weight:700; color:var(--page-text);}
+  .slot-pip-row{display:flex; align-items:center; flex-wrap:wrap; gap:5px; margin-top:10px;}
+  .slot-pip-label{font-size:0.72rem; color:var(--muted); font-weight:600; margin-right:4px;}
+  .slot-pip{width:14px; height:14px; border-radius:4px; display:inline-block;}
+  .slot-pip.base{background:var(--navy-2);}
+  .slot-pip.bonus{background:var(--ok);}
+  .auto-kw-card{background:var(--surface-2); border-radius:14px; padding:16px 18px; margin-bottom:16px;}
+  .auto-kw-title{font-size:0.82rem; font-weight:700; color:var(--page-text); line-height:1.5;}
+  .auto-kw-picked{font-size:1.1rem; font-weight:800; color:var(--navy-2); margin-top:10px;}
+  .auto-kw-meta{font-size:0.76rem; color:var(--muted); margin-top:4px;}
+  .auto-kw-more{font-size:0.76rem; color:var(--muted); text-decoration:underline; display:inline-block; margin-top:8px; cursor:pointer;}
+  .auto-kw-candidates{display:flex; flex-direction:column; gap:6px; margin-top:10px;}
+  .auto-kw-cand-row{display:flex; justify-content:space-between; align-items:center; background:#fff; border-radius:8px; padding:8px 12px; font-size:0.78rem; cursor:pointer;}
+  .auto-kw-cand-row:hover{background:var(--navy-2); color:#fff;}
+  .auto-kw-cand-row span:last-child{color:var(--muted); font-size:0.72rem;}
+  .auto-kw-cand-row:hover span{color:#fff;}
+  .admin-stat-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .admin-stat{background:var(--surface-2); border-radius:14px; padding:18px;}
+  .admin-stat-n{font-size:1.6rem; font-weight:800; color:var(--page-text);}
+  .admin-stat-l{font-size:0.76rem; color:var(--muted); margin-top:4px;}
+  .admin-list-row{display:flex; justify-content:space-between; align-items:center; gap:12px; padding:13px 4px; border-bottom:1px solid var(--page-line);}
+  .admin-list-row:last-child{border-bottom:none;}
+  .admin-list-main{font-size:0.86rem; font-weight:700; color:var(--page-text);}
+  .admin-list-sub{font-size:0.76rem; color:var(--muted); margin-top:3px;}
   .result-card{background:var(--surface-2); border:none; border-radius:16px; padding:20px 22px;}
   .result-top{display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;}
   .result-client{font-size:1.05rem; font-weight:700;}
@@ -465,6 +488,7 @@
       <button class="navtab" data-panel="panelMain" data-label="접수 / 현황">📝 접수 / 현황</button>
       <button class="navtab" data-panel="panelDashboard" data-label="내 현황판">📊 내 현황판</button>
       <button class="navtab" data-panel="panelCoupons" data-label="보유 쿠폰함">🎟 보유 쿠폰함</button>
+      <button class="navtab admin-only" data-panel="panelAdmin" data-label="관리자 대시보드" style="display:none;">🛠 관리자 대시보드</button>
       <button class="navtab admin-only" data-panel="panelReferrals" data-label="추천 현황" style="display:none;">👥 추천 현황(관리자)</button>
     </nav>
     <div class="sidebar-foot"><button id="logoutBtn">로그아웃</button></div>
@@ -592,11 +616,24 @@
         <div><label>회차</label><select id="f_cycles"></select></div>
       </div>
 
-      <label>어떤 키워드로 순위를 올려드릴까요?</label>
-      <div class="kw-grid">
-        <input id="f_kw1" type="text" placeholder="키워드 1" /><input id="f_kw2" type="text" placeholder="키워드 2" />
-        <input id="f_kw3" type="text" placeholder="키워드 3" /><input id="f_kw4" type="text" placeholder="키워드 4" />
-        <input id="f_kw5" type="text" placeholder="키워드 5" />
+      <div id="autoKeywordBlock" class="auto-kw-card" style="display:none;">
+        <div class="auto-kw-title">🎯 랭크온은 AI가 검색량 가장 높은 키워드를 자동으로 찾아드려요</div>
+        <div id="autoKeywordResult" style="display:none;">
+          <div class="auto-kw-picked" id="autoKeywordPicked">-</div>
+          <div class="auto-kw-meta" id="autoKeywordMeta">-</div>
+          <a href="#" id="autoKeywordShowMore" class="auto-kw-more">다른 후보도 보기</a>
+          <div id="autoKeywordCandidates" class="auto-kw-candidates" style="display:none;"></div>
+        </div>
+        <button class="btn small secondary" id="autoKeywordBtn" style="margin-top:10px;">상품 링크로 키워드 찾기</button>
+      </div>
+
+      <div id="manualKeywordBlock">
+        <label>어떤 키워드로 순위를 올려드릴까요?</label>
+        <div class="kw-grid">
+          <input id="f_kw1" type="text" placeholder="키워드 1" /><input id="f_kw2" type="text" placeholder="키워드 2" />
+          <input id="f_kw3" type="text" placeholder="키워드 3" /><input id="f_kw4" type="text" placeholder="키워드 4" />
+          <input id="f_kw5" type="text" placeholder="키워드 5" />
+        </div>
       </div>
 
       <label>경쟁사 상품도 같이 추적할까요? (선택, 최대 3개)</label>
@@ -635,7 +672,7 @@
       <div class="hint">가격은 협의 후 안내드립니다. 접수 후 담당자가 별도 연락드려요.</div>
     </div>
 
-    <button class="btn" id="submitBtn">접수 신청</button>
+    <button class="btn" id="submitBtn">순위 올림 시작</button>
     <div class="msg" id="submitMsg"></div>
     <div class="bank-banner" id="bankBanner" style="display:none;">
       <strong>💳 입금 계좌 안내</strong>
@@ -725,6 +762,28 @@
       <h2><span class="n">03</span> 받은 혜택이 있어요</h2>
       <div id="couponListWrap"><div class="empty"><div class="spinner"></div>로딩중...</div></div>
       <div class="hint" style="margin-top:14px;">추천으로 가입시킨 업체가 결제+승인까지 완료하면, 관리자가 확인 후 쿠폰을 지급해 드려요. 3+1 쿠폰은 3개 이상, 5+2 쿠폰은 5개 이상 주문 시 접수 폼에서 바로 적용할 수 있어요.</div>
+    </div>
+  </div>
+</div>
+
+<div id="panelAdmin" class="panel">
+  <div class="dash-wrap">
+    <div class="card">
+      <h2><span class="n">A1</span> 오늘 한눈에</h2>
+      <div class="admin-stat-grid" id="adminStatGrid">
+        <div class="admin-stat"><div class="admin-stat-n" id="statPending">-</div><div class="admin-stat-l">승인 대기</div></div>
+        <div class="admin-stat"><div class="admin-stat-n" id="statExpiring">-</div><div class="admin-stat-l">이번주 만료 예정</div></div>
+        <div class="admin-stat"><div class="admin-stat-n" id="statRevenue">-</div><div class="admin-stat-l">이번달 매출(승인건)</div></div>
+        <div class="admin-stat"><div class="admin-stat-n" id="statLeads">-</div><div class="admin-stat-l">이번주 무료진단 리드</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2><span class="n">A2</span> 진단만 받고 간 잠재고객</h2>
+      <div id="adminLeadsWrap"><div class="empty"><div class="spinner"></div>로딩중...</div></div>
+    </div>
+    <div class="card">
+      <h2><span class="n">A3</span> 세금계산서 요청</h2>
+      <div id="adminTaxWrap"><div class="empty"><div class="spinner"></div>로딩중...</div></div>
     </div>
   </div>
 </div>
@@ -1200,6 +1259,7 @@ function switchPanelDOM(panelName){
   if(panelName === 'panelCoupons') renderCoupons();
   if(panelName === 'panelReferrals') renderReferrals();
   if(panelName === 'panelDashboard') loadDashboard();
+  if(panelName === 'panelAdmin') loadAdmin();
   if(panelName === 'panelHome') loadHome();
 }
 function switchToPanel(panelName, push){
@@ -1226,10 +1286,12 @@ document.getElementById('sidebarBackdrop').addEventListener('click', closeSideba
 document.getElementById('pt_reward').addEventListener('click', ()=>{
   document.getElementById('pt_reward').classList.add('active'); document.getElementById('pt_youtube').classList.remove('active');
   document.getElementById('rewardForm').style.display='block'; document.getElementById('youtubeForm').style.display='none';
+  document.getElementById('submitBtn').textContent = '순위 올림 시작';
 });
 document.getElementById('pt_youtube').addEventListener('click', ()=>{
   document.getElementById('pt_youtube').classList.add('active'); document.getElementById('pt_reward').classList.remove('active');
   document.getElementById('youtubeForm').style.display='block'; document.getElementById('rewardForm').style.display='none';
+  document.getElementById('submitBtn').textContent = 'PR영상 제작 시작';
 });
 
 // ---------- 카탈로그 로드 ----------
@@ -1257,9 +1319,49 @@ function updateCyclesOptions(){
   sel.innerHTML = '';
   for(let c=1;c<=maxCycles;c++){ sel.innerHTML += `<option value="${c}">${c}회차 · ${c*product.workDays}일</option>`; }
   refreshPriceBox();
+  toggleKeywordMode(product);
+}
+function toggleKeywordMode(product){
+  const isAuto = product && product.id === 'naver_rankon'; // 랭크온만 AI 자동추천, 나머지는 직접 선택/입력
+  document.getElementById('autoKeywordBlock').style.display = isAuto ? 'block' : 'none';
+  document.getElementById('manualKeywordBlock').style.display = isAuto ? 'none' : 'block';
 }
 document.getElementById('f_product').addEventListener('change', updateCyclesOptions);
 ['f_qty','f_cycles'].forEach(id=>document.getElementById(id).addEventListener('input', ()=>{ refreshPriceBox(); refreshCouponOptions(); }));
+
+// ---------- 랭크온 키워드 자동추천 ----------
+document.getElementById('autoKeywordBtn').addEventListener('click', async ()=>{
+  const link = document.getElementById('f_link').value.trim();
+  if(!link){ showMsg('submitMsg', '상품 링크를 먼저 입력해 주세요.', 'warn'); return; }
+  const btn = document.getElementById('autoKeywordBtn');
+  setBusy(btn, '키워드 찾는 중...');
+  const res = await apiCall('suggestKeyword', { link });
+  clearBusy(btn);
+  if(!res.ok){ showMsg('submitMsg', res.error || '키워드 추천에 실패했어요.', 'warn'); return; }
+  applyAutoKeyword(res.best);
+  document.getElementById('autoKeywordResult').style.display = 'block';
+  const candWrap = document.getElementById('autoKeywordCandidates');
+  candWrap.innerHTML = res.candidates.map(c =>
+    `<div class="auto-kw-cand-row" data-kw="${escapeHtml(c.keyword)}" data-vol="${c.volume}" data-comp="${escapeHtml(c.compIdx)}">
+      <span>${escapeHtml(c.keyword)}</span><span>월 ${c.volume.toLocaleString('ko-KR')}회 · 경쟁 ${escapeHtml(c.compIdx)}</span>
+    </div>`).join('');
+  document.querySelectorAll('.auto-kw-cand-row').forEach(row=>{
+    row.addEventListener('click', ()=>{
+      applyAutoKeyword({ keyword: row.dataset.kw, volume: Number(row.dataset.vol), compIdx: row.dataset.comp });
+    });
+  });
+});
+document.getElementById('autoKeywordShowMore').addEventListener('click', (e)=>{
+  e.preventDefault();
+  const el = document.getElementById('autoKeywordCandidates');
+  el.style.display = el.style.display === 'none' ? 'flex' : 'none';
+});
+function applyAutoKeyword(best){
+  document.getElementById('autoKeywordPicked').textContent = best.keyword;
+  document.getElementById('autoKeywordMeta').textContent = `월 검색량 ${best.volume.toLocaleString('ko-KR')}회 · 경쟁정도 ${best.compIdx}`;
+  document.getElementById('f_kw1').value = best.keyword; // 실제 제출은 f_kw1~5를 그대로 읽으니, 자동선택 결과를 여기에 채워둔다
+  ['f_kw2','f_kw3','f_kw4','f_kw5'].forEach(id=>document.getElementById(id).value='');
+}
 
 function refreshPriceBox(){
   const product = CATALOG.products.find(p=>p.id===document.getElementById('f_product').value);
@@ -1428,6 +1530,19 @@ function buildExtendButton(rec){
   return `<button class="btn small secondary extendBtn" data-id="${rec.id}" title="이전과 동일한 조건으로 다시 접수">🔁 연장하기</button>`;
 }
 
+// 슬롯 시각화: 기본/보너스 슬롯을 색이 다른 네모 블록으로 나란히 표시
+function buildSlotPips(rec){
+  if(rec.productType !== 'reward') return '';
+  const baseCount = Number(rec.qty || 0);
+  const bonusCount = Number(rec.bonusSlots || 0);
+  const total = baseCount + bonusCount;
+  if(total === 0) return '';
+  let pips = '';
+  for(let i=0;i<baseCount;i++) pips += `<span class="slot-pip base" title="기본 슬롯"></span>`;
+  for(let i=0;i<bonusCount;i++) pips += `<span class="slot-pip bonus" title="보너스 슬롯"></span>`;
+  return `<div class="slot-pip-row"><span class="slot-pip-label">슬롯 ${total}개</span>${pips}</div>`;
+}
+
 // 연장하기: 이전 접수 내용을 신규접수 폼에 그대로 채워서 바로 재접수할 수 있게 한다
 function extendRecord(rec){
   switchToPanel('panelMain'); // 홈/현황판 어디서 눌러도 접수 탭으로 이동
@@ -1537,6 +1652,7 @@ async function renderTable(){
         ${bottomHtml}
         <div style="display:flex; align-items:center; gap:10px;">${approveBtn}</div>
       </div>
+      ${buildSlotPips(rec)}
       ${taxHtml}
     </div>`;
   }
@@ -1636,6 +1752,58 @@ async function renderCoupons(){
 }
 
 // ---------- 추천 현황 (관리자) ----------
+async function loadAdmin(){
+  const session = await getSession();
+  if(!session || session.role !== 'admin') return;
+
+  // 통계: 이미 불러온(또는 캐시된) 전체 접수 데이터로 계산
+  const listRes = await fetchSubmissionsCached(session);
+  const records = (listRes.ok ? listRes.submissions : []) || [];
+  const today = fmt(new Date());
+  const weekLater = fmt(addDays(new Date(), 7));
+  const monthStart = today.slice(0,7); // YYYY-MM
+
+  const pendingCount = records.filter(r => r.status === 'payment_pending').length;
+  const expiringCount = records.filter(r => r.productType==='reward' && r.status==='approved' && r.endDate && r.endDate >= today && r.endDate <= weekLater).length;
+  const monthRevenue = records.filter(r => (r.status==='approved'||r.status==='confirmed') && String(r.approvedAt||'').slice(0,7)===monthStart)
+    .reduce((sum,r)=> sum + Number(r.grandTotal||0), 0);
+
+  document.getElementById('statPending').textContent = pendingCount + '건';
+  document.getElementById('statExpiring').textContent = expiringCount + '건';
+  document.getElementById('statRevenue').textContent = monthRevenue.toLocaleString('ko-KR') + '원';
+
+  // 리드 목록
+  const leadsRes = await apiCall('listLeads', { token: session.token });
+  const leads = (leadsRes.ok ? leadsRes.leads : []) || [];
+  const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate()-7);
+  document.getElementById('statLeads').textContent = leads.filter(l => new Date(l.createdAt) >= weekAgo).length + '건';
+
+  const leadsWrap = document.getElementById('adminLeadsWrap');
+  leadsWrap.innerHTML = leads.length === 0 ? '<div class="empty">아직 무료진단을 받은 잠재고객이 없어요.</div>' :
+    leads.slice(0,30).map(l => `
+      <div class="admin-list-row">
+        <div>
+          <div class="admin-list-main">${escapeHtml(l.email)}</div>
+          <div class="admin-list-sub">'${escapeHtml(l.keyword)}' 키워드 · ${escapeHtml(prettyDate(fmt(new Date(l.createdAt))))}</div>
+        </div>
+        <a class="btn small secondary" href="${escapeHtml(l.link)}" target="_blank">링크 열기</a>
+      </div>`).join('');
+
+  // 세금계산서 요청 목록
+  const taxRes = await apiCall('listTaxInvoices', { token: session.token });
+  const invoices = (taxRes.ok ? taxRes.invoices : []) || [];
+  const taxWrap = document.getElementById('adminTaxWrap');
+  taxWrap.innerHTML = invoices.length === 0 ? '<div class="empty">아직 세금계산서 요청이 없어요.</div>' :
+    invoices.slice(0,30).map(t => `
+      <div class="admin-list-row">
+        <div>
+          <div class="admin-list-main">${escapeHtml(t.client)} · ${escapeHtml(t.invoiceEmail)}</div>
+          <div class="admin-list-sub">사업자번호 ${escapeHtml(t.extractedBizNumber || '자동추출 실패, 파일 직접 확인')} · ${escapeHtml(prettyDate(fmt(new Date(t.createdAt))))}</div>
+        </div>
+        <a class="btn small secondary" href="${escapeHtml(t.certFileUrl)}" target="_blank">사업자등록증 보기</a>
+      </div>`).join('');
+}
+
 async function renderReferrals(){
   const session = await getSession();
   const wrap = document.getElementById('referralWrap');
@@ -1891,7 +2059,8 @@ function renderHistoryList(records){
         <div class="result-phone" style="margin-bottom:10px;">${prettyDate(fmt(new Date(rec.createdAt)))} 접수 · ${escapeHtml(rec.client)}</div>
         <div class="detail-kw-list">${kwRows || '<div class="empty-mini">등록된 키워드가 없어요</div>'}</div>
         ${compCount ? `<div class="hint" style="margin-top:8px;">경쟁사 ${compCount}개 함께 추적중 · 아래 그래프에서 점선으로 표시돼요</div>` : ''}
-        <a class="result-link" href="${escapeHtml(rec.link)}" target="_blank" style="margin-top:8px; display:inline-block;">상품링크 열기 ↗</a>`;
+        <a class="result-link" href="${escapeHtml(rec.link)}" target="_blank" style="margin-top:8px; display:inline-block;">상품링크 열기 ↗</a>
+        ${buildSlotPips(rec)}`;
     } else {
       detailHtml = `<div class="result-yt-meta">📍 ${escapeHtml(rec.location||'장소 미정')}<br/>${escapeHtml(rec.notes||'')}</div>`;
     }
@@ -2179,7 +2348,7 @@ function diagAppendUser(text){
   body.appendChild(div);
   body.scrollTop = body.scrollHeight;
 }
-function diagAppendInput(placeholder, onSubmit, type){
+function diagAppendInput(placeholder, onSubmit, type, validate){
   const body = document.getElementById('diagChatBody');
   const row = document.createElement('div');
   row.className = 'diag-input-row';
@@ -2189,7 +2358,16 @@ function diagAppendInput(placeholder, onSubmit, type){
   const input = row.querySelector('input');
   const btn = row.querySelector('button');
   setTimeout(()=>input.focus(), 200);
-  const submit = ()=>{ const v = input.value.trim(); if(!v) return; row.remove(); onSubmit(v); };
+  const submit = ()=>{
+    const v = input.value.trim();
+    if(!v) return;
+    if(validate){
+      const err = validate(v);
+      if(err){ showMsg('authMsg', err, 'warn'); return; }
+    }
+    row.remove();
+    onSubmit(v);
+  };
   btn.addEventListener('click', submit);
   input.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); submit(); } });
 }
@@ -2204,7 +2382,8 @@ function diagAskKeyword(){
 }
 function diagAskEmail(){
   diagAppendBot('결과를 보내드릴 이메일을 알려주세요');
-  diagAppendInput('you@company.com', (v)=>{ diagAppendUser(v); diagData.email=v; diagRunDiagnosis(); }, 'email');
+  diagAppendInput('you@company.com', (v)=>{ diagAppendUser(v); diagData.email=v; diagRunDiagnosis(); }, 'email',
+    (v)=> /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? null : '이메일 형식을 확인해 주세요. (예: name@example.com)');
 }
 // 상품명에 키워드가 포함되어 있는지, 상위권 상품들과 비교해서 인사이트 생성
 function buildTitleInsight(myTitle, keyword, top3){
