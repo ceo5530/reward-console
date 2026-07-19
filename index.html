@@ -140,7 +140,20 @@
   /* ---- 게이트웨이(입장) 화면 ---- */
   @keyframes hintLeft{0%,100%{transform:translateX(0);opacity:0.5}50%{transform:translateX(-8px);opacity:1}}
   @keyframes hintUp{0%,100%{transform:translateY(0);opacity:0.45}50%{transform:translateY(-8px);opacity:1}}
-  #gatewayScreen{position:fixed; inset:0; background:#FFFFFF; z-index:500; display:none; overflow:hidden; touch-action:none;}
+  @keyframes meshDrift{
+    0%,100%{ background-position: 0% 0%, 100% 100%, 0% 0%; }
+    50%{ background-position: 15% 10%, 85% 90%, 0% 0%; }
+  }
+  .apple-bg{
+    background:
+      radial-gradient(circle at 0% 0%, rgba(58,49,160,0.16) 0%, rgba(58,49,160,0) 45%),
+      radial-gradient(circle at 100% 100%, rgba(255,178,140,0.13) 0%, rgba(255,178,140,0) 45%),
+      linear-gradient(135deg, #F8F7FD 0%, #FFFFFF 55%, #FFFAF6 100%);
+    background-size: 160% 160%, 160% 160%, 100% 100%;
+    background-position: 0% 0%, 100% 100%, 0% 0%;
+    animation: meshDrift 10s ease-in-out infinite;
+  }
+  #gatewayScreen{position:fixed; inset:0; z-index:500; display:none; overflow:hidden; touch-action:none;}
   #gatewayScreen.active{display:block;}
   .gateway-glow{position:absolute; border-radius:50%; filter:blur(6px); pointer-events:none; mix-blend-mode:multiply;}
   .gateway-glow-1{top:14%; left:calc(50% - 210px); width:340px; height:340px; background:radial-gradient(circle, rgba(58,49,160,0.42), rgba(58,49,160,0) 70%); animation:glowDrift1 10s ease-in-out infinite;}
@@ -157,7 +170,7 @@
   .gateway-peek{position:absolute; top:14%; bottom:14%; right:0; width:26px; background:var(--surface-2); border-radius:18px 0 0 18px; box-shadow:-8px 0 24px rgba(20,20,45,0.10); overflow:hidden;}
 
   /* ---- 진단 챗봇 화면 ---- */
-  #diagnosticScreen{position:fixed; inset:0; background:var(--surface-2); z-index:500; display:none; flex-direction:column; overflow-y:auto;}
+  #diagnosticScreen{position:fixed; inset:0; z-index:500; display:none; flex-direction:column; overflow-y:auto;}
   #diagnosticScreen.active{display:flex;}
   .diag-header{padding:20px 22px 0;}
   .diag-chat-body{flex:1; padding:16px 22px 40px; display:flex; flex-direction:column; gap:12px;}
@@ -165,14 +178,14 @@
   .diag-bubble-user{align-self:flex-end; background:var(--navy-2); color:#fff; border-radius:18px 18px 4px 18px; padding:12px 16px; max-width:72%; font-size:0.9rem; animation:answeredIn .3s ease;}
   .diag-input-row{display:flex; gap:8px; margin-top:6px;}
   .diag-input-row input{flex:1;}
-  .diag-result-card{background:#fff; border-radius:18px; padding:20px; animation:answeredIn .4s cubic-bezier(.22,1,.36,1);}
+  .diag-result-card{background:rgba(255,255,255,0.65); backdrop-filter:blur(20px) saturate(160%); -webkit-backdrop-filter:blur(20px) saturate(160%); border:1px solid rgba(255,255,255,0.8); border-radius:18px; padding:20px; box-shadow:0 8px 24px rgba(58,49,160,0.08); animation:answeredIn .4s cubic-bezier(.22,1,.36,1);}
   .diag-choice{background:#fff; border:1.5px solid var(--page-line); color:var(--page-text); border-radius:14px; padding:13px 17px; font-size:0.9rem; font-weight:700; cursor:pointer; margin-top:8px;}
   .diag-choice:hover{border-color:var(--navy-2);}
   .diag-thumb-row{display:flex; gap:8px; margin-top:8px;}
   .diag-thumb{width:56px;height:56px;border-radius:10px; background:#fff; border:1px solid var(--page-line); object-fit:cover; flex-shrink:0;}
   .diag-trial-badge{background:#EEECFB; border-radius:16px; padding:15px 17px; display:flex; align-items:center; gap:12px; margin-top:4px;}
 
-  #authScreen{min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; background:var(--surface);}
+  #authScreen{min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;}
   .authcard{width:100%; max-width:440px; background:transparent; border:none; border-radius:0; padding:0; color:var(--text); box-shadow:none;}
   .authtabs{display:flex; gap:4px; background:var(--surface-2); border-radius:12px; padding:4px; margin-bottom:22px;}
   .authtabs button{flex:1; padding:11px; border:none; background:none; color:var(--muted); border-radius:9px; font-weight:600; font-size:0.95rem; cursor:pointer;}
@@ -192,15 +205,15 @@
   .wizard-sub{font-size:0.88rem; color:var(--muted); margin:0 0 22px;}
   .back-link{display:inline-block; background:none; border:none; color:var(--muted); font-size:0.9rem; font-weight:600; padding:0; margin-bottom:18px; cursor:pointer;}
   .wizard-nav-row{display:flex; gap:8px; margin-top:16px;}
-  .wizard-nav-row .back-btn{flex:1; background:#fff; color:var(--bad); border:1.5px solid var(--bad); box-shadow:none;}
+  .wizard-nav-row .back-btn{flex:1; background:#fff; color:var(--bad); border:1.5px solid var(--bad); box-shadow:none; padding:12.5px 14px;}
   .wizard-nav-row #signupNext, .wizard-nav-row #resetNext{flex:3; margin-top:0;}
   .back-link:hover{color:var(--navy-2);}
   .switch-link{margin-top:20px; text-align:center; font-size:0.88rem; color:var(--muted);}
   .switch-link a{color:var(--navy-2); font-weight:700; text-decoration:none; cursor:pointer;}
-  .ref-promo-card{background:linear-gradient(135deg,#2E2768,#3A31A0); border-radius:16px; padding:18px 20px; margin:4px 0 18px; animation:answeredIn .4s cubic-bezier(.22,1,.36,1);}
+  .ref-promo-card{background:rgba(255,255,255,0.55); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border:1px solid rgba(255,255,255,0.7); border-radius:16px; padding:18px 20px; margin:4px 0 18px; box-shadow:0 8px 24px rgba(58,49,160,0.08); animation:answeredIn .4s cubic-bezier(.22,1,.36,1);}
   .ref-promo-badge{font-size:1.4rem; margin-bottom:8px;}
-  .ref-promo-title{color:#fff; font-size:0.92rem; font-weight:800; line-height:1.4; margin-bottom:6px;}
-  .ref-promo-desc{color:rgba(255,255,255,0.7); font-size:0.78rem; line-height:1.6;}
+  .ref-promo-title{color:#191F28; font-size:0.92rem; font-weight:800; line-height:1.4; margin-bottom:6px;}
+  .ref-promo-desc{color:#4E5968; font-size:0.78rem; line-height:1.6;}
 
   /* 답변이 위에 쌓이는 대화형 리스트 (토스 회원가입 참고) */
   #signupAnswered, #resetAnswered{margin-bottom:4px;}
@@ -363,7 +376,7 @@
 </div>
 
 <!-- ===================== 게이트웨이(입장) 화면 ===================== -->
-<div id="gatewayScreen">
+<div id="gatewayScreen" class="apple-bg">
   <div class="gateway-glow gateway-glow-1"></div>
   <div class="gateway-glow gateway-glow-2"></div>
   <div class="gateway-glow gateway-glow-3"></div>
@@ -398,7 +411,7 @@
 </div>
 
 <!-- ===================== 진단 챗봇 화면 ===================== -->
-<div id="diagnosticScreen">
+<div id="diagnosticScreen" class="apple-bg">
   <div class="diag-header">
     <button class="back-link" id="diagBack" style="margin:0;">‹ 처음으로</button>
   </div>
@@ -407,7 +420,7 @@
 </div>
 
 <!-- ===================== 로그인/회원가입 ===================== -->
-<div id="authScreen">
+<div id="authScreen" class="apple-bg">
   <div class="authcard">
     <div class="auth-brand">
       <div class="mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 18L12 5L20 18" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 18L12 9.5L20 18" stroke="#B7B0E8" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/></svg></div>
