@@ -142,16 +142,16 @@
   @keyframes hintUp{0%,100%{transform:translateY(0);opacity:0.45}50%{transform:translateY(-8px);opacity:1}}
   @keyframes meshDrift{
     0%,100%{ background-position: 0% 0%, 100% 100%, 0% 0%; }
-    50%{ background-position: 15% 10%, 85% 90%, 0% 0%; }
+    50%{ background-position: 38% 30%, 62% 70%, 0% 0%; }
   }
   .apple-bg{
     background:
-      radial-gradient(circle at 0% 0%, rgba(58,49,160,0.16) 0%, rgba(58,49,160,0) 45%),
-      radial-gradient(circle at 100% 100%, rgba(255,178,140,0.13) 0%, rgba(255,178,140,0) 45%),
+      radial-gradient(circle at 0% 0%, rgba(58,49,160,0.20) 0%, rgba(58,49,160,0) 45%),
+      radial-gradient(circle at 100% 100%, rgba(255,178,140,0.16) 0%, rgba(255,178,140,0) 45%),
       linear-gradient(135deg, #F8F7FD 0%, #FFFFFF 55%, #FFFAF6 100%);
-    background-size: 160% 160%, 160% 160%, 100% 100%;
+    background-size: 220% 220%, 220% 220%, 100% 100%;
     background-position: 0% 0%, 100% 100%, 0% 0%;
-    animation: meshDrift 10s ease-in-out infinite;
+    animation: meshDrift 7s ease-in-out infinite;
   }
   #gatewayScreen{position:fixed; inset:0; z-index:500; display:none; overflow:hidden; touch-action:none;}
   #gatewayScreen.active{display:block;}
@@ -205,7 +205,7 @@
   .wizard-sub{font-size:0.88rem; color:var(--muted); margin:0 0 22px;}
   .back-link{display:inline-block; background:none; border:none; color:var(--muted); font-size:0.9rem; font-weight:600; padding:0; margin-bottom:18px; cursor:pointer;}
   .wizard-nav-row{display:flex; gap:8px; margin-top:16px;}
-  .wizard-nav-row button{height:50px; box-sizing:border-box; display:flex; align-items:center; justify-content:center; padding:0 14px;}
+  .wizard-nav-row button{height:50px; box-sizing:border-box; display:flex; align-items:center; justify-content:center; padding:0 14px; margin-top:0;}
   .wizard-nav-row .back-btn{flex:1; background:#fff; color:var(--bad); border:1.5px solid var(--bad); box-shadow:none;}
   .wizard-nav-row #signupNext, .wizard-nav-row #resetNext{flex:3; margin-top:0;}
   .back-link:hover{color:var(--navy-2);}
@@ -253,6 +253,7 @@
   .copy-hint{font-size:0.7rem; color:var(--muted); margin-top:10px; opacity:0; animation:fadeUp .4s ease 1.35s forwards; cursor:pointer;}
   .reveal-desc{font-size:0.86rem; color:#191F28; font-weight:700; line-height:1.6; text-align:center; margin-top:28px; opacity:0; animation:fadeUp 0.5s ease 1.5s forwards;}
   .benefit-box2{background:rgba(255,255,255,0.6); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border:1px solid rgba(255,255,255,0.7); border-radius:16px; padding:14px 18px; margin-top:14px; width:100%; max-width:280px; box-sizing:border-box; box-shadow:0 8px 24px rgba(58,49,160,0.08); opacity:0; animation:fadeUp 0.5s ease 1.65s forwards;}
+  .benefit-title{font-size:0.85rem; font-weight:700; color:var(--page-text); margin-bottom:10px;}
   .benefit-row{display:flex; align-items:center; gap:8px; font-size:0.82rem; color:#4E5968; padding:4px 0;}
   .benefit-row b{color:var(--navy-2);}
   .start-btn-row{margin-top:26px; opacity:0; animation:fadeUp 0.5s ease 1.8s forwards;}
@@ -479,9 +480,9 @@
         <h2 class="wizard-title" id="signupQTitle"></h2>
         <p class="wizard-sub" id="signupQSub"></p>
         <div class="ref-promo-card" id="refPromoCard" style="display:none;">
-          <div class="ref-promo-badge">🎉</div>
-          <div class="ref-promo-title">추천으로 오셨다면, 특별한 시작이에요</div>
-          <div class="ref-promo-desc">이미 저희와 함께 성장 중인 사장님이 추천해주신 거예요. 코드를 입력하면 그분과 연결돼서, 나중에 서로에게 무료 슬롯 혜택이 돌아가요.</div>
+          <div class="benefit-title">추천인 코드를 입력하면 다양한 혜택이 제공돼요</div>
+          <div class="benefit-row">🎁 슬롯 <b>3개</b> 구매 시 <b>1개 무료</b> 제공</div>
+          <div class="benefit-row">🎁 슬롯 <b>5개</b> 구매 시 <b>2개 무료</b> 제공</div>
         </div>
         <input id="signupInput" class="toss-input" type="text" />
         <div class="wizard-nav-row">
@@ -1017,7 +1018,7 @@ const SIGNUP_QUESTIONS = [
   { id:'phone',      title:'연락처를 남겨주세요',           sub:'문자로 인증번호를 보내드릴게요',         type:'text',     placeholder:'010-0000-0000' },
   { id:'verifyCode', title:'인증번호를 입력해주세요',       sub:'',                                       type:'text',     placeholder:'6자리 숫자' },
   { id:'password',   title:'비밀번호를 만들어주세요',       sub:'로그인할 때 사용할 비밀번호예요',         type:'password', placeholder:'••••••••' },
-  { id:'ref',        title:'혹시, 추천코드가 있나요?',       sub:'있으면 입력해주세요, 없어도 전혀 괜찮아요', type:'text', placeholder:'예: AB12CD', optional:true },
+  { id:'ref',        title:'혹시 추천을 해주신 분이 계신가요?',       sub:'있으면 입력해주세요, 없어도 전혀 괜찮아요', type:'text', placeholder:'예: AB12CD', optional:true },
 ];
 let signupAnswers = {};
 let signupIndex = 0;
@@ -1302,7 +1303,7 @@ function showReferralReveal(companyName, code, callback){
   };
   document.getElementById('revealStartBtn').onclick = ()=>{
     overlay.style.display = 'none';
-    callback();
+    showSuccessThen('가입 완료!', callback); // 리빌 화면 다음엔 기존 체크마크 성공 애니메이션을 거쳐서 앱으로 진입
   };
 }
 
