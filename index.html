@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
   :root{
     --bg:#FFFFFF; --surface:#FFFFFF; --surface-2:#F5F5F5; --line:#EEEEEE;
@@ -854,6 +855,7 @@
         <div class="admin-stat"><div class="admin-stat-n" id="statRevenue">-</div><div class="admin-stat-l">이번달 매출(승인건)</div></div>
         <div class="admin-stat"><div class="admin-stat-n" id="statLeads">-</div><div class="admin-stat-l">이번주 무료진단 리드</div></div>
       </div>
+      <button class="btn small secondary" id="btnExportExcel" style="margin-top:14px; width:100%;" onclick="exportAdminExcel()">📥 엑셀로 내보내기 (접수내역·리드·세금계산서)</button>
     </div>
     <div class="card">
       <h2><span class="n">A2</span> 진단만 받고 간 잠재고객</h2>
@@ -1049,7 +1051,7 @@ async function renderSignupQuestion(){
   input.value = signupAnswers[q.id] || '';
   input.style.textTransform = q.id === 'ref' ? 'uppercase' : 'none';
   input.oninput = q.id === 'phone' ? ()=>applyPhoneFormatting(input) : null;
-  document.getElementById('signupBack').style.display = signupIndex > 0 ? 'flex' : 'none';
+  document.getElementById('signupBack').style.display = signupIndex > 0 ? 'inline-block' : 'none';
   document.getElementById('signupSwitchLink').style.display = signupIndex === 0 ? 'block' : 'none';
   document.getElementById('signupHint').style.display = signupIndex === SIGNUP_QUESTIONS.length-1 ? 'block' : 'none';
   document.getElementById('refPromoCard').style.display = q.id === 'ref' ? 'block' : 'none';
@@ -1196,7 +1198,7 @@ async function renderResetQuestion(){
   document.getElementById('resetQSub').textContent = q.id === 'verifyCode' ? `${resetAnswers.phone}로 보낸 인증번호를 입력해주세요` : q.sub;
   input.type = q.type; input.placeholder = q.placeholder; input.value = '';
   input.oninput = q.id === 'phone' ? ()=>applyPhoneFormatting(input) : null;
-  document.getElementById('resetBack').style.display = resetIndex > 0 ? 'flex' : 'none';
+  document.getElementById('resetBack').style.display = resetIndex > 0 ? 'inline-block' : 'none';
   document.getElementById('resetResend').style.display = q.id === 'verifyCode' ? 'block' : 'none';
   document.getElementById('resetNext').textContent = resetIndex === RESET_QUESTIONS.length-1 ? '비밀번호 변경하기' : '다음';
 
@@ -1900,6 +1902,89 @@ async function loadAdmin(){
         </div>
         <a class="btn small secondary" href="${escapeHtml(t.certFileUrl)}" target="_blank">사업자등록증 보기</a>
       </div>`).join('');
+}
+
+// ---------- 엑셀 내보내기 (관리자) ----------
+async function exportAdminExcel(){
+  const session = await getSession();
+  if(!session || session.role !== 'admin'){ return; }
+
+  const btn = document.getElementById('btnExportExcel');
+  const originalText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = '⏳ 엑셀 생성중...';
+
+  try {
+    const [listRes, leadsRes, taxRes] = await Promise.all([
+      fetchSubmissionsCached(session, true),
+      apiCall('listLeads', { token: session.token }),
+      apiCall('listTaxInvoices', { token: session.token })
+    ]);
+
+    const records = (listRes.ok ? listRes.submissions : []) || [];
+    const leads = (leadsRes.ok ? leadsRes.leads : []) || [];
+    const invoices = (taxRes.ok ? taxRes.invoices : []) || [];
+
+    const PRODUCT_TYPE_LABEL = { reward:'리워드광고', youtube:'유튜브 촬영' };
+
+    // ---- 시트1: 접수내역 ----
+    const submissionRows = records.map(r => ({
+      '접수ID': r.id,
+      '업체명': r.client,
+      '연락처': r.phone,
+      '상품유형': PRODUCT_TYPE_LABEL[r.productType] || r.productType,
+      '채널': r.channel || '',
+      '프로그램': r.program || '',
+      '상태': statusLabel(r).text.replace(/^[⏳✅]\s*/,''),
+      '키워드': Array.isArray(r.keywords) ? r.keywords.join(', ') : (r.keywords || ''),
+      '수량': r.qty ?? '',
+      '보너스슬롯': r.bonusSlots ?? '',
+      '회차': r.cycles ?? '',
+      '공급가액': r.supplyAmount ?? '',
+      'VAT': r.vatAmount ?? '',
+      '합계금액': r.grandTotal ?? '',
+      '접수일': r.createdAt ? prettyDate(fmt(new Date(r.createdAt))) : '',
+      '승인일': r.approvedAt ? prettyDate(fmt(new Date(r.approvedAt))) : '',
+      '시작일': r.startDate || '',
+      '종료일': r.endDate || '',
+      '희망촬영일': r.requestedDate || '',
+      '촬영장소': r.location || '',
+      '비고': r.notes || ''
+    }));
+
+    // ---- 시트2: 진단리드 ----
+    const leadRows = leads.map(l => ({
+      '이메일': l.email,
+      '키워드': l.keyword,
+      '링크': l.link,
+      '접수일시': l.createdAt ? prettyDate(fmt(new Date(l.createdAt))) : ''
+    }));
+
+    // ---- 시트3: 세금계산서요청 ----
+    const taxRows = invoices.map(t => ({
+      '업체명': t.client,
+      '계산서이메일': t.invoiceEmail,
+      '사업자번호': t.extractedBizNumber || '(자동추출 실패)',
+      '요청일시': t.createdAt ? prettyDate(fmt(new Date(t.createdAt))) : '',
+      '사업자등록증': t.certFileUrl || ''
+    }));
+
+    const wb = XLSX.utils.book_new();
+    const wsSub = XLSX.utils.json_to_sheet(submissionRows);
+    const wsLead = XLSX.utils.json_to_sheet(leadRows);
+    const wsTax = XLSX.utils.json_to_sheet(taxRows);
+    XLSX.utils.book_append_sheet(wb, wsSub, '접수내역');
+    XLSX.utils.book_append_sheet(wb, wsLead, '진단리드');
+    XLSX.utils.book_append_sheet(wb, wsTax, '세금계산서요청');
+
+    const todayStr = fmt(new Date()).replace(/-/g,'');
+    XLSX.writeFile(wb, `올림컴퍼니_관리자데이터_${todayStr}.xlsx`);
+  } catch(err) {
+    alert('엑셀 생성 중 오류가 발생했어요: ' + (err && err.message ? err.message : err));
+  } finally {
+    btn.disabled = false;
+    btn.textContent = originalText;
+  }
 }
 
 async function renderReferrals(){
