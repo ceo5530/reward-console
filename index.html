@@ -1049,7 +1049,7 @@ async function renderSignupQuestion(){
   input.value = signupAnswers[q.id] || '';
   input.style.textTransform = q.id === 'ref' ? 'uppercase' : 'none';
   input.oninput = q.id === 'phone' ? ()=>applyPhoneFormatting(input) : null;
-  document.getElementById('signupBack').style.display = signupIndex > 0 ? 'inline-block' : 'none';
+  document.getElementById('signupBack').style.display = signupIndex > 0 ? 'flex' : 'none';
   document.getElementById('signupSwitchLink').style.display = signupIndex === 0 ? 'block' : 'none';
   document.getElementById('signupHint').style.display = signupIndex === SIGNUP_QUESTIONS.length-1 ? 'block' : 'none';
   document.getElementById('refPromoCard').style.display = q.id === 'ref' ? 'block' : 'none';
@@ -1196,7 +1196,7 @@ async function renderResetQuestion(){
   document.getElementById('resetQSub').textContent = q.id === 'verifyCode' ? `${resetAnswers.phone}로 보낸 인증번호를 입력해주세요` : q.sub;
   input.type = q.type; input.placeholder = q.placeholder; input.value = '';
   input.oninput = q.id === 'phone' ? ()=>applyPhoneFormatting(input) : null;
-  document.getElementById('resetBack').style.display = resetIndex > 0 ? 'inline-block' : 'none';
+  document.getElementById('resetBack').style.display = resetIndex > 0 ? 'flex' : 'none';
   document.getElementById('resetResend').style.display = q.id === 'verifyCode' ? 'block' : 'none';
   document.getElementById('resetNext').textContent = resetIndex === RESET_QUESTIONS.length-1 ? '비밀번호 변경하기' : '다음';
 
