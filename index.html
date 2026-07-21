@@ -336,6 +336,10 @@
   table{width:100%; border-collapse:collapse; font-size:0.88rem;}
   th{text-align:left; font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.04em; padding:10px 12px; border-bottom:1px solid var(--line);}
   .sortable-th:hover{color:var(--navy-2);}
+  .admin-status-tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
+  .admin-status-tab{padding:7px 14px; border-radius:20px; border:1px solid var(--line); background:#fff; font-size:0.8rem; font-weight:600; color:var(--muted); cursor:pointer;}
+  .admin-status-tab.active{background:var(--navy-2); color:#fff; border-color:var(--navy-2);}
+  .extend-badge{display:inline-block; padding:2px 8px; border-radius:10px; background:#FFEDED; color:var(--bad); font-size:0.72rem; font-weight:700; margin-left:6px;}
   td{padding:12px; border-bottom:1px solid var(--line); vertical-align:top;}
   tr:last-child td{border-bottom:none;}
   #referralWrap, #couponListWrap{overflow-x:auto;}
@@ -873,7 +877,14 @@
       </div>
     </div>
     <div class="card">
-      <h2><span class="n">A2</span> 입금확인 · 승인 대기중</h2>
+      <h2><span class="n">A2</span> 전체 접수 관리</h2>
+      <div class="admin-status-tabs">
+        <button class="admin-status-tab active" data-filter="payment_pending">결제대기</button>
+        <button class="admin-status-tab" data-filter="active">진행중</button>
+        <button class="admin-status-tab" data-filter="expiring">마감임박</button>
+        <button class="admin-status-tab" data-filter="done">종료</button>
+        <button class="admin-status-tab" data-filter="all">전체</button>
+      </div>
       <div class="toolbar">
         <label style="display:flex; align-items:center; gap:6px; font-size:0.85rem; color:var(--muted); margin:0;"><input type="checkbox" id="pendingSelectAll" style="width:auto;" /> 전체선택</label>
         <button class="btn small secondary" id="bulkApproveBtn">✅ 선택 일괄승인</button>
@@ -1592,10 +1603,17 @@ function refreshCouponOptions(){
   const usable = COUPONS_CACHE.filter(c => qty >= req_(c));
   if(COUPONS_CACHE.length===0){ wrap.style.display='none'; return; }
   wrap.style.display='block';
-  sel.innerHTML = '<option value="">사용 안 함</option>' + usable.map(c=>`<option value="${c.id}">${c.type} 쿠폰 (${req_(c)}개 이상)</option>`).join('');
+  sel.innerHTML = '<option value="">사용 안 함</option>' + usable.map(c=>`<option value="${c.id}">${couponLabel(c.type)} (${req_(c)}개 이상)</option>`).join('');
   if(usable.length===0){ sel.innerHTML += '<option disabled>주문 갯수를 늘리면 사용 가능</option>'; }
 }
 function req_(c){ return c.type==='3+1'?3 : c.type==='5+2'?5 : c.type==='trial1'?1 : 999; }
+// 쿠폰 타입 코드(trial1, 3+1, 5+2)를 사용자에게 보여줄 이름으로 변환 - "trial1이 뭐냐"는 문의 방지용
+function couponLabel(type){
+  if(type === 'trial1') return '웰컴쿠폰';
+  if(type === '3+1') return '추천인쿠폰(3+1)';
+  if(type === '5+2') return '추천인쿠폰(5+2)';
+  return type;
+}
 
 // ---------- 세션 진입 ----------
 async function enterApp(session){
@@ -1820,6 +1838,11 @@ async function renderTable(quiet){
   const session = await getSession();
   const wrap = document.getElementById('tableWrap');
   if(!session){ wrap.innerHTML='<div class="empty">로그인이 필요합니다.</div>'; return; }
+  // 관리자는 이 화면에선 접수 폼만 쓰고, 전체 접수 현황은 "관리자 대시보드"나 "업체목록"에서 확인
+  if(session.role === 'admin'){
+    wrap.innerHTML = '<div class="empty">전체 접수건 관리는 "관리자 대시보드" 또는 "업체목록" 메뉴에서 확인해 주세요.</div>';
+    return;
+  }
   // 30초 자동갱신 같은 "조용한" 재조회에서는 로딩스피너로 화면을 지워버리지 않는다 (펼쳐본 내용이 깜빡이며 사라지는 것 방지)
   if(!quiet) wrap.innerHTML = '<div class="empty"><div class="spinner"></div>불러오는 중...</div>';
   // 재렌더링 전에 지금 펼쳐져 있던 항목들을 기억해뒀다가, 다시 그린 뒤 그대로 복원한다
@@ -2049,20 +2072,38 @@ async function renderCoupons(){
   if(coupons.length===0){ wrap.innerHTML = '<div class="empty">보유한 쿠폰이 없습니다.</div>'; return; }
   wrap.innerHTML = coupons.map(c=>`
     <div class="coupon-item">
-      <span><strong>${c.type}</strong> 쿠폰 · ${req_(c)}개 이상 주문 시 사용 가능</span>
+      <span><strong>${couponLabel(c.type)}</strong> · ${req_(c)}개 이상 주문 시 사용 가능</span>
       <span class="mono" style="color:var(--muted); font-size:0.78rem;">지급일 ${c.grantedAt ? c.grantedAt.slice(0,10) : '-'}</span>
     </div>`).join('');
 }
 
 // ---------- 추천 현황 (관리자) ----------
-let pendingRecordsCache = [];
+let adminAllRecordsCache = []; // 전체 접수건 (필터탭에서 재사용)
 let pendingSortState = { key: 'createdAt', dir: 'asc' };
+let adminFilterState = 'payment_pending';
+
+function filterAdminRecords(records, filter){
+  const today = fmt(new Date());
+  const in3days = fmt(addDays(new Date(), 3));
+  if(filter === 'payment_pending') return records.filter(r => r.status === 'payment_pending');
+  if(filter === 'active') return records.filter(r => r.productType==='reward' && r.status==='approved' && (!r.endDate || r.endDate >= today));
+  if(filter === 'expiring') return records.filter(r => r.productType==='reward' && r.status==='approved' && r.endDate && r.endDate >= today && r.endDate <= in3days);
+  if(filter === 'done') return records.filter(r => (r.productType==='reward' && r.status==='approved' && r.endDate && r.endDate < today) || r.status==='confirmed');
+  return records; // all
+}
+
 function renderPendingTable(){
   const pendingWrap = document.getElementById('adminPendingWrap');
-  if(pendingRecordsCache.length === 0){ pendingWrap.innerHTML = '<div class="empty">승인 대기중인 접수건이 없어요.</div>'; return; }
+  const filtered = filterAdminRecords(adminAllRecordsCache, adminFilterState);
+  if(filtered.length === 0){ pendingWrap.innerHTML = '<div class="empty">해당하는 접수건이 없어요.</div>'; return; }
 
+  const isPendingMode = adminFilterState === 'payment_pending';
   const { key, dir } = pendingSortState;
-  const sorted = [...pendingRecordsCache].sort((a,b)=>{
+  const today = fmt(new Date());
+  const in3days = fmt(addDays(new Date(), 3));
+  const sorted = [...filtered].sort((a,b)=>{
+    // 마감임박 뷰에서는 무조건 종료일 임박한 순으로 최상단 고정 (연장계약 유도)
+    if(adminFilterState === 'expiring') return new Date(a.endDate) - new Date(b.endDate);
     let av, bv;
     if(key === 'grandTotal'){ av = Number(a.grandTotal||0); bv = Number(b.grandTotal||0); }
     else if(key === 'qty'){ av = Number(a.qty||0); bv = Number(b.qty||0); }
@@ -2073,13 +2114,10 @@ function renderPendingTable(){
     return 0;
   });
 
-  const cols = [
-    { key:'client', label:'업체명' },
-    { key:'qty', label:'슬롯갯수' },
-    { key:'grandTotal', label:'금액' },
-    { key:'createdAt', label:'접수일' },
-  ];
-  const theadHtml = '<th></th>' + cols.map(c=>{
+  const cols = isPendingMode
+    ? [{key:'client',label:'업체명'},{key:'qty',label:'슬롯갯수'},{key:'grandTotal',label:'금액'},{key:'createdAt',label:'접수일'}]
+    : [{key:'client',label:'업체명'},{key:'qty',label:'슬롯갯수'},{key:'grandTotal',label:'금액'},{key:'startDate',label:'시작일'},{key:'endDate',label:'종료일'}];
+  const theadHtml = (isPendingMode?'<th></th>':'') + cols.map(c=>{
     const arrow = pendingSortState.key===c.key ? (pendingSortState.dir==='asc'?' ▲':' ▼') : '';
     return `<th class="sortable-th" data-sort="${c.key}" style="cursor:pointer; user-select:none;">${c.label}${arrow}</th>`;
   }).join('') + '<th></th>';
@@ -2089,13 +2127,25 @@ function renderPendingTable(){
       <tbody>${sorted.map(r => {
         const title = r.productType==='reward' ? `${r.channel} · ${r.program} — ${r.qty}개` : '🎥 유튜브 인터뷰 촬영';
         const amount = r.productType==='reward' ? `${Number(r.grandTotal||0).toLocaleString('ko-KR')}원` : '협의 후 안내';
+        const isExpiringSoon = r.productType==='reward' && r.status==='approved' && r.endDate && r.endDate >= today && r.endDate <= in3days;
+        const extendBadge = isExpiringSoon ? '<span class="extend-badge">연장계약 필요</span>' : '';
+        if(isPendingMode){
+          return `<tr>
+            <td><input type="checkbox" class="pendingRowCheck" data-id="${r.id}" style="width:auto;" /></td>
+            <td>${escapeHtml(r.client)}</td>
+            <td>${escapeHtml(title)}</td>
+            <td>${amount}</td>
+            <td>${escapeHtml(prettyDate(fmt(new Date(r.createdAt))))}</td>
+            <td><button class="btn small adminApproveBtn" data-id="${r.id}">승인</button></td>
+          </tr>`;
+        }
         return `<tr>
-          <td><input type="checkbox" class="pendingRowCheck" data-id="${r.id}" style="width:auto;" /></td>
-          <td>${escapeHtml(r.client)}</td>
+          <td>${escapeHtml(r.client)}${extendBadge}</td>
           <td>${escapeHtml(title)}</td>
           <td>${amount}</td>
-          <td>${escapeHtml(prettyDate(fmt(new Date(r.createdAt))))}</td>
-          <td><button class="btn small adminApproveBtn" data-id="${r.id}">승인</button></td>
+          <td>${escapeHtml(r.startDate || '-')}</td>
+          <td>${escapeHtml(r.endDate || '-')}</td>
+          <td></td>
         </tr>`;
       }).join('')}</tbody>
     </table></div>`;
@@ -2117,7 +2167,19 @@ function renderPendingTable(){
       else { showMsg('submitMsg', res.error || '승인 실패', 'warn'); btn.disabled = false; btn.textContent = '승인'; }
     });
   });
+  // 결제대기 탭에서만 일괄처리 툴바 의미가 있으니, 다른 탭에서는 흐리게 처리
+  const toolbar = document.querySelector('#panelAdmin .toolbar');
+  if(toolbar) toolbar.style.display = isPendingMode ? 'flex' : 'none';
 }
+
+document.querySelectorAll('.admin-status-tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.admin-status-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    adminFilterState = tab.dataset.filter;
+    renderPendingTable();
+  });
+});
 
 // ---------- 진단 리드 (별도 탭, 부가 정보라 관리자 대시보드에서 분리) ----------
 async function loadLeadsPanel(){
@@ -2160,8 +2222,7 @@ async function loadAdmin(){
   document.getElementById('statRevenue').textContent = monthRevenue.toLocaleString('ko-KR') + '원';
 
   // 입금확인 · 승인 대기 목록 (표 형태 + 체크박스로 일괄승인/반려 가능)
-  const pendingRecords = records.filter(r => r.status === 'payment_pending');
-  pendingRecordsCache = pendingRecords;
+  adminAllRecordsCache = records;
   const pendingWrap = document.getElementById('adminPendingWrap');
   renderPendingTable();
   document.getElementById('exportSubmissionsBtn').onclick = ()=> exportSubmissionsToExcel(records);
@@ -2266,13 +2327,15 @@ async function loadClients(){
   if(!session || session.role !== 'admin') return;
   const listRes = await fetchSubmissionsCached(session);
   const records = (listRes.ok ? listRes.submissions : []) || [];
+  const referralsRes = await apiCall('listReferrals', { token: session.token });
+  const referredEmails = new Set(((referralsRes.ok ? referralsRes.referrals : []) || []).map(r => r.referredEmail));
 
   // 업체(이메일 기준)별로 그룹핑해서 요약치 계산
   const clientMap = {};
   const today = fmt(new Date());
   records.forEach(r=>{
     const key = r.ownerEmail || r.client;
-    if(!clientMap[key]) clientMap[key] = { client: r.client, ownerEmail: r.ownerEmail, records: [], totalRevenue: 0, activeCount: 0, lastCreatedAt: null };
+    if(!clientMap[key]) clientMap[key] = { client: r.client, ownerEmail: r.ownerEmail, records: [], totalRevenue: 0, activeCount: 0, lastCreatedAt: null, viaReferral: referredEmails.has(r.ownerEmail) };
     const g = clientMap[key];
     g.records.push(r);
     if(r.status === 'approved' || r.status === 'confirmed') g.totalRevenue += Number(r.grandTotal||0);
@@ -2318,7 +2381,7 @@ function renderClientList(clients){
 
   const rowsHtml = sorted.map((c,i) => `
     <tr class="client-row" data-idx="${i}" style="cursor:pointer;">
-      <td>${escapeHtml(c.client)}</td>
+      <td>${escapeHtml(c.client)}${c.viaReferral ? '<span class="extend-badge" style="background:#EEF0FF; color:var(--navy-2);">추천가입</span>' : ''}</td>
       <td>${c.totalRevenue.toLocaleString('ko-KR')}원</td>
       <td>${c.records.length}건</td>
       <td>${c.activeCount}건</td>
@@ -2383,6 +2446,14 @@ async function renderClientDetail(container, c){
       <div class="admin-stat"><div class="admin-stat-n">${c.activeCount}건</div><div class="admin-stat-l">진행중</div></div>
       <div class="admin-stat"><div class="admin-stat-n" style="font-size:1rem;">${c.lastCreatedAt ? prettyDate(fmt(new Date(c.lastCreatedAt))) : '-'}</div><div class="admin-stat-l">최근 접수일</div></div>
     </div>
+    <div class="toolbar" style="margin-bottom:18px;">
+      <select id="grantCouponType_${chartId}" class="toss-input" style="width:auto; margin:0;">
+        <option value="trial1">웰컴쿠폰(1슬롯)</option>
+        <option value="3+1">추천인쿠폰(3+1)</option>
+        <option value="5+2">추천인쿠폰(5+2)</option>
+      </select>
+      <button class="btn small secondary grantCouponBtn" data-email="${escapeHtml(c.ownerEmail||'')}" data-selectid="grantCouponType_${chartId}">🎁 이 업체에 쿠폰 지급</button>
+    </div>
     <div style="font-size:0.85rem; font-weight:700; margin-bottom:10px;">매출 추이</div>
     <div style="position:relative; height:200px; margin-bottom:20px;"><canvas id="${chartId}"></canvas></div>
     <div style="font-size:0.85rem; font-weight:700; margin-bottom:10px;">순위 변동 추이 (컨설팅용)</div>
@@ -2390,6 +2461,17 @@ async function renderClientDetail(container, c){
     <div style="font-size:0.85rem; font-weight:700; margin-bottom:10px;">접수 히스토리</div>
     <div style="overflow-x:auto;"><table><thead><tr><th>날짜</th><th>상품</th><th>금액</th><th>상태</th></tr></thead><tbody>${historyRows || '<tr><td colspan="4">내역 없음</td></tr>'}</tbody></table></div>
   `;
+
+  container.querySelector('.grantCouponBtn').addEventListener('click', async (e)=>{
+    e.stopPropagation();
+    const btn = e.target;
+    const type = document.getElementById(btn.dataset.selectid).value;
+    const session = await getSession();
+    btn.disabled = true; btn.textContent = '지급중...';
+    const res = await apiCall('grantCoupon', { token: session.token, ownerEmail: btn.dataset.email, type });
+    if(res.ok){ showMsg('submitMsg', '쿠폰을 지급했어요.', 'ok'); btn.textContent = '✅ 지급완료'; }
+    else { showMsg('submitMsg', res.error || '지급 실패', 'warn'); btn.disabled = false; btn.textContent = '🎁 이 업체에 쿠폰 지급'; }
+  });
 
   // 매출 그래프
   new Chart(document.getElementById(chartId).getContext('2d'), {
@@ -2444,7 +2526,7 @@ async function renderReferrals(){
       <td>
         ${r.referrerEmail ? `
         <select id="grantType_${i}" style="width:auto; display:inline-block; padding:6px;">
-          <option value="3+1">3+1</option><option value="5+2">5+2</option>
+          <option value="3+1">추천인쿠폰(3+1)</option><option value="5+2">추천인쿠폰(5+2)</option>
         </select>
         <button class="btn small grantBtn" data-email="${escapeHtml(r.referrerEmail)}" data-idx="${i}">지급</button>` : '-'}
       </td>
