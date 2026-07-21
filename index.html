@@ -335,6 +335,7 @@
   /* 관리자용 추천현황 등 남은 표는 모바일에서 가로스크롤로 보이게 */
   table{width:100%; border-collapse:collapse; font-size:0.88rem;}
   th{text-align:left; font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.04em; padding:10px 12px; border-bottom:1px solid var(--line);}
+  .sortable-th:hover{color:var(--navy-2);}
   td{padding:12px; border-bottom:1px solid var(--line); vertical-align:top;}
   tr:last-child td{border-bottom:none;}
   #referralWrap, #couponListWrap{overflow-x:auto;}
@@ -570,6 +571,8 @@
       <button class="navtab" data-panel="panelDashboard" data-label="내 현황판">📊 내 현황판</button>
       <button class="navtab" data-panel="panelCoupons" data-label="보유 쿠폰함">🎟 보유 쿠폰함</button>
       <button class="navtab admin-only" data-panel="panelAdmin" data-label="관리자 대시보드" style="display:none;">🛠 관리자 대시보드</button>
+      <button class="navtab admin-only" data-panel="panelClients" data-label="업체목록" style="display:none;">🏢 업체목록</button>
+      <button class="navtab admin-only" data-panel="panelLeads" data-label="진단 리드" style="display:none;">🔍 진단 리드</button>
       <button class="navtab admin-only" data-panel="panelReferrals" data-label="추천 현황" style="display:none;">👥 추천 현황(관리자)</button>
     </nav>
     <div class="sidebar-foot"><button id="logoutBtn">로그아웃</button></div>
@@ -870,12 +873,41 @@
       </div>
     </div>
     <div class="card">
-      <h2><span class="n">A2</span> 진단만 받고 간 잠재고객</h2>
-      <div id="adminLeadsWrap"><div class="empty"><div class="spinner"></div>로딩중...</div></div>
+      <h2><span class="n">A2</span> 입금확인 · 승인 대기중</h2>
+      <div class="toolbar">
+        <label style="display:flex; align-items:center; gap:6px; font-size:0.85rem; color:var(--muted); margin:0;"><input type="checkbox" id="pendingSelectAll" style="width:auto;" /> 전체선택</label>
+        <button class="btn small secondary" id="bulkApproveBtn">✅ 선택 일괄승인</button>
+        <button class="btn small secondary" id="bulkRejectBtn" style="color:var(--bad);">🚫 선택 일괄반려</button>
+        <button class="btn small secondary" id="exportSubmissionsBtn">⬇ 엑셀로 내보내기</button>
+      </div>
+      <div id="adminPendingWrap"><div class="empty"><div class="spinner"></div>로딩중...</div></div>
     </div>
     <div class="card">
       <h2><span class="n">A3</span> 세금계산서 요청</h2>
+      <div class="toolbar">
+        <label style="display:flex; align-items:center; gap:6px; font-size:0.85rem; color:var(--muted); margin:0;"><input type="checkbox" id="taxSelectAll" style="width:auto;" /> 전체선택</label>
+        <button class="btn small secondary" id="zipTaxCertsBtn">📦 사업자등록증 일괄 zip 다운로드</button>
+      </div>
       <div id="adminTaxWrap"><div class="empty"><div class="spinner"></div>로딩중...</div></div>
+    </div>
+  </div>
+</div>
+
+<div id="panelLeads" class="panel">
+  <div class="dash-wrap">
+    <div class="card">
+      <h2><span class="n">L1</span> 진단만 받고 간 잠재고객</h2>
+      <div id="adminLeadsWrap"><div class="empty"><div class="spinner"></div>로딩중...</div></div>
+    </div>
+  </div>
+</div>
+
+<div id="panelClients" class="panel">
+  <div class="dash-wrap">
+    <div class="card">
+      <h2><span class="n">C1</span> 업체별로 살펴보기</h2>
+      <input id="clientSearchInput" class="toss-input" type="text" placeholder="업체명으로 검색" style="margin-bottom:14px;" />
+      <div id="clientListWrap"><div class="empty"><div class="spinner"></div>로딩중...</div></div>
     </div>
   </div>
 </div>
@@ -1372,6 +1404,8 @@ function switchPanelDOM(panelName){
   if(panelName === 'panelReferrals') renderReferrals();
   if(panelName === 'panelDashboard') loadDashboard();
   if(panelName === 'panelAdmin') loadAdmin();
+  if(panelName === 'panelClients') loadClients();
+  if(panelName === 'panelLeads') loadLeadsPanel();
   if(panelName === 'panelHome') loadHome();
 }
 function switchToPanel(panelName, push){
@@ -2021,6 +2055,90 @@ async function renderCoupons(){
 }
 
 // ---------- 추천 현황 (관리자) ----------
+let pendingRecordsCache = [];
+let pendingSortState = { key: 'createdAt', dir: 'asc' };
+function renderPendingTable(){
+  const pendingWrap = document.getElementById('adminPendingWrap');
+  if(pendingRecordsCache.length === 0){ pendingWrap.innerHTML = '<div class="empty">승인 대기중인 접수건이 없어요.</div>'; return; }
+
+  const { key, dir } = pendingSortState;
+  const sorted = [...pendingRecordsCache].sort((a,b)=>{
+    let av, bv;
+    if(key === 'grandTotal'){ av = Number(a.grandTotal||0); bv = Number(b.grandTotal||0); }
+    else if(key === 'qty'){ av = Number(a.qty||0); bv = Number(b.qty||0); }
+    else if(key === 'createdAt'){ av = new Date(a.createdAt).getTime(); bv = new Date(b.createdAt).getTime(); }
+    else { av = String(a[key]||''); bv = String(b[key]||''); }
+    if(av < bv) return dir==='asc' ? -1 : 1;
+    if(av > bv) return dir==='asc' ? 1 : -1;
+    return 0;
+  });
+
+  const cols = [
+    { key:'client', label:'업체명' },
+    { key:'qty', label:'슬롯갯수' },
+    { key:'grandTotal', label:'금액' },
+    { key:'createdAt', label:'접수일' },
+  ];
+  const theadHtml = '<th></th>' + cols.map(c=>{
+    const arrow = pendingSortState.key===c.key ? (pendingSortState.dir==='asc'?' ▲':' ▼') : '';
+    return `<th class="sortable-th" data-sort="${c.key}" style="cursor:pointer; user-select:none;">${c.label}${arrow}</th>`;
+  }).join('') + '<th></th>';
+
+  pendingWrap.innerHTML = `<div style="overflow-x:auto;"><table>
+      <thead><tr>${theadHtml}</tr></thead>
+      <tbody>${sorted.map(r => {
+        const title = r.productType==='reward' ? `${r.channel} · ${r.program} — ${r.qty}개` : '🎥 유튜브 인터뷰 촬영';
+        const amount = r.productType==='reward' ? `${Number(r.grandTotal||0).toLocaleString('ko-KR')}원` : '협의 후 안내';
+        return `<tr>
+          <td><input type="checkbox" class="pendingRowCheck" data-id="${r.id}" style="width:auto;" /></td>
+          <td>${escapeHtml(r.client)}</td>
+          <td>${escapeHtml(title)}</td>
+          <td>${amount}</td>
+          <td>${escapeHtml(prettyDate(fmt(new Date(r.createdAt))))}</td>
+          <td><button class="btn small adminApproveBtn" data-id="${r.id}">승인</button></td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table></div>`;
+
+  document.querySelectorAll('#adminPendingWrap .sortable-th').forEach(th=>{
+    th.addEventListener('click', ()=>{
+      const k = th.dataset.sort;
+      pendingSortState.dir = (pendingSortState.key === k && pendingSortState.dir === 'desc') ? 'asc' : 'desc';
+      pendingSortState.key = k;
+      renderPendingTable();
+    });
+  });
+  document.querySelectorAll('.adminApproveBtn').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const session = await getSession();
+      btn.disabled = true; btn.textContent = '처리중...';
+      const res = await apiCall('approveSubmission', { token: session.token, submissionId: btn.dataset.id });
+      if(res.ok){ invalidateSubmissionsCache(); loadAdmin(); }
+      else { showMsg('submitMsg', res.error || '승인 실패', 'warn'); btn.disabled = false; btn.textContent = '승인'; }
+    });
+  });
+}
+
+// ---------- 진단 리드 (별도 탭, 부가 정보라 관리자 대시보드에서 분리) ----------
+async function loadLeadsPanel(){
+  const session = await getSession();
+  if(!session || session.role !== 'admin') return;
+  const leadsWrap = document.getElementById('adminLeadsWrap');
+  leadsWrap.innerHTML = '<div class="empty"><div class="spinner"></div>로딩중...</div>';
+  const leadsRes = await apiCall('listLeads', { token: session.token });
+  const leads = (leadsRes.ok ? leadsRes.leads : []) || [];
+  leadsWrap.innerHTML = leads.length === 0 ? '<div class="empty">아직 무료진단을 받은 잠재고객이 없어요.</div>' :
+    `<div style="overflow-x:auto;"><table>
+      <thead><tr><th>이메일</th><th>키워드</th><th>날짜</th><th></th></tr></thead>
+      <tbody>${leads.map(l => `<tr>
+        <td>${escapeHtml(l.email)}</td>
+        <td>${escapeHtml(l.keyword)}</td>
+        <td>${escapeHtml(prettyDate(fmt(new Date(l.createdAt))))}</td>
+        <td><a class="btn small secondary" href="${escapeHtml(l.link)}" target="_blank">링크 열기</a></td>
+      </tr>`).join('')}</tbody>
+    </table></div>`;
+}
+
 async function loadAdmin(){
   const session = await getSession();
   if(!session || session.role !== 'admin') return;
@@ -2041,36 +2159,272 @@ async function loadAdmin(){
   document.getElementById('statExpiring').textContent = expiringCount + '건';
   document.getElementById('statRevenue').textContent = monthRevenue.toLocaleString('ko-KR') + '원';
 
-  // 리드 목록
+  // 입금확인 · 승인 대기 목록 (표 형태 + 체크박스로 일괄승인/반려 가능)
+  const pendingRecords = records.filter(r => r.status === 'payment_pending');
+  pendingRecordsCache = pendingRecords;
+  const pendingWrap = document.getElementById('adminPendingWrap');
+  renderPendingTable();
+  document.getElementById('exportSubmissionsBtn').onclick = ()=> exportSubmissionsToExcel(records);
+  document.getElementById('pendingSelectAll').onchange = (e)=>{
+    document.querySelectorAll('.pendingRowCheck').forEach(cb => cb.checked = e.target.checked);
+  };
+  document.getElementById('bulkApproveBtn').onclick = async ()=>{
+    const ids = Array.from(document.querySelectorAll('.pendingRowCheck:checked')).map(cb=>cb.dataset.id);
+    if(ids.length===0){ showMsg('submitMsg','선택된 접수건이 없어요.','warn'); return; }
+    if(!confirm(`선택한 ${ids.length}건을 일괄 승인할까요?`)) return;
+    const res = await apiCall('bulkApprove', { token: session.token, submissionIds: ids });
+    if(res.ok){ showMsg('submitMsg', `${res.successCount}건 승인 완료됐어요.`, 'ok'); invalidateSubmissionsCache(); loadAdmin(); }
+    else showMsg('submitMsg', res.error || '일괄승인 실패', 'warn');
+  };
+  document.getElementById('bulkRejectBtn').onclick = async ()=>{
+    const ids = Array.from(document.querySelectorAll('.pendingRowCheck:checked')).map(cb=>cb.dataset.id);
+    if(ids.length===0){ showMsg('submitMsg','선택된 접수건이 없어요.','warn'); return; }
+    if(!confirm(`선택한 ${ids.length}건을 일괄 반려(삭제)할까요? 되돌릴 수 없어요.`)) return;
+    const res = await apiCall('bulkReject', { token: session.token, submissionIds: ids });
+    if(res.ok){ showMsg('submitMsg', `${res.successCount}건 반려 처리됐어요.`, 'ok'); invalidateSubmissionsCache(); loadAdmin(); }
+    else showMsg('submitMsg', res.error || '일괄반려 실패', 'warn');
+  };
+  document.getElementById('exportSubmissionsBtn').onclick = ()=> exportSubmissionsToExcel(records);
+
+  // 진단 리드 건수(요약 통계만 여기서 유지, 목록 자체는 별도 "진단 리드" 탭에서)
   const leadsRes = await apiCall('listLeads', { token: session.token });
   const leads = (leadsRes.ok ? leadsRes.leads : []) || [];
   const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate()-7);
   document.getElementById('statLeads').textContent = leads.filter(l => new Date(l.createdAt) >= weekAgo).length + '건';
 
-  const leadsWrap = document.getElementById('adminLeadsWrap');
-  leadsWrap.innerHTML = leads.length === 0 ? '<div class="empty">아직 무료진단을 받은 잠재고객이 없어요.</div>' :
-    leads.slice(0,30).map(l => `
-      <div class="admin-list-row">
-        <div>
-          <div class="admin-list-main">${escapeHtml(l.email)}</div>
-          <div class="admin-list-sub">'${escapeHtml(l.keyword)}' 키워드 · ${escapeHtml(prettyDate(fmt(new Date(l.createdAt))))}</div>
-        </div>
-        <a class="btn small secondary" href="${escapeHtml(l.link)}" target="_blank">링크 열기</a>
-      </div>`).join('');
-
-  // 세금계산서 요청 목록
+  // 세금계산서 요청 목록 (아직 발행완료 처리 안 된 것만, 표 형태 + 체크박스로 zip일괄다운로드)
   const taxRes = await apiCall('listTaxInvoices', { token: session.token });
-  const invoices = (taxRes.ok ? taxRes.invoices : []) || [];
+  const invoices = ((taxRes.ok ? taxRes.invoices : []) || []).filter(t => t.status !== 'completed');
   const taxWrap = document.getElementById('adminTaxWrap');
-  taxWrap.innerHTML = invoices.length === 0 ? '<div class="empty">아직 세금계산서 요청이 없어요.</div>' :
-    invoices.slice(0,30).map(t => `
-      <div class="admin-list-row">
-        <div>
-          <div class="admin-list-main">${escapeHtml(t.client)} · ${escapeHtml(t.invoiceEmail)}</div>
-          <div class="admin-list-sub">사업자번호 ${escapeHtml(t.extractedBizNumber || '자동추출 실패, 파일 직접 확인')} · ${escapeHtml(prettyDate(fmt(new Date(t.createdAt))))}</div>
-        </div>
-        <a class="btn small secondary" href="${escapeHtml(t.certFileUrl)}" target="_blank">사업자등록증 보기</a>
-      </div>`).join('');
+  taxWrap.innerHTML = invoices.length === 0 ? '<div class="empty">발행 대기중인 세금계산서 요청이 없어요.</div>' :
+    `<div style="overflow-x:auto;"><table>
+      <thead><tr><th></th><th>업체명</th><th>이메일</th><th>사업자번호</th><th>날짜</th><th></th></tr></thead>
+      <tbody>${invoices.slice(0,30).map(t => `<tr>
+        <td><input type="checkbox" class="taxRowCheck" data-id="${t.id}" style="width:auto;" /></td>
+        <td>${escapeHtml(t.client)}</td>
+        <td>${escapeHtml(t.invoiceEmail)}</td>
+        <td>${escapeHtml(t.extractedBizNumber || '자동추출 실패')}</td>
+        <td>${escapeHtml(prettyDate(fmt(new Date(t.createdAt))))}</td>
+        <td style="display:flex; gap:6px;">
+          <a class="btn small secondary" href="${escapeHtml(t.certFileUrl)}" target="_blank">보기</a>
+          <button class="btn small adminTaxCompleteBtn" data-id="${t.id}">발행완료</button>
+        </td>
+      </tr>`).join('')}</tbody>
+    </table></div>`;
+  document.querySelectorAll('.adminTaxCompleteBtn').forEach(btn=>{
+    btn.addEventListener('click', async (e)=>{
+      e.stopPropagation();
+      btn.disabled = true; btn.textContent = '처리중...';
+      const res = await apiCall('completeTaxInvoice', { token: session.token, taxId: btn.dataset.id });
+      if(res.ok){ loadAdmin(); }
+      else { showMsg('submitMsg', res.error || '처리 실패', 'warn'); btn.disabled = false; btn.textContent = '발행완료'; }
+    });
+  });
+  document.getElementById('taxSelectAll').onchange = (e)=>{
+    document.querySelectorAll('.taxRowCheck').forEach(cb => cb.checked = e.target.checked);
+  };
+  document.getElementById('zipTaxCertsBtn').onclick = async ()=>{
+    const ids = Array.from(document.querySelectorAll('.taxRowCheck:checked')).map(cb=>cb.dataset.id);
+    const btn = document.getElementById('zipTaxCertsBtn');
+    setBusy(btn, 'zip 만드는 중...');
+    const res = await apiCall('zipTaxCerts', { token: session.token, taxIds: ids }); // ids가 비어있으면 전체 다운로드
+    clearBusy(btn);
+    if(!res.ok){ showMsg('submitMsg', res.error || 'zip 생성 실패', 'warn'); return; }
+    const byteChars = atob(res.base64);
+    const byteNumbers = new Array(byteChars.length);
+    for(let i=0;i<byteChars.length;i++) byteNumbers[i] = byteChars.charCodeAt(i);
+    const blob = new Blob([new Uint8Array(byteNumbers)], { type:'application/zip' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = res.filename; document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    showMsg('submitMsg', `${res.count}개 파일을 zip으로 받았어요.`, 'ok');
+  };
+}
+
+// 접수 데이터를 엑셀(CSV, 한글 깨짐 방지 처리)로 내보내기 - DB 백업 및 오프라인 작업용
+function exportSubmissionsToExcel(records){
+  const cols = ['id','client','phone','productType','channel','program','qty','cycles','totalSlots','bonusSlots','keywords','link','grandTotal','status','createdAt','startDate','endDate'];
+  const header = cols.join(',');
+  const rows = records.map(r => cols.map(c=>{
+    let v = r[c];
+    if(Array.isArray(v)) v = v.join(' / ');
+    v = String(v==null ? '' : v).replace(/"/g,'""');
+    return `"${v}"`;
+  }).join(','));
+  const csv = '\uFEFF' + [header, ...rows].join('\r\n'); // BOM 붙여서 엑셀에서 한글 안 깨지게
+  const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `접수현황_${fmt(new Date())}.csv`; document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+
+// ---------- 업체목록 (관리자용 - 업체별 매출/순위변동/히스토리 컨설팅 뷰) ----------
+async function loadClients(){
+  const session = await getSession();
+  if(!session || session.role !== 'admin') return;
+  const listRes = await fetchSubmissionsCached(session);
+  const records = (listRes.ok ? listRes.submissions : []) || [];
+
+  // 업체(이메일 기준)별로 그룹핑해서 요약치 계산
+  const clientMap = {};
+  const today = fmt(new Date());
+  records.forEach(r=>{
+    const key = r.ownerEmail || r.client;
+    if(!clientMap[key]) clientMap[key] = { client: r.client, ownerEmail: r.ownerEmail, records: [], totalRevenue: 0, activeCount: 0, lastCreatedAt: null };
+    const g = clientMap[key];
+    g.records.push(r);
+    if(r.status === 'approved' || r.status === 'confirmed') g.totalRevenue += Number(r.grandTotal||0);
+    if(r.productType==='reward' && r.status==='approved' && (!r.endDate || r.endDate >= today)) g.activeCount++;
+    if(!g.lastCreatedAt || new Date(r.createdAt) > new Date(g.lastCreatedAt)) g.lastCreatedAt = r.createdAt;
+  });
+  const clients = Object.values(clientMap).sort((a,b)=> b.totalRevenue - a.totalRevenue);
+
+  renderClientList(clients);
+  document.getElementById('clientSearchInput').oninput = (e)=>{
+    const q = e.target.value.trim().toLowerCase();
+    renderClientList(clients.filter(c => c.client.toLowerCase().includes(q)));
+  };
+}
+
+let clientSortState = { key: 'totalRevenue', dir: 'desc' };
+function renderClientList(clients){
+  const wrap = document.getElementById('clientListWrap');
+  if(clients.length === 0){ wrap.innerHTML = '<div class="empty">업체가 없어요.</div>'; return; }
+
+  const { key, dir } = clientSortState;
+  const sorted = [...clients].sort((a,b)=>{
+    let av = a[key], bv = b[key];
+    if(key === 'client') { av = String(av); bv = String(bv); }
+    if(key === 'recordCount'){ av = a.records.length; bv = b.records.length; }
+    if(key === 'lastCreatedAt'){ av = new Date(av||0).getTime(); bv = new Date(bv||0).getTime(); }
+    if(av < bv) return dir==='asc' ? -1 : 1;
+    if(av > bv) return dir==='asc' ? 1 : -1;
+    return 0;
+  });
+
+  const cols = [
+    { key:'client', label:'업체명' },
+    { key:'totalRevenue', label:'매출액' },
+    { key:'recordCount', label:'접수건수' },
+    { key:'activeCount', label:'진행중' },
+    { key:'lastCreatedAt', label:'최근접수일' },
+  ];
+  const theadHtml = cols.map(c => {
+    const arrow = clientSortState.key === c.key ? (clientSortState.dir==='asc' ? ' ▲' : ' ▼') : '';
+    return `<th class="sortable-th" data-sort="${c.key}" style="cursor:pointer; user-select:none;">${c.label}${arrow}</th>`;
+  }).join('');
+
+  const rowsHtml = sorted.map((c,i) => `
+    <tr class="client-row" data-idx="${i}" style="cursor:pointer;">
+      <td>${escapeHtml(c.client)}</td>
+      <td>${c.totalRevenue.toLocaleString('ko-KR')}원</td>
+      <td>${c.records.length}건</td>
+      <td>${c.activeCount}건</td>
+      <td>${c.lastCreatedAt ? prettyDate(fmt(new Date(c.lastCreatedAt))) : '-'}</td>
+    </tr>
+    <tr class="client-detail-row" id="detailrow-client-${i}" style="display:none;">
+      <td colspan="5"><div id="detail-client-${i}"></div></td>
+    </tr>`).join('');
+
+  wrap.innerHTML = `<div style="overflow-x:auto;"><table><thead><tr>${theadHtml}</tr></thead><tbody>${rowsHtml}</tbody></table></div>`;
+
+  document.querySelectorAll('#clientListWrap .sortable-th').forEach(th=>{
+    th.addEventListener('click', ()=>{
+      const k = th.dataset.sort;
+      clientSortState.dir = (clientSortState.key === k && clientSortState.dir === 'desc') ? 'asc' : 'desc';
+      clientSortState.key = k;
+      renderClientList(clients); // 원본 clients로 다시 렌더 (정렬만 새로 적용)
+    });
+  });
+
+  document.querySelectorAll('#clientListWrap .client-row').forEach(row=>{
+    row.addEventListener('click', ()=>{
+      const i = row.dataset.idx;
+      const detailRow = document.getElementById('detailrow-client-'+i);
+      const detail = document.getElementById('detail-client-'+i);
+      const willShow = detailRow.style.display === 'none';
+      // 아코디언처럼 한 번에 하나만 펼쳐지게
+      document.querySelectorAll('#clientListWrap .client-detail-row').forEach(d=>d.style.display='none');
+      if(willShow){
+        detailRow.style.display = 'table-row';
+        renderClientDetail(detail, sorted[i]);
+      }
+    });
+  });
+}
+
+async function renderClientDetail(container, c){
+  container.innerHTML = '<div class="empty"><div class="spinner"></div>불러오는 중...</div>';
+
+  // 월별 매출 집계 (승인/확정된 건만 매출로 인정)
+  const monthly = {};
+  c.records.forEach(r=>{
+    if(r.status!=='approved' && r.status!=='confirmed') return;
+    const month = String(r.approvedAt||r.createdAt).slice(0,7);
+    monthly[month] = (monthly[month]||0) + Number(r.grandTotal||0);
+  });
+  const months = Object.keys(monthly).sort();
+
+  const historyRows = [...c.records].sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt)).map(r=>{
+    const st = statusLabel(r);
+    const title = r.productType==='reward' ? `${escapeHtml(r.channel)}·${escapeHtml(r.program)} ${r.qty}개` : '유튜브 촬영';
+    return `<tr><td>${escapeHtml(prettyDate(fmt(new Date(r.createdAt))))}</td><td>${title}</td><td>${Number(r.grandTotal||0).toLocaleString('ko-KR')}원</td><td><span class="pill ${st.cls}">${st.text}</span></td></tr>`;
+  }).join('');
+
+  const chartId = 'clientRevChart_' + Math.random().toString(36).slice(2,8);
+  const rankChartId = 'clientRankChart_' + Math.random().toString(36).slice(2,8);
+
+  container.innerHTML = `
+    <div class="admin-stat-grid" style="margin-bottom:18px;">
+      <div class="admin-stat"><div class="admin-stat-n">${c.totalRevenue.toLocaleString('ko-KR')}원</div><div class="admin-stat-l">누적 매출</div></div>
+      <div class="admin-stat"><div class="admin-stat-n">${c.records.length}건</div><div class="admin-stat-l">총 접수</div></div>
+      <div class="admin-stat"><div class="admin-stat-n">${c.activeCount}건</div><div class="admin-stat-l">진행중</div></div>
+      <div class="admin-stat"><div class="admin-stat-n" style="font-size:1rem;">${c.lastCreatedAt ? prettyDate(fmt(new Date(c.lastCreatedAt))) : '-'}</div><div class="admin-stat-l">최근 접수일</div></div>
+    </div>
+    <div style="font-size:0.85rem; font-weight:700; margin-bottom:10px;">매출 추이</div>
+    <div style="position:relative; height:200px; margin-bottom:20px;"><canvas id="${chartId}"></canvas></div>
+    <div style="font-size:0.85rem; font-weight:700; margin-bottom:10px;">순위 변동 추이 (컨설팅용)</div>
+    <div style="position:relative; height:240px; margin-bottom:20px;"><canvas id="${rankChartId}"></canvas></div>
+    <div style="font-size:0.85rem; font-weight:700; margin-bottom:10px;">접수 히스토리</div>
+    <div style="overflow-x:auto;"><table><thead><tr><th>날짜</th><th>상품</th><th>금액</th><th>상태</th></tr></thead><tbody>${historyRows || '<tr><td colspan="4">내역 없음</td></tr>'}</tbody></table></div>
+  `;
+
+  // 매출 그래프
+  new Chart(document.getElementById(chartId).getContext('2d'), {
+    type:'bar',
+    data:{ labels: months, datasets:[{ label:'매출', data: months.map(m=>monthly[m]), backgroundColor:'#3A31A0' }] },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+      scales:{ y:{ ticks:{ callback:(v)=>Number(v).toLocaleString('ko-KR')+'원' } } } }
+  });
+
+  // 순위 변동 그래프 (이 업체의 전체 접수건 기준, 내 상품 순위만 - 경쟁사는 컨설팅 화면에선 생략해서 심플하게)
+  const session = await getSession();
+  const rankRes = await apiCall('getRankHistory', { token: session.token, ownerEmail: c.ownerEmail });
+  const history = (rankRes.ok ? rankRes.history : []) || [];
+  const grouped = {};
+  history.forEach(h=>{
+    if((h.subject||'me') !== 'me') return;
+    if(!h.rank || isNaN(Number(h.rank))) return;
+    if(!grouped[h.keyword]) grouped[h.keyword] = [];
+    grouped[h.keyword].push({ x: h.checkedAt, y: Number(h.rank) });
+  });
+  const palette = ['#3A31A0','#8B7FFF','#12B886','#FF9500','#F04452','#38BDF8'];
+  const datasets = Object.keys(grouped).map((kw,i)=>({
+    label: kw, data: grouped[kw], borderColor: palette[i%palette.length], backgroundColor: palette[i%palette.length],
+    tension:0.3, pointRadius:2, spanGaps:true
+  }));
+  if(datasets.length === 0){
+    document.getElementById(rankChartId).parentElement.innerHTML = '<div class="empty">아직 순위 데이터가 없어요.</div>';
+  } else {
+    new Chart(document.getElementById(rankChartId).getContext('2d'), {
+      type:'line', data:{ datasets },
+      options:{ responsive:true, maintainAspectRatio:false, interaction:{mode:'nearest',intersect:false},
+        scales:{ x:{ type:'time', time:{unit:'day', tooltipFormat:'M월 d일'} }, y:{ reverse:true, ticks:{precision:0} } },
+        plugins:{ legend:{ labels:{ color:'#191F28' } } } }
+    });
+  }
 }
 
 async function renderReferrals(){
