@@ -275,8 +275,9 @@
   .result-list{display:flex; flex-direction:column; gap:14px;}
   .status-list{display:flex; flex-direction:column;}
   .status-row{display:flex; align-items:center; justify-content:space-between; gap:14px; padding:16px 6px; border-bottom:1px solid var(--page-line); cursor:pointer;}
+  .status-row-main{flex:1; min-width:0;}
   .status-row:hover{background:var(--surface-2);}
-  .status-row-title{font-weight:700; font-size:0.92rem; color:var(--page-text);}
+  .status-row-title{font-weight:700; font-size:0.92rem; color:var(--page-text); word-break:keep-all; overflow-wrap:break-word;}
   .status-row-sub{font-size:0.76rem; color:var(--muted); margin-top:3px;}
   .status-row-right{display:flex; align-items:center; gap:8px; flex-shrink:0;}
   .status-chevron{color:var(--muted); font-size:1.15rem; transition:transform .2s ease; display:inline-block;}
