@@ -1847,8 +1847,14 @@ async function loadCoupons(){
 }
 async function renderCoupons(){
   const wrap = document.getElementById('couponListWrap');
-  if(COUPONS_CACHE.length===0){ wrap.innerHTML = '<div class="empty">보유한 쿠폰이 없습니다.</div>'; return; }
-  wrap.innerHTML = COUPONS_CACHE.map(c=>`
+  wrap.innerHTML = '<div class="empty"><div class="spinner"></div>로딩중...</div>';
+  const session = await getSession();
+  if(!session){ wrap.innerHTML = '<div class="empty">로그인이 필요합니다.</div>'; return; }
+  // 로그인 시 캐시해둔 COUPONS_CACHE에 의존하지 않고, 이 화면 진입할 때마다 서버에서 직접 최신 상태를 가져온다
+  const res = await apiCall('listCoupons', { token: session.token });
+  const coupons = res.ok ? (res.coupons||[]).filter(c=>c.status==='available') : [];
+  if(coupons.length===0){ wrap.innerHTML = '<div class="empty">보유한 쿠폰이 없습니다.</div>'; return; }
+  wrap.innerHTML = coupons.map(c=>`
     <div class="coupon-item">
       <span><strong>${c.type}</strong> 쿠폰 · ${req_(c)}개 이상 주문 시 사용 가능</span>
       <span class="mono" style="color:var(--muted); font-size:0.78rem;">지급일 ${c.grantedAt ? c.grantedAt.slice(0,10) : '-'}</span>
