@@ -84,13 +84,42 @@
   .row2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
   .kw-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
   @media(max-width:420px){ .kw-grid{grid-template-columns:1fr;} }
-  @media(max-width:480px){
-    /* 좁은 화면에서 뱃지(마감임박/D-day)가 절대 안 줄어들게 되어있다 보니, 그 압박으로
-       제목 영역이 거의 0폭까지 눌려서 글자가 세로로 한 글자씩 쌓이는 문제가 있었다.
-       뱃지 영역이 다 안 들어가면 아래 줄로 자연스럽게 내려가도록(wrap) 바꿔서 해결. */
-    .status-row{ flex-wrap:wrap; }
-    .status-row-main{ flex-basis:100%; }
-    .status-row-right{ flex-basis:100%; justify-content:flex-end; margin-top:4px; }
+  @media(max-width:600px){
+    /* 모바일 진행중 캠페인: 제목/금액과 상태 뱃지가 서로 밀어내지 않도록 2단 구조로 고정 */
+    .status-row{
+      display:grid;
+      grid-template-columns:minmax(0,1fr);
+      align-items:start;
+      gap:8px;
+      padding:15px 4px;
+    }
+    .status-row-main{min-width:0; width:100%;}
+    .status-row-title{
+      line-height:1.45;
+      word-break:keep-all;
+      overflow-wrap:anywhere;
+    }
+    .status-row-sub{
+      line-height:1.45;
+      white-space:normal;
+    }
+    .status-row-right{
+      width:100%;
+      justify-content:flex-start;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:6px;
+      margin-top:0;
+    }
+    .status-row-right .pill,
+    .status-row-right .dday-badge,
+    .status-row-right .btn{
+      flex:0 0 auto;
+    }
+    .status-chevron{margin-left:auto;}
+    .status-detail{padding-left:4px; padding-right:4px;}
+    .result-top,.result-bottom{align-items:flex-start;}
+    .result-amount{text-align:left;}
   }
   .hint{font-size:0.8rem; color:var(--muted); margin-top:8px; line-height:1.6;}
 
@@ -371,7 +400,7 @@
   .donut-legend .empty-mini{font-size:0.8rem; color:var(--muted); text-align:center;}
 
   /* ---- 홈 화면 (연라벤더 배경 + 흰카드, 핀트 스타일 참고) ---- */
-  .home-wrap{background:#FFFFFF; min-height:100vh; padding:28px 20px 40px; display:flex; flex-direction:column; gap:22px; max-width:520px; margin:0 auto;}
+  .home-wrap{background:#FFFFFF; min-height:100vh; width:100%; max-width:none; padding:28px 20px 40px; display:flex; flex-direction:column; gap:22px; margin:0;}
   .home-header{display:flex; align-items:center; justify-content:space-between; margin-bottom:0;}
   .home-greeting{font-size:1.15rem; font-weight:800; color:#191F28; letter-spacing:-0.01em;}
   .home-sub{font-size:0.78rem; color:#9AA0A6; margin-top:4px; font-weight:500;}
@@ -405,6 +434,71 @@
   #authScreen{transition:opacity .25s ease;}
   #app.visible{display:block; animation:appFadeIn .35s ease;}
   @keyframes appFadeIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+
+  /* ---- 접수/현황 아코디언 ---- */
+  #panelMain.main-accordion{
+    display:flex !important;
+    flex-direction:column;
+    gap:14px;
+  }
+  .main-accordion-card{
+    padding:0;
+    overflow:hidden;
+  }
+  .main-accordion-head{
+    width:100%;
+    margin:0;
+    padding:20px 24px;
+    border:0;
+    background:#fff;
+    color:var(--text);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    cursor:pointer;
+    text-align:left;
+    font-family:var(--sans);
+  }
+  .main-accordion-head:hover{background:var(--surface-2);}
+  .main-accordion-title{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    font-size:1.15rem;
+    font-weight:800;
+    min-width:0;
+  }
+  .main-accordion-title .n{
+    font-family:var(--mono);
+    color:var(--muted);
+    font-size:0.68rem;
+    font-weight:600;
+    background:var(--surface-2);
+    padding:2px 8px;
+    border-radius:6px;
+    flex-shrink:0;
+  }
+  .main-accordion-chevron{
+    font-size:1.25rem;
+    color:var(--muted);
+    transition:transform .2s ease;
+    flex-shrink:0;
+  }
+  .main-accordion-card.open .main-accordion-chevron{transform:rotate(90deg);}
+  .main-accordion-body{
+    display:none;
+    padding:4px 26px 26px;
+    border-top:1px solid var(--page-line);
+  }
+  .main-accordion-card.open .main-accordion-body{display:block;}
+  .main-accordion-body .toolbar{margin-top:16px;}
+  @media(max-width:600px){
+    .main-accordion-head{padding:17px 16px;}
+    .main-accordion-title{font-size:1rem;}
+    .main-accordion-body{padding:2px 16px 20px;}
+  }
+
 </style>
 </head>
 <body>
@@ -689,9 +783,13 @@
       </div>
     </div>
 
-    <main id="panelMain" class="panel" style="display:grid;">
-  <section class="card">
-    <h2><span class="n">01</span> 어떤 캠페인을 시작할까요?</h2>
+    <main id="panelMain" class="panel main-accordion">
+  <section class="card main-accordion-card" id="mainIntakeCard">
+    <button type="button" class="main-accordion-head" data-main-toggle="mainIntakeCard" aria-expanded="false">
+      <span class="main-accordion-title"><span class="n">01</span> 어떤 캠페인을 시작할까요?</span>
+      <span class="main-accordion-chevron">›</span>
+    </button>
+    <div class="main-accordion-body">
 
     <label>상품 유형</label>
     <div class="seg">
@@ -790,12 +888,17 @@
       </div>
       <div>입금 확인 후 관리자 승인 시 작업이 시작됩니다.</div>
     </div>
+    </div>
   </section>
 
-  <section>
-    <div class="card">
+  <section class="card main-accordion-card" id="mainStatusCard">
+    <button type="button" class="main-accordion-head" data-main-toggle="mainStatusCard" aria-expanded="false">
+      <span class="main-accordion-title"><span class="n">02</span> 진행 중인 캠페인이에요</span>
+      <span class="main-accordion-chevron">›</span>
+    </button>
+    <div class="main-accordion-body">
       <div class="toolbar">
-        <h2 style="margin:0; flex:1;"><span class="n">02</span> 진행 중인 캠페인이에요</h2>
+        <div style="flex:1;"></div>
         <button class="btn secondary small" id="refreshBtn">새로고침</button>
       </div>
       <div id="tableWrap"><div class="empty"><div class="spinner"></div>로딩중...</div></div>
@@ -1435,7 +1538,7 @@ function switchPanelDOM(panelName){
   btn.classList.add('active');
   const panel = document.getElementById(panelName);
   panel.classList.add('active');
-  panel.style.display = (panelName === 'panelMain') ? 'grid' : 'block';
+  panel.style.display = (panelName === 'panelMain') ? 'flex' : 'block';
   document.getElementById('breadcrumbText').textContent = btn.dataset.label || btn.textContent;
   closeSidebar();
   window.scrollTo({ top:0, behavior:'smooth' });
@@ -1458,8 +1561,36 @@ function switchToPanel(panelName, push){
 document.querySelectorAll('.navtab').forEach(btn=>{
   btn.addEventListener('click', ()=> switchToPanel(btn.dataset.panel));
 });
-document.getElementById('homeActionNew').addEventListener('click', ()=> switchToPanel('panelMain'));
+document.getElementById('homeActionNew').addEventListener('click', ()=>{ switchToPanel('panelMain'); setMainAccordion('mainIntakeCard', true); });
 document.getElementById('homeActionCoupon').addEventListener('click', ()=> switchToPanel('panelCoupons'));
+
+
+// ---------- 접수/현황 아코디언 ----------
+function setMainAccordion(cardId, open){
+  const card = document.getElementById(cardId);
+  if(!card) return;
+  card.classList.toggle('open', Boolean(open));
+  const head = card.querySelector('.main-accordion-head');
+  if(head) head.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+
+function toggleMainAccordion(cardId){
+  const card = document.getElementById(cardId);
+  if(!card) return;
+  setMainAccordion(cardId, !card.classList.contains('open'));
+}
+
+document.querySelectorAll('[data-main-toggle]').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    toggleMainAccordion(btn.dataset.mainToggle);
+  });
+});
+
+// 접수/현황 메뉴로 일반 진입하면 둘 다 접힌 상태를 기본값으로 유지한다.
+function resetMainAccordions(){
+  setMainAccordion('mainIntakeCard', false);
+  setMainAccordion('mainStatusCard', false);
+}
 
 // ---------- 사이드바 열기/닫기 (모바일) ----------
 function openSidebar(){ document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebarBackdrop').classList.add('open'); }
@@ -1770,6 +1901,64 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
   }
 });
 
+
+// 세금계산서 첨부 이미지는 원본 15MB까지 받되,
+// Apps Script POST 전송 부담을 줄이기 위해 큰 이미지만 브라우저에서 JPEG로 최적화한다.
+async function prepareTaxImageForUpload(file){
+  const MAX_ORIGINAL = 15 * 1024 * 1024;
+  const TARGET_BYTES = 4.5 * 1024 * 1024;
+
+  if(!file) throw new Error('파일이 없습니다.');
+  if(file.size > MAX_ORIGINAL) throw new Error('FILE_TOO_LARGE');
+
+  // 작은 파일은 원본 그대로 보낸다.
+  if(file.size <= TARGET_BYTES){
+    return { file, fileName:file.name, mimeType:file.type || 'image/jpeg' };
+  }
+
+  if(!String(file.type || '').startsWith('image/')){
+    throw new Error('IMAGE_ONLY');
+  }
+
+  const bitmap = await createImageBitmap(file);
+  const maxSide = 2400;
+  const scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height));
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+  canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+
+  const ctx = canvas.getContext('2d', { alpha:false });
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  if(bitmap.close) bitmap.close();
+
+  let quality = 0.9;
+  let blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality));
+  while(blob && blob.size > TARGET_BYTES && quality > 0.55){
+    quality -= 0.08;
+    blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality));
+  }
+
+  if(!blob) throw new Error('IMAGE_CONVERT_FAILED');
+
+  const baseName = String(file.name || 'biz_cert').replace(/\.[^.]+$/, '');
+  return {
+    file: blob,
+    fileName: baseName + '.jpg',
+    mimeType: 'image/jpeg'
+  };
+}
+
+async function fileToBase64(file){
+  return await new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onload = ()=> resolve(String(reader.result).split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
 // ---------- 대시보드 ----------
 function statusLabel(rec){
   if(rec.status === 'cancelled') return {cls:'done', text:'🚫 취소됨'};
@@ -1816,6 +2005,7 @@ function buildSlotPips(rec){
 // 연장하기: 이전 접수 내용을 신규접수 폼에 그대로 채워서 바로 재접수할 수 있게 한다
 function extendRecord(rec){
   switchToPanel('panelMain'); // 홈/현황판 어디서 눌러도 접수 탭으로 이동
+  setMainAccordion('mainIntakeCard', true);
   document.getElementById('pt_reward').click();
   const product = CATALOG.products.find(p => p.channel === rec.channel && p.program === rec.program);
   if(product) document.getElementById('f_product').value = product.id;
@@ -1835,6 +2025,7 @@ function extendRecord(rec){
 let editingSubmissionId = null;
 function startEditSubmission(rec){
   switchToPanel('panelMain');
+  setMainAccordion('mainIntakeCard', true);
   if(rec.productType === 'youtube'){
     document.getElementById('pt_youtube').click();
     document.getElementById('y_client').value = rec.client || '';
@@ -1956,7 +2147,7 @@ async function renderTable(quiet){
               <input type="email" placeholder="계산서 받을 이메일" id="taxEmail-${rec.id}" style="margin-bottom:8px;" />
               <input type="file" accept="image/*" id="taxFile-${rec.id}" style="margin-bottom:8px;" />
               <div class="msg" id="taxMsg-${rec.id}"></div>
-              <div class="hint" style="margin-bottom:8px;">사업자등록증 사진 1장을 첨부해 주세요 (5MB 이하 권장)</div>
+              <div class="hint" style="margin-bottom:8px;">사업자등록증 사진 1장을 첨부해 주세요 (원본 15MB 이하)</div>
               <button class="btn small taxSubmitBtn" data-id="${rec.id}">제출하기</button>
             </div>
           </div>`;
@@ -2072,17 +2263,21 @@ async function renderTable(quiet){
       const file = fileInput.files[0];
       const inlineMsg = document.getElementById('taxMsg-'+id);
       if(!email || !file){ showMsg('taxMsg-'+id,'이메일과 사업자등록증 파일을 모두 입력해 주세요.','warn'); return; }
-      if(file.size > 15*1024*1024){ showMsg('taxMsg-'+id,'파일 용량이 너무 커요. 15MB 이하로 올려주세요.','warn'); return; }
-      setBusy(btn, '업로드 중...');
+      if(file.size > 15*1024*1024){ showMsg('taxMsg-'+id,'파일 용량이 너무 커요. 원본 파일은 15MB 이하만 올릴 수 있어요.','warn'); return; }
+      setBusy(btn, '업로드 준비 중...');
       try{
-        const base64 = await new Promise((resolve,reject)=>{
-          const reader = new FileReader();
-          reader.onload = ()=> resolve(reader.result.split(',')[1]);
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-        });
+        const prepared = await prepareTaxImageForUpload(file);
+        btn.textContent = '업로드 중...';
+        const base64 = await fileToBase64(prepared.file);
         const s = await getSession();
-        const res = await apiCall('requestTaxInvoice', { token:s.token, submissionId:id, invoiceEmail:email, certImageBase64:base64, certFileName:file.name, certMimeType:file.type });
+        const res = await apiCall('requestTaxInvoice', {
+          token:s.token,
+          submissionId:id,
+          invoiceEmail:email,
+          certImageBase64:base64,
+          certFileName:prepared.fileName,
+          certMimeType:prepared.mimeType
+        });
         clearBusy(btn);
         if(res.ok){ showMsg('taxMsg-'+id,'세금계산서 요청이 접수됐어요.','ok'); invalidateSubmissionsCache(); setTimeout(()=>renderTable(), 1200); }
         else { showMsg('taxMsg-'+id, res.error||'요청 실패','warn'); }
@@ -3355,6 +3550,18 @@ function diagGotoSignup(){
   window.pendingDiagData = diagData;
   goToScreen('signup');
 }
+
+
+// 최초 렌더 전에 현재 viewport 기준 레이아웃을 즉시 확정.
+// 외부 폰트/차트/API 로딩과 무관하게 PC에서는 처음부터 PC 폭을 사용한다.
+function stabilizeInitialViewport(){
+  const root = document.documentElement;
+  root.style.setProperty('--initial-vw', window.innerWidth + 'px');
+  // 강제 reflow로 첫 paint 전에 미디어쿼리/레이아웃 계산을 확정
+  void document.body.offsetWidth;
+}
+stabilizeInitialViewport();
+window.addEventListener('resize', stabilizeInitialViewport, { passive:true });
 
 // ---------- 초기 로드 ----------
 // ?admin=1 로 접속했을 때만 서버 연결 설정(고급 옵션)을 노출
