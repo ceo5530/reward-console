@@ -764,7 +764,10 @@
     <div class="msg" id="submitMsg"></div>
     <div class="bank-banner" id="bankBanner" style="display:none;">
       <strong>💳 입금 계좌 안내</strong>
-      <div class="acc" id="bankAcc">-</div>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div class="acc" id="bankAcc">-</div>
+        <button class="btn small secondary" id="copyBankAccBtn" type="button" style="margin-top:0;">복사</button>
+      </div>
       <div>입금 확인 후 관리자 승인 시 작업이 시작됩니다.</div>
     </div>
   </section>
@@ -1419,6 +1422,15 @@ async function loadCatalog(){
   updateCyclesOptions();
   document.getElementById('bankAcc').textContent = `${CATALOG.bank.bank} ${CATALOG.bank.account} (${CATALOG.bank.holder})`;
 }
+document.getElementById('copyBankAccBtn').addEventListener('click', ()=>{
+  const acc = (CATALOG.bank && CATALOG.bank.account) || '';
+  if(!acc) return;
+  if(navigator.clipboard) navigator.clipboard.writeText(acc);
+  const btn = document.getElementById('copyBankAccBtn');
+  const orig = btn.textContent;
+  btn.textContent = '복사됨 ✓';
+  setTimeout(()=>{ btn.textContent = orig; }, 1500);
+});
 function updateCyclesOptions(){
   if(!CATALOG.products || !CATALOG.products.length) return; // 카탈로그가 아직 없으면 조용히 넘어감(다음 로드 때 다시 호출됨)
   const product = CATALOG.products.find(p=>p.id===document.getElementById('f_product').value) || CATALOG.products[0];
@@ -1542,7 +1554,7 @@ function refreshCouponOptions(){
   const qty = parseInt(document.getElementById('f_qty').value,10) || 0;
   const wrap = document.getElementById('couponPickWrap');
   const sel = document.getElementById('f_coupon');
-  const usable = COUPONS_CACHE.filter(c=>{ const req = c.type==='3+1'?3:5; return qty>=req; });
+  const usable = COUPONS_CACHE.filter(c => qty >= req_(c));
   if(COUPONS_CACHE.length===0){ wrap.style.display='none'; return; }
   wrap.style.display='block';
   sel.innerHTML = '<option value="">사용 안 함</option>' + usable.map(c=>`<option value="${c.id}">${c.type} 쿠폰 (${req_(c)}개 이상)</option>`).join('');
@@ -1645,23 +1657,32 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
   }
 
   const submitBtn = document.getElementById('submitBtn');
-  setBusy(submitBtn, '접수 처리 중...');
-  const res = await apiCall('submit', payload);
+  const isEditing = !!editingSubmissionId;
+  if(isEditing) payload.submissionId = editingSubmissionId;
+  setBusy(submitBtn, isEditing ? '수정 처리 중...' : '접수 처리 중...');
+  const res = await apiCall(isEditing ? 'editSubmission' : 'submit', payload);
   clearBusy(submitBtn);
   if(res.ok){
-    showMsg('submitMsg','접수 완료! 입금 확인 후 승인되면 작업이 시작됩니다.','ok');
-    document.getElementById('bankBanner').style.display = isYoutube ? 'none' : 'block';
-    if(res.bank) document.getElementById('bankAcc').textContent = `${res.bank.bank} ${res.bank.account} (${res.bank.holder})`;
+    if(isEditing){
+      showMsg('submitMsg','수정 완료됐어요.','ok');
+      editingSubmissionId = null;
+      submitBtn.textContent = isYoutube ? 'PR영상 제작 시작' : '순위 올림 시작';
+    } else {
+      showMsg('submitMsg','접수 완료! 입금 확인 후 승인되면 작업이 시작됩니다.','ok');
+      document.getElementById('bankBanner').style.display = isYoutube ? 'none' : 'block';
+      if(res.bank) document.getElementById('bankAcc').textContent = `${res.bank.bank} ${res.bank.account} (${res.bank.holder})`;
+    }
     if(isYoutube){ ['y_phone','y_date','y_location','y_notes'].forEach(id=>document.getElementById(id).value=''); }
     else { ['f_phone','f_link','f_qty','f_kw1','f_kw2','f_kw3','f_kw4','f_kw5','f_comp1','f_comp2','f_comp3'].forEach(id=>document.getElementById(id).value=''); document.getElementById('f_coupon').value=''; refreshPriceBox(); }
     await loadCoupons();
     invalidateSubmissionsCache();
     renderTable();
-  } else showMsg('submitMsg', res.error || '접수 실패','warn');
+  } else showMsg('submitMsg', res.error || (isEditing ? '수정 실패' : '접수 실패'),'warn');
 });
 
 // ---------- 대시보드 ----------
 function statusLabel(rec){
+  if(rec.status === 'cancelled') return {cls:'done', text:'🚫 취소됨'};
   if(rec.status === 'payment_pending') return {cls:'payment_pending', text:'⏳ 결제확인 대기중'};
   if(rec.status === 'confirmed') return {cls:'confirmed', text:'✅ 승인완료 · 예약확정'};
   if(rec.productType === 'reward' && rec.status === 'approved'){
@@ -1720,6 +1741,39 @@ function extendRecord(rec){
   }, 300);
 }
 
+// 수정하기: 승인대기 상태인 기존 접수건을 폼에 채우고, "수정 완료" 모드로 전환한다 (신규접수가 아니라 기존 건을 업데이트)
+let editingSubmissionId = null;
+function startEditSubmission(rec){
+  switchToPanel('panelMain');
+  if(rec.productType === 'youtube'){
+    document.getElementById('pt_youtube').click();
+    document.getElementById('y_client').value = rec.client || '';
+    document.getElementById('y_phone').value = rec.phone || '';
+    document.getElementById('y_date').value = rec.requestedDate || '';
+    document.getElementById('y_location').value = rec.location || '';
+    document.getElementById('y_notes').value = rec.notes || '';
+  } else {
+    document.getElementById('pt_reward').click();
+    const product = CATALOG.products.find(p => p.channel === rec.channel && p.program === rec.program);
+    if(product) document.getElementById('f_product').value = product.id;
+    document.getElementById('f_link').value = rec.link || '';
+    document.getElementById('f_phone').value = rec.phone || '';
+    const kws = Array.isArray(rec.keywords) ? rec.keywords : String(rec.keywords||'').split(',').map(k=>k.trim()).filter(Boolean);
+    [1,2,3,4,5].forEach(n => { document.getElementById('f_kw'+n).value = kws[n-1] || ''; });
+    const comps = String(rec.competitorLinks||'').split(',').map(s=>s.trim()).filter(Boolean);
+    [1,2,3].forEach(n => { document.getElementById('f_comp'+n).value = comps[n-1] || ''; });
+    document.getElementById('f_qty').value = rec.qty || 1;
+    document.getElementById('f_cycles').value = rec.cycles || 1;
+    updateCyclesOptions();
+  }
+  editingSubmissionId = rec.id;
+  document.getElementById('submitBtn').textContent = '수정 완료';
+  setTimeout(()=>{
+    document.getElementById('f_client').scrollIntoView({ behavior:'smooth', block:'center' });
+    showMsg('submitMsg', '수정 모드예요. 내용 확인하고 "수정 완료"를 눌러주세요.', 'ok');
+  }, 300);
+}
+
 async function renderTable(){
   const session = await getSession();
   const wrap = document.getElementById('tableWrap');
@@ -1751,6 +1805,17 @@ async function renderTable(){
     const dday = rec.productType==='reward' ? ddayInfo(rec) : null;
     const approveBtn = (session.role==='admin' && rec.status==='payment_pending')
       ? `<button class="btn small approveBtn" data-id="${rec.id}">입금확인 · 승인하기</button>` : '';
+
+    let editCancelHtml = '';
+    if(rec.status === 'payment_pending'){
+      editCancelHtml = `
+        <div style="display:flex; gap:8px; margin-top:12px;">
+          <button class="btn small secondary editSubmitBtn" data-id="${rec.id}">✏️ 수정하기</button>
+          <button class="btn small secondary cancelSubmitBtn" data-id="${rec.id}" style="color:var(--bad);">🚫 취소하기</button>
+        </div>`;
+    } else if(rec.status === 'approved' || rec.status === 'confirmed'){
+      editCancelHtml = `<div class="hint" style="margin-top:12px;">이미 승인된 접수건은 취소하거나 수정할 수 없어요. 변경이 필요하시면 관리자에게 문의해 주세요.</div>`;
+    }
 
     let midHtml, bottomHtml;
     if(rec.productType === 'reward'){
@@ -1813,6 +1878,7 @@ async function renderTable(){
       </div>
       ${buildSlotPips(rec)}
       ${taxHtml}
+      ${editCancelHtml}
     </div>`;
   }
   html += '</div>';
@@ -1833,6 +1899,24 @@ async function renderTable(){
       e.stopPropagation();
       const rec = records.find(r=>r.id===btn.dataset.id);
       if(rec) extendRecord(rec);
+    });
+  });
+  document.querySelectorAll('.editSubmitBtn').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const rec = records.find(r=>r.id===btn.dataset.id);
+      if(rec) startEditSubmission(rec);
+    });
+  });
+  document.querySelectorAll('.cancelSubmitBtn').forEach(btn=>{
+    btn.addEventListener('click', async (e)=>{
+      e.stopPropagation();
+      if(!confirm('이 접수건을 취소할까요? 취소하면 되돌릴 수 없어요.')) return;
+      const session = await getSession();
+      btn.disabled = true; btn.textContent = '취소 처리중...';
+      const res = await apiCall('cancelSubmission', { token: session.token, submissionId: btn.dataset.id });
+      if(res.ok){ showMsg('submitMsg', '접수가 취소됐어요.', 'ok'); invalidateSubmissionsCache(); renderTable(); }
+      else { showMsg('submitMsg', res.error || '취소 실패', 'warn'); btn.disabled = false; btn.textContent = '🚫 취소하기'; }
     });
   });
 
