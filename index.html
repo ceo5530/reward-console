@@ -302,6 +302,8 @@
   .auto-kw-more{font-size:0.76rem; color:var(--muted); text-decoration:underline; display:inline-block; margin-top:8px; cursor:pointer;}
   .auto-kw-candidates{display:flex; flex-direction:column; gap:6px; margin-top:10px;}
   .auto-kw-cand-row{display:flex; justify-content:space-between; align-items:center; background:#fff; border-radius:8px; padding:8px 12px; font-size:0.78rem; cursor:pointer;}
+  .select-cand-row.selected{background:var(--navy-2); color:#fff;}
+  .select-cand-row.selected span{color:#fff;}
   .auto-kw-cand-row:hover{background:var(--navy-2); color:#fff;}
   .auto-kw-cand-row span:last-child{color:var(--muted); font-size:0.72rem;}
   .auto-kw-cand-row:hover span{color:#fff;}
@@ -695,18 +697,26 @@
       </div>
 
       <div id="autoKeywordBlock" class="auto-kw-card" style="display:none;">
-        <div class="auto-kw-title">🎯 랭크온은 AI가 검색량 가장 높은 키워드를 자동으로 찾아드려요</div>
+        <div class="auto-kw-title">🎯 상품명을 입력하면 AI가 검색량 가장 높은 키워드를 찾아드려요</div>
+        <input id="autoKeywordProductName" class="toss-input" type="text" placeholder="예: 인조잔디" style="margin-top:10px;" />
         <div id="autoKeywordResult" style="display:none;">
           <div class="auto-kw-picked" id="autoKeywordPicked">-</div>
           <div class="auto-kw-meta" id="autoKeywordMeta">-</div>
           <a href="#" id="autoKeywordShowMore" class="auto-kw-more">다른 후보도 보기</a>
           <div id="autoKeywordCandidates" class="auto-kw-candidates" style="display:none;"></div>
         </div>
-        <button class="btn small secondary" id="autoKeywordBtn" style="margin-top:10px;">상품 링크로 키워드 찾기</button>
+        <button class="btn small secondary" id="autoKeywordBtn" style="margin-top:10px;">관련 키워드 찾기</button>
+      </div>
+
+      <div id="selectKeywordBlock" class="auto-kw-card" style="display:none;">
+        <div class="auto-kw-title">🔍 상품명을 입력하면 추천 키워드가 떠요, 최대 5개까지 골라 담으세요</div>
+        <input id="selectKeywordProductName" class="toss-input" type="text" placeholder="예: 인조잔디" style="margin-top:10px;" />
+        <button class="btn small secondary" id="selectKeywordBtn" style="margin-top:10px;">추천 키워드 찾기</button>
+        <div id="selectKeywordCandidates" class="auto-kw-candidates" style="display:none; margin-top:12px;"></div>
       </div>
 
       <div id="manualKeywordBlock">
-        <label>어떤 키워드로 순위를 올려드릴까요?</label>
+        <label>어떤 키워드로 순위를 올려드릴까요? (직접 입력, 또는 위에서 추천받아 선택)</label>
         <div class="kw-grid">
           <input id="f_kw1" type="text" placeholder="키워드 1" /><input id="f_kw2" type="text" placeholder="키워드 2" />
           <input id="f_kw3" type="text" placeholder="키워드 3" /><input id="f_kw4" type="text" placeholder="키워드 4" />
@@ -1420,8 +1430,10 @@ function updateCyclesOptions(){
   toggleKeywordMode(product);
 }
 function toggleKeywordMode(product){
-  const isAuto = product && product.id === 'naver_rankon'; // 랭크온만 AI 자동추천, 나머지는 직접 선택/입력
+  const isAuto = product && product.id === 'naver_rankon'; // 랭크온: AI가 1개 자동 선택, 선택 UI 없음
+  const isSelectable = product && (product.id === 'naver_jump' || product.id === 'coupang_best'); // 점프/베스트: 추천 중 골라 담기 + 직접입력 병행
   document.getElementById('autoKeywordBlock').style.display = isAuto ? 'block' : 'none';
+  document.getElementById('selectKeywordBlock').style.display = isSelectable ? 'block' : 'none';
   document.getElementById('manualKeywordBlock').style.display = isAuto ? 'none' : 'block';
 }
 document.getElementById('f_product').addEventListener('change', updateCyclesOptions);
@@ -1429,11 +1441,11 @@ document.getElementById('f_product').addEventListener('change', updateCyclesOpti
 
 // ---------- 랭크온 키워드 자동추천 ----------
 document.getElementById('autoKeywordBtn').addEventListener('click', async ()=>{
-  const link = document.getElementById('f_link').value.trim();
-  if(!link){ showMsg('submitMsg', '상품 링크를 먼저 입력해 주세요.', 'warn'); return; }
+  const productName = document.getElementById('autoKeywordProductName').value.trim();
+  if(!productName){ showMsg('submitMsg', '상품명을 먼저 입력해 주세요.', 'warn'); return; }
   const btn = document.getElementById('autoKeywordBtn');
   setBusy(btn, '키워드 찾는 중...');
-  const res = await apiCall('suggestKeyword', { link });
+  const res = await apiCall('suggestKeyword', { productName });
   clearBusy(btn);
   if(!res.ok){ showMsg('submitMsg', res.error || '키워드 추천에 실패했어요.', 'warn'); return; }
   applyAutoKeyword(res.best);
@@ -1459,6 +1471,42 @@ function applyAutoKeyword(best){
   document.getElementById('autoKeywordMeta').textContent = `월 검색량 ${best.volume.toLocaleString('ko-KR')}회 · 경쟁정도 ${best.compIdx}`;
   document.getElementById('f_kw1').value = best.keyword; // 실제 제출은 f_kw1~5를 그대로 읽으니, 자동선택 결과를 여기에 채워둔다
   ['f_kw2','f_kw3','f_kw4','f_kw5'].forEach(id=>document.getElementById(id).value='');
+}
+
+// ---------- 점프/쿠팡베스트: 추천 키워드 중 최대 5개까지 선택 ----------
+document.getElementById('selectKeywordBtn').addEventListener('click', async ()=>{
+  const productName = document.getElementById('selectKeywordProductName').value.trim();
+  if(!productName){ showMsg('submitMsg', '상품명을 먼저 입력해 주세요.', 'warn'); return; }
+  const btn = document.getElementById('selectKeywordBtn');
+  setBusy(btn, '키워드 찾는 중...');
+  const res = await apiCall('suggestKeyword', { productName });
+  clearBusy(btn);
+  if(!res.ok){ showMsg('submitMsg', res.error || '키워드 추천에 실패했어요.', 'warn'); return; }
+  const wrap = document.getElementById('selectKeywordCandidates');
+  wrap.style.display = 'flex';
+  const currentSelected = new Set([1,2,3,4,5].map(n=>document.getElementById('f_kw'+n).value.trim()).filter(Boolean));
+  wrap.innerHTML = res.candidates.map(c => `
+    <div class="auto-kw-cand-row select-cand-row${currentSelected.has(c.keyword)?' selected':''}" data-kw="${escapeHtml(c.keyword)}">
+      <span>${escapeHtml(c.keyword)}</span><span>월 ${c.volume.toLocaleString('ko-KR')}회 · 경쟁 ${escapeHtml(c.compIdx)}</span>
+    </div>`).join('');
+  document.querySelectorAll('.select-cand-row').forEach(row=>{
+    row.addEventListener('click', ()=> toggleCandidateSelection(row));
+  });
+});
+
+function toggleCandidateSelection(row){
+  const kw = row.dataset.kw;
+  const slots = [1,2,3,4,5].map(n=>document.getElementById('f_kw'+n));
+  const already = slots.find(inp => inp.value.trim() === kw);
+  if(already){
+    already.value = '';
+    row.classList.remove('selected');
+    return;
+  }
+  const empty = slots.find(inp => !inp.value.trim());
+  if(!empty){ showMsg('submitMsg', '키워드는 최대 5개까지만 선택할 수 있어요. 다른 키워드를 해제한 후 다시 선택해주세요.', 'warn'); return; }
+  empty.value = kw;
+  row.classList.add('selected');
 }
 
 function refreshPriceBox(){
@@ -1582,7 +1630,7 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
     const isAutoKeywordMode = document.getElementById('autoKeywordBlock').style.display !== 'none';
     if(!client || !link || !qty){ showMsg('submitMsg','필수 항목을 모두 입력해 주세요 (업체명/링크/갯수).','warn'); return; }
     if(keywords.length < 1){
-      if(isAutoKeywordMode) showMsg('submitMsg','먼저 "상품 링크로 키워드 찾기"를 눌러서 키워드를 찾아주세요.', 'warn');
+      if(isAutoKeywordMode) showMsg('submitMsg','먼저 상품명을 입력하고 "관련 키워드 찾기"를 눌러주세요.', 'warn');
       else showMsg('submitMsg','키워드를 최소 1개 입력해 주세요.', 'warn');
       return;
     }
