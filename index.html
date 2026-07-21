@@ -1614,7 +1614,11 @@ async function enterApp(session){
 }
 
 // ---------- 접수 제출 ----------
+let isSubmittingOrder = false; // 버튼 연타/터치+클릭 중복발생 등으로 접수가 두 번 나가는 것을 막는 잠금장치
 document.getElementById('submitBtn').addEventListener('click', async ()=>{
+  if(isSubmittingOrder) return; // 이미 처리 중이면 추가 클릭 완전히 무시
+  isSubmittingOrder = true;
+  try {
   const session = await getSession();
   if(!session){ showMsg('submitMsg','세션이 만료되었습니다. 다시 로그인해 주세요.','warn'); return; }
   const isYoutube = document.getElementById('pt_youtube').classList.contains('active');
@@ -1678,6 +1682,9 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
     invalidateSubmissionsCache();
     renderTable();
   } else showMsg('submitMsg', res.error || (isEditing ? '수정 실패' : '접수 실패'),'warn');
+  } finally {
+    isSubmittingOrder = false; // 성공하든 실패하든 잠금은 반드시 풀어줘야 다음 접수를 할 수 있다
+  }
 });
 
 // ---------- 대시보드 ----------
@@ -1774,11 +1781,16 @@ function startEditSubmission(rec){
   }, 300);
 }
 
-async function renderTable(){
+async function renderTable(quiet){
   const session = await getSession();
   const wrap = document.getElementById('tableWrap');
   if(!session){ wrap.innerHTML='<div class="empty">로그인이 필요합니다.</div>'; return; }
-  wrap.innerHTML = '<div class="empty"><div class="spinner"></div>불러오는 중...</div>';
+  // 30초 자동갱신 같은 "조용한" 재조회에서는 로딩스피너로 화면을 지워버리지 않는다 (펼쳐본 내용이 깜빡이며 사라지는 것 방지)
+  if(!quiet) wrap.innerHTML = '<div class="empty"><div class="spinner"></div>불러오는 중...</div>';
+  // 재렌더링 전에 지금 펼쳐져 있던 항목들을 기억해뒀다가, 다시 그린 뒤 그대로 복원한다
+  const expandedIds = Array.from(document.querySelectorAll('#tableWrap .status-detail'))
+    .filter(el => el.style.display !== 'none')
+    .map(el => el.id.replace('detail-',''));
   const [listRes, rankRes] = await Promise.all([ fetchSubmissionsCached(session), apiCall('ranks',{token:session.token}) ]);
   if(!listRes.ok){ wrap.innerHTML = `<div class="empty">${escapeHtml(listRes.error||'조회 실패')}</div>`; return; }
   const records = (listRes.submissions||[]).sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt));
@@ -1884,6 +1896,13 @@ async function renderTable(){
   html += '</div>';
   wrap.innerHTML = html;
 
+  // 이전에 펼쳐놨던 항목이 있으면 다시 그린 뒤에도 그대로 펼쳐진 상태로 복원
+  expandedIds.forEach(id=>{
+    const detail = document.getElementById('detail-'+id);
+    const row = document.querySelector(`.status-row[data-toggle="${id}"]`);
+    if(detail && row){ detail.style.display = 'block'; row.classList.add('expanded'); }
+  });
+
   document.querySelectorAll('.status-row').forEach(row=>{
     row.addEventListener('click', (e)=>{
       if(e.target.closest('.extendBtn') || e.target.closest('.approveBtn')) return; // 버튼 클릭은 펼침과 별개로 처리
@@ -1972,7 +1991,7 @@ document.getElementById('refreshBtn').addEventListener('click', renderTable);
 setInterval(async ()=>{
   const session = await getSession();
   const mainPanel = document.getElementById('panelMain');
-  if(session && mainPanel && mainPanel.classList.contains('active')) renderTable();
+  if(session && mainPanel && mainPanel.classList.contains('active')) renderTable(true);
 }, 30000);
 
 
