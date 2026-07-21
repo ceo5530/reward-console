@@ -336,6 +336,7 @@
   table{width:100%; border-collapse:collapse; font-size:0.88rem;}
   th{text-align:left; font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.04em; padding:10px 12px; border-bottom:1px solid var(--line);}
   .sortable-th:hover{color:var(--navy-2);}
+  #rankChart, #home_rankChart{ width:100% !important; height:100% !important; }
   .admin-status-tabs{display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap;}
   .admin-status-tab{padding:7px 14px; border-radius:20px; border:1px solid var(--line); background:#fff; font-size:0.8rem; font-weight:600; color:var(--muted); cursor:pointer;}
   .admin-status-tab.active{background:var(--navy-2); color:#fff; border-color:var(--navy-2);}
@@ -570,16 +571,19 @@
       <div class="sp-ref">내 추천코드 <span class="refcode" id="myRefCode">-</span></div>
     </div>
     <nav class="sidebar-nav">
-      <button class="navtab active" data-panel="panelHome" data-label="홈">🏠 홈</button>
-      <button class="navtab" data-panel="panelMain" data-label="접수 / 현황">📝 접수 / 현황</button>
-      <button class="navtab" data-panel="panelDashboard" data-label="내 현황판">📊 내 현황판</button>
-      <button class="navtab" data-panel="panelCoupons" data-label="보유 쿠폰함">🎟 보유 쿠폰함</button>
+      <button class="navtab active client-only" data-panel="panelHome" data-label="홈">🏠 홈</button>
+      <button class="navtab client-only" data-panel="panelMain" data-label="접수 / 현황">📝 접수 / 현황</button>
+      <button class="navtab client-only" data-panel="panelDashboard" data-label="내 현황판">📊 내 현황판</button>
+      <button class="navtab client-only" data-panel="panelCoupons" data-label="보유 쿠폰함">🎟 보유 쿠폰함</button>
       <button class="navtab admin-only" data-panel="panelAdmin" data-label="관리자 대시보드" style="display:none;">🛠 관리자 대시보드</button>
       <button class="navtab admin-only" data-panel="panelClients" data-label="업체목록" style="display:none;">🏢 업체목록</button>
       <button class="navtab admin-only" data-panel="panelLeads" data-label="진단 리드" style="display:none;">🔍 진단 리드</button>
       <button class="navtab admin-only" data-panel="panelReferrals" data-label="추천 현황" style="display:none;">👥 추천 현황(관리자)</button>
     </nav>
-    <div class="sidebar-foot"><button id="logoutBtn">로그아웃</button></div>
+    <div class="sidebar-foot">
+      <button id="logoutBtn">로그아웃</button>
+      <button id="withdrawBtn" class="client-only" style="margin-top:8px; color:var(--bad);">회원탈퇴</button>
+    </div>
   </aside>
 
   <div class="content-area">
@@ -1396,6 +1400,22 @@ document.getElementById('logoutBtn').addEventListener('click', async ()=>{
   app.style.display='none';
   showGateway();
 });
+document.getElementById('withdrawBtn').addEventListener('click', async ()=>{
+  if(!confirm('정말 탈퇴하시겠어요? 계정은 즉시 삭제되고 되돌릴 수 없어요. (접수 이력 자체는 매출 기록 보존을 위해 남아있어요)')) return;
+  if(!confirm('마지막 확인이에요. 탈퇴를 진행할까요?')) return;
+  const session = await getSession();
+  if(!session) return;
+  const res = await apiCall('withdrawUser', { token: session.token });
+  if(res.ok){
+    await clearSession();
+    const app = document.getElementById('app');
+    app.classList.remove('visible');
+    app.style.display='none';
+    showGateway();
+  } else {
+    alert(res.error || '탈퇴 처리에 실패했어요.');
+  }
+});
 
 // ---------- 탭 네비게이션 ----------
 function switchPanelDOM(panelName){
@@ -1413,11 +1433,11 @@ function switchPanelDOM(panelName){
   window.scrollTo({ top:0, behavior:'smooth' });
   if(panelName === 'panelCoupons') renderCoupons();
   if(panelName === 'panelReferrals') renderReferrals();
-  if(panelName === 'panelDashboard') loadDashboard();
+  if(panelName === 'panelDashboard'){ loadDashboard(); setTimeout(()=>{ if(rankChartInstances['']) rankChartInstances[''].resize(); }, 50); }
   if(panelName === 'panelAdmin') loadAdmin();
   if(panelName === 'panelClients') loadClients();
   if(panelName === 'panelLeads') loadLeadsPanel();
-  if(panelName === 'panelHome') loadHome();
+  if(panelName === 'panelHome'){ loadHome(); setTimeout(()=>{ if(rankChartInstances['home_']) rankChartInstances['home_'].resize(); }, 50); }
 }
 function switchToPanel(panelName, push){
   switchPanelDOM(panelName);
@@ -1645,6 +1665,8 @@ async function enterApp(session){
     document.getElementById('lbl_client').textContent = '업체명 / 신청자 (관리자 대리접수 가능)';
     document.getElementById('lbl_client_yt').textContent = '업체명 / 신청자 (관리자 대리접수 가능)';
     document.querySelectorAll('.admin-only').forEach(el=>el.style.display='inline-block');
+    document.querySelectorAll('.client-only').forEach(el=>el.style.display='none'); // 홈/접수현황/내현황판/쿠폰함은 고객용 화면이라 관리자에겐 숨김
+    switchToPanel('panelAdmin'); // 관리자는 로그인하면 바로 관리자 대시보드로
   }
 
   await loadCatalog();
@@ -1916,6 +1938,7 @@ async function renderTable(quiet){
             <div class="tax-form" id="taxForm-${rec.id}" style="display:none; margin-top:10px; max-width:320px;">
               <input type="email" placeholder="계산서 받을 이메일" id="taxEmail-${rec.id}" style="margin-bottom:8px;" />
               <input type="file" accept="image/*" id="taxFile-${rec.id}" style="margin-bottom:8px;" />
+              <div class="msg" id="taxMsg-${rec.id}"></div>
               <div class="hint" style="margin-bottom:8px;">사업자등록증 사진 1장을 첨부해 주세요 (5MB 이하 권장)</div>
               <button class="btn small taxSubmitBtn" data-id="${rec.id}">제출하기</button>
             </div>
@@ -2022,8 +2045,9 @@ async function renderTable(quiet){
       const email = document.getElementById('taxEmail-'+id).value.trim();
       const fileInput = document.getElementById('taxFile-'+id);
       const file = fileInput.files[0];
-      if(!email || !file){ showMsg('submitMsg','이메일과 사업자등록증 파일을 모두 입력해 주세요.','warn'); return; }
-      if(file.size > 5*1024*1024){ showMsg('submitMsg','파일 용량이 너무 커요. 5MB 이하로 올려주세요.','warn'); return; }
+      const inlineMsg = document.getElementById('taxMsg-'+id);
+      if(!email || !file){ showMsg('taxMsg-'+id,'이메일과 사업자등록증 파일을 모두 입력해 주세요.','warn'); return; }
+      if(file.size > 5*1024*1024){ showMsg('taxMsg-'+id,'파일 용량이 너무 커요. 5MB 이하로 올려주세요.','warn'); return; }
       setBusy(btn, '업로드 중...');
       try{
         const base64 = await new Promise((resolve,reject)=>{
@@ -2035,11 +2059,11 @@ async function renderTable(quiet){
         const s = await getSession();
         const res = await apiCall('requestTaxInvoice', { token:s.token, submissionId:id, invoiceEmail:email, certImageBase64:base64, certFileName:file.name, certMimeType:file.type });
         clearBusy(btn);
-        if(res.ok){ showMsg('submitMsg','세금계산서 요청이 접수됐어요.','ok'); invalidateSubmissionsCache(); renderTable(); }
-        else { showMsg('submitMsg', res.error||'요청 실패','warn'); }
+        if(res.ok){ showMsg('taxMsg-'+id,'세금계산서 요청이 접수됐어요.','ok'); invalidateSubmissionsCache(); setTimeout(()=>renderTable(), 1200); }
+        else { showMsg('taxMsg-'+id, res.error||'요청 실패','warn'); }
       }catch(e){
         clearBusy(btn);
-        showMsg('submitMsg','파일 처리 중 오류가 발생했어요.','warn');
+        showMsg('taxMsg-'+id,'파일 처리 중 오류가 발생했어요.','warn');
       }
     });
   });
@@ -2143,8 +2167,8 @@ function renderPendingTable(){
           <td>${escapeHtml(r.client)}${extendBadge}</td>
           <td>${escapeHtml(title)}</td>
           <td>${amount}</td>
-          <td>${escapeHtml(r.startDate || '-')}</td>
-          <td>${escapeHtml(r.endDate || '-')}</td>
+          <td>${escapeHtml(prettyDate(r.startDate))}</td>
+          <td>${escapeHtml(prettyDate(r.endDate))}</td>
           <td></td>
         </tr>`;
       }).join('')}</tbody>
@@ -2328,14 +2352,18 @@ async function loadClients(){
   const listRes = await fetchSubmissionsCached(session);
   const records = (listRes.ok ? listRes.submissions : []) || [];
   const referralsRes = await apiCall('listReferrals', { token: session.token });
-  const referredEmails = new Set(((referralsRes.ok ? referralsRes.referrals : []) || []).map(r => r.referredEmail));
+  const referredEmails = new Set(((referralsRes.ok ? referralsRes.referrals : []) || [])
+    .filter(r => r.referrerCompany !== '(코드 불일치)') // 코드가 실제로 유효하게 매칭된 경우만 "추천가입"으로 인정
+    .map(r => r.referredEmail));
+  const couponsRes = await apiCall('listCoupons', { token: session.token }); // 관리자는 전체 쿠폰 내역을 받아옴
+  const allCoupons = (couponsRes.ok ? couponsRes.coupons : []) || [];
 
   // 업체(이메일 기준)별로 그룹핑해서 요약치 계산
   const clientMap = {};
   const today = fmt(new Date());
   records.forEach(r=>{
     const key = r.ownerEmail || r.client;
-    if(!clientMap[key]) clientMap[key] = { client: r.client, ownerEmail: r.ownerEmail, records: [], totalRevenue: 0, activeCount: 0, lastCreatedAt: null, viaReferral: referredEmails.has(r.ownerEmail) };
+    if(!clientMap[key]) clientMap[key] = { client: r.client, ownerEmail: r.ownerEmail, records: [], totalRevenue: 0, activeCount: 0, lastCreatedAt: null, viaReferral: referredEmails.has(r.ownerEmail), coupons: allCoupons.filter(c=>c.ownerEmail===r.ownerEmail) };
     const g = clientMap[key];
     g.records.push(r);
     if(r.status === 'approved' || r.status === 'confirmed') g.totalRevenue += Number(r.grandTotal||0);
@@ -2430,14 +2458,23 @@ async function renderClientDetail(container, c){
   });
   const months = Object.keys(monthly).sort();
 
-  const historyRows = [...c.records].sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt)).map(r=>{
+  const chartId = 'clientRevChart_' + Math.random().toString(36).slice(2,8);
+  const sortedRecords = [...c.records].sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt));
+
+  // 뎁스2: 이 업체의 슬롯(접수건) 목록 - 클릭하면 뎁스3(세부현황)이 그 아래 펼쳐짐
+  const slotRows = sortedRecords.map((r,i) => {
     const st = statusLabel(r);
     const title = r.productType==='reward' ? `${escapeHtml(r.channel)}·${escapeHtml(r.program)} ${r.qty}개` : '유튜브 촬영';
-    return `<tr><td>${escapeHtml(prettyDate(fmt(new Date(r.createdAt))))}</td><td>${title}</td><td>${Number(r.grandTotal||0).toLocaleString('ko-KR')}원</td><td><span class="pill ${st.cls}">${st.text}</span></td></tr>`;
+    const period = r.productType==='reward' && r.startDate ? `${prettyDate(r.startDate)} ~ ${prettyDate(r.endDate)}` : '-';
+    return `
+      <tr class="slot-row" data-idx="${i}" style="cursor:pointer;">
+        <td>${title}</td>
+        <td>${period}</td>
+        <td>${Number(r.grandTotal||0).toLocaleString('ko-KR')}원</td>
+        <td><span class="pill ${st.cls}">${st.text}</span></td>
+      </tr>
+      <tr class="slot-detail-row" id="slotdetailrow-${i}" style="display:none;"><td colspan="4"><div id="slotdetail-${i}"></div></td></tr>`;
   }).join('');
-
-  const chartId = 'clientRevChart_' + Math.random().toString(36).slice(2,8);
-  const rankChartId = 'clientRankChart_' + Math.random().toString(36).slice(2,8);
 
   container.innerHTML = `
     <div class="admin-stat-grid" style="margin-bottom:18px;">
@@ -2453,13 +2490,23 @@ async function renderClientDetail(container, c){
         <option value="5+2">추천인쿠폰(5+2)</option>
       </select>
       <button class="btn small secondary grantCouponBtn" data-email="${escapeHtml(c.ownerEmail||'')}" data-selectid="grantCouponType_${chartId}">🎁 이 업체에 쿠폰 지급</button>
+      <button class="btn small secondary adminDeleteUserBtn" data-email="${escapeHtml(c.ownerEmail||'')}" data-client="${escapeHtml(c.client)}" style="color:var(--bad);">🚫 강제 회원탈퇴</button>
     </div>
+    <div style="font-size:0.85rem; font-weight:700; margin-bottom:10px;">지급된 쿠폰 내역</div>
+    <div style="overflow-x:auto; margin-bottom:20px;"><table>
+      <thead><tr><th>종류</th><th>지급일</th><th>지급자</th><th>상태</th></tr></thead>
+      <tbody>${c.coupons.length===0 ? '<tr><td colspan="4">지급된 쿠폰이 없어요.</td></tr>' : c.coupons.map(cp=>`
+        <tr>
+          <td>${couponLabel(cp.type)}</td>
+          <td>${escapeHtml(prettyDate(fmt(new Date(cp.grantedAt))))}</td>
+          <td>${escapeHtml(cp.grantedBy||'-')}</td>
+          <td>${cp.status==='used' ? `사용완료 (${escapeHtml(cp.usedAt ? prettyDate(fmt(new Date(cp.usedAt))) : '-')})` : '<span style="color:var(--good); font-weight:700;">사용가능</span>'}</td>
+        </tr>`).join('')}</tbody>
+    </table></div>
     <div style="font-size:0.85rem; font-weight:700; margin-bottom:10px;">매출 추이</div>
-    <div style="position:relative; height:200px; margin-bottom:20px;"><canvas id="${chartId}"></canvas></div>
-    <div style="font-size:0.85rem; font-weight:700; margin-bottom:10px;">순위 변동 추이 (컨설팅용)</div>
-    <div style="position:relative; height:240px; margin-bottom:20px;"><canvas id="${rankChartId}"></canvas></div>
-    <div style="font-size:0.85rem; font-weight:700; margin-bottom:10px;">접수 히스토리</div>
-    <div style="overflow-x:auto;"><table><thead><tr><th>날짜</th><th>상품</th><th>금액</th><th>상태</th></tr></thead><tbody>${historyRows || '<tr><td colspan="4">내역 없음</td></tr>'}</tbody></table></div>
+    <div style="position:relative; height:200px; margin-bottom:20px;"><canvas id="${chartId}" style="width:100% !important; height:100% !important;"></canvas></div>
+    <div style="font-size:0.85rem; font-weight:700; margin-bottom:10px;">슬롯 목록 (클릭하면 순위 그래프가 펼쳐져요)</div>
+    <div style="overflow-x:auto;"><table><thead><tr><th>상품</th><th>기간</th><th>금액</th><th>상태</th></tr></thead><tbody>${slotRows || '<tr><td colspan="4">내역 없음</td></tr>'}</tbody></table></div>
   `;
 
   container.querySelector('.grantCouponBtn').addEventListener('click', async (e)=>{
@@ -2469,21 +2516,75 @@ async function renderClientDetail(container, c){
     const session = await getSession();
     btn.disabled = true; btn.textContent = '지급중...';
     const res = await apiCall('grantCoupon', { token: session.token, ownerEmail: btn.dataset.email, type });
-    if(res.ok){ showMsg('submitMsg', '쿠폰을 지급했어요.', 'ok'); btn.textContent = '✅ 지급완료'; }
+    if(res.ok){
+      showMsg('submitMsg', '쿠폰을 지급했어요.', 'ok');
+      c.coupons.push({ type, grantedAt: new Date().toISOString(), grantedBy: (await getSession()).email, status:'available' });
+      renderClientDetail(container, c); // 방금 지급한 내역이 바로 표에 반영되도록 다시 그림
+    }
     else { showMsg('submitMsg', res.error || '지급 실패', 'warn'); btn.disabled = false; btn.textContent = '🎁 이 업체에 쿠폰 지급'; }
   });
 
-  // 매출 그래프
-  new Chart(document.getElementById(chartId).getContext('2d'), {
-    type:'bar',
-    data:{ labels: months, datasets:[{ label:'매출', data: months.map(m=>monthly[m]), backgroundColor:'#3A31A0' }] },
-    options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
-      scales:{ y:{ ticks:{ callback:(v)=>Number(v).toLocaleString('ko-KR')+'원' } } } }
+  container.querySelector('.adminDeleteUserBtn').addEventListener('click', async (e)=>{
+    e.stopPropagation();
+    const btn = e.target;
+    if(!confirm(`"${btn.dataset.client}"(${btn.dataset.email}) 계정을 강제로 탈퇴시킬까요? 계정은 즉시 삭제되고 되돌릴 수 없어요. (접수/매출 이력은 보존돼요)`)) return;
+    const session = await getSession();
+    btn.disabled = true; btn.textContent = '처리중...';
+    const res = await apiCall('adminDeleteUser', { token: session.token, email: btn.dataset.email });
+    if(res.ok){ showMsg('submitMsg', '해당 계정을 탈퇴 처리했어요.', 'ok'); loadClients(); }
+    else { showMsg('submitMsg', res.error || '처리 실패', 'warn'); btn.disabled = false; btn.textContent = '🚫 강제 회원탈퇴'; }
   });
 
-  // 순위 변동 그래프 (이 업체의 전체 접수건 기준, 내 상품 순위만 - 경쟁사는 컨설팅 화면에선 생략해서 심플하게)
+  // 매출 그래프
+  requestAnimationFrame(()=>{
+    new Chart(document.getElementById(chartId).getContext('2d'), {
+      type:'bar',
+      data:{ labels: months, datasets:[{ label:'매출', data: months.map(m=>monthly[m]), backgroundColor:'#3A31A0' }] },
+      options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+        scales:{ y:{ ticks:{ callback:(v)=>Number(v).toLocaleString('ko-KR')+'원' } } } }
+    });
+  });
+
+  // 뎁스3: 슬롯 클릭하면 그 슬롯 하나만의 순위그래프+세부정보를 펼쳐서 보여줌 (아코디언, 한번에 하나만)
+  container.querySelectorAll('.slot-row').forEach((row,i)=>{
+    row.addEventListener('click', ()=>{
+      const detailRow = document.getElementById('slotdetailrow-'+i);
+      const detail = document.getElementById('slotdetail-'+i);
+      const willShow = detailRow.style.display === 'none';
+      container.querySelectorAll('.slot-detail-row').forEach(d=>d.style.display='none');
+      if(willShow){
+        detailRow.style.display = 'table-row';
+        renderSlotDetail(detail, sortedRecords[i]);
+      }
+    });
+  });
+}
+
+// 뎁스3: 슬롯 하나의 세부현황 (그 상품/키워드만의 순위 그래프)
+async function renderSlotDetail(container, rec){
+  container.innerHTML = '<div class="empty"><div class="spinner"></div>불러오는 중...</div>';
+  const kws = Array.isArray(rec.keywords) ? rec.keywords : String(rec.keywords||'').split(',').map(k=>k.trim()).filter(Boolean);
+  const rankChartId = 'slotRankChart_' + Math.random().toString(36).slice(2,8);
+
+  const infoHtml = rec.productType === 'reward'
+    ? `<div class="admin-stat-grid" style="margin-bottom:16px;">
+        <div class="admin-stat"><div class="admin-stat-n" style="font-size:1rem;">${escapeHtml(rec.link||'-')}</div><div class="admin-stat-l">상품 링크</div></div>
+        <div class="admin-stat"><div class="admin-stat-n">${kws.length}개</div><div class="admin-stat-l">추적 키워드</div></div>
+        <div class="admin-stat"><div class="admin-stat-n" style="font-size:0.95rem;">${prettyDate(rec.startDate)} ~ ${prettyDate(rec.endDate)}</div><div class="admin-stat-l">집행 기간</div></div>
+      </div>`
+    : `<div class="admin-stat-grid" style="margin-bottom:16px;">
+        <div class="admin-stat"><div class="admin-stat-n" style="font-size:1rem;">${escapeHtml(rec.location||'-')}</div><div class="admin-stat-l">촬영 장소</div></div>
+        <div class="admin-stat"><div class="admin-stat-n" style="font-size:1rem;">${prettyDate(rec.requestedDate)}</div><div class="admin-stat-l">희망일</div></div>
+      </div>`;
+
+  container.innerHTML = `
+    ${infoHtml}
+    ${rec.productType==='reward' ? `<div style="position:relative; height:220px;"><canvas id="${rankChartId}" style="width:100% !important; height:100% !important;"></canvas></div>` : ''}
+  `;
+  if(rec.productType !== 'reward') return;
+
   const session = await getSession();
-  const rankRes = await apiCall('getRankHistory', { token: session.token, ownerEmail: c.ownerEmail });
+  const rankRes = await apiCall('getRankHistory', { token: session.token, submissionId: rec.id });
   const history = (rankRes.ok ? rankRes.history : []) || [];
   const grouped = {};
   history.forEach(h=>{
@@ -2500,11 +2601,13 @@ async function renderClientDetail(container, c){
   if(datasets.length === 0){
     document.getElementById(rankChartId).parentElement.innerHTML = '<div class="empty">아직 순위 데이터가 없어요.</div>';
   } else {
-    new Chart(document.getElementById(rankChartId).getContext('2d'), {
-      type:'line', data:{ datasets },
-      options:{ responsive:true, maintainAspectRatio:false, interaction:{mode:'nearest',intersect:false},
-        scales:{ x:{ type:'time', time:{unit:'day', tooltipFormat:'M월 d일'} }, y:{ reverse:true, ticks:{precision:0} } },
-        plugins:{ legend:{ labels:{ color:'#191F28' } } } }
+    requestAnimationFrame(()=>{
+      new Chart(document.getElementById(rankChartId).getContext('2d'), {
+        type:'line', data:{ datasets },
+        options:{ responsive:true, maintainAspectRatio:false, interaction:{mode:'nearest',intersect:false},
+          scales:{ x:{ type:'time', time:{unit:'day', tooltipFormat:'M월 d일'} }, y:{ reverse:true, ticks:{precision:0} } },
+          plugins:{ legend:{ labels:{ color:'#191F28' } } } }
+      });
     });
   }
 }
@@ -2652,7 +2755,7 @@ function renderHomeProgress(rec){
     const weight = curr ? 800 : 700;
     return `<div style="display:flex; flex-direction:column; align-items:center; gap:7px; width:25%;">${dot}<div style="font-size:0.6rem; color:${color}; font-weight:${weight};">${label}</div></div>`;
   }).join('');
-  document.getElementById('homeProgressNote').textContent = rec.endDate ? `${rec.endDate} 종료 예정` : '승인 후 일정이 확정돼요';
+  document.getElementById('homeProgressNote').textContent = rec.endDate ? `${prettyDate(rec.endDate)} 종료 예정` : '승인 후 일정이 확정돼요';
 }
 
 // ---------- 현황판 ----------
@@ -2678,6 +2781,16 @@ function initChartDefaultDates(prefix){
     startEl.value = fmt(start);
     document.getElementById(prefix+'chart_end').value = fmt(end);
   }
+}
+
+// 종료된 캠페인은 "최근 30일"과 실제 집행기간이 안 겹칠 수 있어서, 상품을 고르면
+// 그 상품이 실제로 진행됐던 기간(시작일 ~ 종료일, 진행중이면 오늘까지)으로 조회기간을 자동으로 맞춘다.
+function setChartRangeForRecord(rec, prefix){
+  if(!rec || !rec.acceptDate){ initChartDefaultDates(prefix); return; }
+  const start = rec.acceptDate;
+  const end = rec.endDate && rec.endDate < fmt(new Date()) ? rec.endDate : fmt(new Date());
+  document.getElementById(prefix+'chart_start').value = start;
+  document.getElementById(prefix+'chart_end').value = end;
 }
 
 // 채널/프로그램별로 슬롯수(갯수+보너스)를 합산
@@ -2835,7 +2948,10 @@ function populateChartSubmissionSelect(records, prefix){
   ).join('');
   sel._recordsCache = rewardRecords;
   updateKeywordCheckboxes(rewardRecords[0], prefix);
-  fetchAndRenderChart(prefix);
+  setChartRangeForRecord(rewardRecords[0], prefix);
+  // 방금 화면(display:none -> block)이 보이기 시작한 직후라 브라우저가 아직 크기를 못 잡았을 수 있어서,
+  // 한 프레임 넘긴 뒤에 그래프를 그린다 (그래야 캔버스가 0크기로 잘못 측정되는 걸 막을 수 있음)
+  requestAnimationFrame(()=> fetchAndRenderChart(prefix));
 }
 
 function updateKeywordCheckboxes(rec, prefix){
@@ -2851,6 +2967,7 @@ function updateKeywordCheckboxes(rec, prefix){
     const records = e.target._recordsCache || [];
     const rec = records.find(r => r.id === e.target.value);
     updateKeywordCheckboxes(rec, prefix);
+    setChartRangeForRecord(rec, prefix);
     fetchAndRenderChart(prefix);
   });
   document.getElementById(prefix+'chart_keywords').addEventListener('change', ()=>fetchAndRenderChart(prefix));
