@@ -1628,7 +1628,14 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
     const competitorLinks = [1,2,3].map(n=>document.getElementById('f_comp'+n).value.trim()).filter(Boolean);
     const couponId = document.getElementById('f_coupon').value;
     const isAutoKeywordMode = document.getElementById('autoKeywordBlock').style.display !== 'none';
-    if(!client || !link || !qty){ showMsg('submitMsg','필수 항목을 모두 입력해 주세요 (업체명/링크/갯수).','warn'); return; }
+    if(!client || !link || !qty){
+      const missing = [];
+      if(!client) missing.push('업체명');
+      if(!link) missing.push('상품 링크');
+      if(!qty) missing.push('갯수');
+      showMsg('submitMsg', `다음 항목이 비어있어요: ${missing.join(', ')}`, 'warn');
+      return;
+    }
     if(keywords.length < 1){
       if(isAutoKeywordMode) showMsg('submitMsg','먼저 상품명을 입력하고 "관련 키워드 찾기"를 눌러주세요.', 'warn');
       else showMsg('submitMsg','키워드를 최소 1개 입력해 주세요.', 'warn');
