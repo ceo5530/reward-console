@@ -1462,6 +1462,7 @@ function switchPanelDOM(panelName){
   // 여기서부터는 각 패널의 데이터 로딩. 하나가 실패해도 화면 전환 자체는 이미 끝났고,
   // 다음 번 다른 메뉴 클릭에도 영향을 주지 않도록 개별적으로 감싼다.
   const safeRun = (fn) => { try { fn(); } catch(e) { console.error('패널 로딩 중 오류(' + panelName + '):', e); } };
+  if(panelName === 'panelMain') safeRun(loadCoupons); // 관리자가 방금 지급한 쿠폰이 있을 수 있어서, 접수폼 들어갈 때마다 최신 쿠폰 목록으로 갱신
   if(panelName === 'panelCoupons') safeRun(renderCoupons);
   if(panelName === 'panelReferrals') safeRun(renderReferrals);
   if(panelName === 'panelDashboard'){
@@ -1675,8 +1676,11 @@ function refreshCouponOptions(){
   const wrap = document.getElementById('couponPickWrap');
   const sel = document.getElementById('f_coupon');
   const usable = COUPONS_CACHE.filter(c => qty >= req_(c));
-  if(COUPONS_CACHE.length===0){ wrap.style.display='none'; return; }
-  wrap.style.display='block';
+  wrap.style.display='block'; // 쿠폰이 0개여도 섹션 자체는 계속 보여주고, 안에 상태 문구로 안내한다 (섹션이 통째로 사라지면 버그처럼 보임)
+  if(COUPONS_CACHE.length===0){
+    sel.innerHTML = '<option value="">사용 안 함</option><option disabled>보유한 쿠폰이 없어요</option>';
+    return;
+  }
   sel.innerHTML = '<option value="">사용 안 함</option>' + usable.map(c=>`<option value="${c.id}">${couponLabel(c.type)} (${req_(c)}개 이상)</option>`).join('');
   if(usable.length===0){ sel.innerHTML += '<option disabled>주문 갯수를 늘리면 사용 가능</option>'; }
 }
@@ -2221,7 +2225,7 @@ async function renderTable(quiet){
     });
   });
 }
-document.getElementById('refreshBtn').addEventListener('click', renderTable);
+document.getElementById('refreshBtn').addEventListener('click', ()=>{ loadCoupons(); renderTable(); });
 setInterval(async ()=>{
   const session = await getSession();
   const mainPanel = document.getElementById('panelMain');
@@ -2821,10 +2825,11 @@ function renderHomeTicker(active){
     try{ ranks = r.ranksJson ? JSON.parse(r.ranksJson) : {}; }catch(e){}
     try{ prev = r.prevRanksJson ? JSON.parse(r.prevRanksJson) : {}; }catch(e){}
     const kws = Array.isArray(r.keywords) ? r.keywords : String(r.keywords||'').split(',').map(k=>k.trim()).filter(Boolean);
+    const productLabel = r.channel; // 프로그램명까지는 필요없고, 어느 플랫폼(네이버/쿠팡) 건지만 간단히
     kws.forEach(kw=>{
       const cur = ranks[kw] ? ranks[kw].rank : null;
       const prv = prev[kw] ? prev[kw].rank : null;
-      items.push({ kw, cur, prv });
+      items.push({ kw, cur, prv, productLabel });
     });
   });
   if(items.length === 0){ card.style.display='none'; return; }
@@ -2837,26 +2842,29 @@ function renderHomeTicker(active){
       if(diff>0) deltaHtml = `<span style="font-size:0.68rem; color:#E24B4A; font-weight:700;">▲${diff}</span>`;
       else if(diff<0) deltaHtml = `<span style="font-size:0.68rem; color:#378ADD; font-weight:700;">▼${Math.abs(diff)}</span>`;
     }
-    return `<div class="home-tick-item"><span style="font-size:0.72rem; color:#4E5968; font-weight:600;">${escapeHtml(it.kw)}</span><span style="font-size:0.78rem; color:#191F28; font-weight:800;">${rankText}</span>${deltaHtml}</div>`;
+    return `<div class="home-tick-item"><span style="font-size:0.68rem; color:#9AA0A6; font-weight:700;">${escapeHtml(it.productLabel)}</span><span style="font-size:0.72rem; color:#4E5968; font-weight:600;">${escapeHtml(it.kw)}</span><span style="font-size:0.78rem; color:#191F28; font-weight:800;">${rankText}</span>${deltaHtml}</div>`;
   }).join('');
   track.innerHTML = buildRow() + buildRow();
 }
 
 function renderHomeHero(active){
   const heroCard = document.getElementById('homeHeroCard');
-  let best = null, bestKw = null, bestPrev = null;
+  let best = null, bestKw = null, bestPrev = null, bestProduct = null;
   active.forEach(r=>{
     let ranks = {}, prev = {};
     try{ ranks = r.ranksJson ? JSON.parse(r.ranksJson) : {}; }catch(e){}
     try{ prev = r.prevRanksJson ? JSON.parse(r.prevRanksJson) : {}; }catch(e){}
     Object.keys(ranks).forEach(kw=>{
       const v = ranks[kw].rank;
-      if(typeof v === 'number' && (best === null || v < best)){ best = v; bestKw = kw; bestPrev = prev[kw] ? prev[kw].rank : null; }
+      if(typeof v === 'number' && (best === null || v < best)){ best = v; bestKw = kw; bestPrev = prev[kw] ? prev[kw].rank : null; bestProduct = `${r.channel}·${r.program}`; }
     });
   });
   if(best === null){ heroCard.style.display = 'none'; return; }
   heroCard.style.display = 'block';
-  document.getElementById('homeHeroLabel').textContent = `'${bestKw}' 최고 순위`;
+  // 진행중인 캠페인이 여러 개면, 이게 "그 중 제일 잘 나온 것 하나"라는 걸 명확히 알 수 있게 상품명도 같이 표시
+  document.getElementById('homeHeroLabel').textContent = active.length > 1
+    ? `'${bestKw}' 최고 순위 (${bestProduct} · 진행중 ${active.length}건 중 최고)`
+    : `'${bestKw}' 최고 순위`;
   document.getElementById('homeHeroRank').innerHTML = `${best}<span style="font-size:0.9rem;">위</span>`;
   const badge = document.getElementById('homeHeroBadge');
   if(typeof bestPrev === 'number'){
