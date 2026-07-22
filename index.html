@@ -365,7 +365,7 @@
   #authScreen{transition:opacity .25s ease;}
   #app.visible{display:block; animation:appFadeIn .35s ease;}
   @keyframes appFadeIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
-  #panelMain.main-accordion{ display:flex !important; flex-direction:column; gap:14px; }
+  #panelMain.main-accordion.active{ display:flex !important; flex-direction:column; gap:14px; }
   .main-accordion-card{ padding:0; overflow:hidden; }
   .main-accordion-head{ width:100%; margin:0; padding:20px 24px; border:0; background:#fff; color:var(--text); display:flex; align-items:center; justify-content:space-between; gap:16px; cursor:pointer; text-align:left; font-family:var(--sans); }
   .main-accordion-head:hover{background:var(--surface-2);}
@@ -1447,6 +1447,8 @@ document.getElementById('withdrawBtn').addEventListener('click', async ()=>{
 function switchPanelDOM(panelName){
   const btn = document.querySelector(`.navtab[data-panel="${panelName}"]`);
   if(!btn) return;
+  // 화면 전환 자체(탭 활성화/패널 표시/사이드바 닫기)는 무슨 일이 있어도 반드시 끝까지 실행되어야 하므로,
+  // 아래 각 패널의 데이터 로딩 로직(비동기 API 호출 등)과 분리해서 여기서 먼저 확정한다.
   document.querySelectorAll('.navtab').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.panel').forEach(p=>{ p.classList.remove('active'); p.style.display='none'; });
   btn.classList.add('active');
@@ -1456,13 +1458,23 @@ function switchPanelDOM(panelName){
   document.getElementById('breadcrumbText').textContent = btn.dataset.label || btn.textContent;
   closeSidebar();
   window.scrollTo({ top:0, behavior:'smooth' });
-  if(panelName === 'panelCoupons') renderCoupons();
-  if(panelName === 'panelReferrals') renderReferrals();
-  if(panelName === 'panelDashboard'){ loadDashboard(); setTimeout(()=>{ if(rankChartInstances['']) rankChartInstances[''].resize(); }, 50); }
-  if(panelName === 'panelAdmin') loadAdmin();
-  if(panelName === 'panelClients') loadClients();
-  if(panelName === 'panelLeads') loadLeadsPanel();
-  if(panelName === 'panelHome'){ loadHome(); setTimeout(()=>{ if(rankChartInstances['home_']) rankChartInstances['home_'].resize(); }, 50); }
+
+  // 여기서부터는 각 패널의 데이터 로딩. 하나가 실패해도 화면 전환 자체는 이미 끝났고,
+  // 다음 번 다른 메뉴 클릭에도 영향을 주지 않도록 개별적으로 감싼다.
+  const safeRun = (fn) => { try { fn(); } catch(e) { console.error('패널 로딩 중 오류(' + panelName + '):', e); } };
+  if(panelName === 'panelCoupons') safeRun(renderCoupons);
+  if(panelName === 'panelReferrals') safeRun(renderReferrals);
+  if(panelName === 'panelDashboard'){
+    safeRun(loadDashboard);
+    setTimeout(()=>{ try{ if(rankChartInstances['']) rankChartInstances[''].resize(); }catch(e){ console.error('차트 리사이즈 오류:', e); } }, 50);
+  }
+  if(panelName === 'panelAdmin') safeRun(loadAdmin);
+  if(panelName === 'panelClients') safeRun(loadClients);
+  if(panelName === 'panelLeads') safeRun(loadLeadsPanel);
+  if(panelName === 'panelHome'){
+    safeRun(loadHome);
+    setTimeout(()=>{ try{ if(rankChartInstances['home_']) rankChartInstances['home_'].resize(); }catch(e){ console.error('차트 리사이즈 오류:', e); } }, 50);
+  }
 }
 function switchToPanel(panelName, push){
   switchPanelDOM(panelName);
