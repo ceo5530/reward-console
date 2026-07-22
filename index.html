@@ -733,6 +733,8 @@
       <input id="f_client" type="text" placeholder="예: 경성매트" />
       <label>연락처</label>
       <input id="f_phone" type="text" placeholder="010-0000-0000" />
+      <label>입금자 성함 (계좌이체 시 사용하실 이름)</label>
+      <input id="f_depositor" type="text" placeholder="예: 김경근" />
       <label>어떤 상품인가요? 링크를 붙여주세요</label>
       <input id="f_link" type="url" placeholder="https://smartstore.naver.com/..." />
 
@@ -1676,6 +1678,8 @@ async function enterApp(session){
   setTimeout(()=>{ auth.style.display='none'; }, 250);
   const app = document.getElementById('app');
   app.classList.add('visible');
+  app.style.display = ''; // 로그아웃 때 남긴 인라인 display:none이 .visible 클래스 규칙보다 우선순위가 높아서
+                           // 계속 화면이 안 보이는 문제가 있었다. 재진입할 때 확실히 지워준다.
   document.getElementById('userCompany').textContent = session.companyName + ' (' + session.email + ')';
   const roleEl = document.getElementById('userRole');
   roleEl.textContent = session.role==='admin' ? '관리자' : '고객';
@@ -1711,9 +1715,13 @@ async function enterApp(session){
     if(trial) document.getElementById('f_coupon').value = trial.id;
   }
 
-  refreshPriceBox();
-  renderTable();
-  loadHome();
+  try {
+    refreshPriceBox();
+    renderTable();
+    if(session.role !== 'admin') loadHome(); // 관리자는 홈 화면 자체를 안 쓰므로 관련 로직도 실행하지 않음
+  } catch(e) {
+    console.error('enterApp 마무리 단계 오류:', e);
+  }
 }
 
 let isSubmittingOrder = false;
@@ -1738,6 +1746,7 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
   } else {
     const client = document.getElementById('f_client').value.trim();
     const phone = document.getElementById('f_phone').value.trim();
+    const depositorName = document.getElementById('f_depositor').value.trim();
     const link = document.getElementById('f_link').value.trim();
     const productId = document.getElementById('f_product').value;
     const qty = document.getElementById('f_qty').value;
@@ -1759,7 +1768,7 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
       else showMsg('submitMsg','키워드를 최소 1개 입력해 주세요.', 'warn');
       return;
     }
-    Object.assign(payload, { client, phone, link, productId, qty: Number(qty), cycles: Number(cycles), keywords, competitorLinks, couponId });
+    Object.assign(payload, { client, phone, depositorName, link, productId, qty: Number(qty), cycles: Number(cycles), keywords, competitorLinks, couponId });
   }
 
   const submitBtn = document.getElementById('submitBtn');
@@ -1779,7 +1788,7 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
       if(res.bank) document.getElementById('bankAcc').textContent = `${res.bank.bank} ${res.bank.account} (${res.bank.holder})`;
     }
     if(isYoutube){ ['y_phone','y_date','y_location','y_notes'].forEach(id=>document.getElementById(id).value=''); }
-    else { ['f_phone','f_link','f_qty','f_kw1','f_kw2','f_kw3','f_kw4','f_kw5','f_comp1','f_comp2','f_comp3'].forEach(id=>document.getElementById(id).value=''); document.getElementById('f_coupon').value=''; refreshPriceBox(); }
+    else { ['f_phone','f_depositor','f_link','f_qty','f_kw1','f_kw2','f_kw3','f_kw4','f_kw5','f_comp1','f_comp2','f_comp3'].forEach(id=>document.getElementById(id).value=''); document.getElementById('f_coupon').value=''; refreshPriceBox(); }
     await loadCoupons();
     invalidateSubmissionsCache();
     renderTable();
@@ -1932,6 +1941,7 @@ function startEditSubmission(rec){
     if(product) document.getElementById('f_product').value = product.id;
     document.getElementById('f_link').value = rec.link || '';
     document.getElementById('f_phone').value = rec.phone || '';
+    document.getElementById('f_depositor').value = rec.depositorName || '';
     const kws = Array.isArray(rec.keywords) ? rec.keywords : String(rec.keywords||'').split(',').map(k=>k.trim()).filter(Boolean);
     [1,2,3,4,5].forEach(n => { document.getElementById('f_kw'+n).value = kws[n-1] || ''; });
     const comps = String(rec.competitorLinks||'').split(',').map(s=>s.trim()).filter(Boolean);
@@ -2382,10 +2392,13 @@ async function loadAdmin(){
   const taxWrap = document.getElementById('adminTaxWrap');
   taxWrap.innerHTML = invoices.length === 0 ? '<div class="empty">발행 대기중인 세금계산서 요청이 없어요.</div>' :
     `<div style="overflow-x:auto;"><table>
-      <thead><tr><th></th><th>업체명</th><th>이메일</th><th>사업자번호</th><th>날짜</th><th></th></tr></thead>
+      <thead><tr><th></th><th>업체명</th><th>입금자</th><th>상품</th><th>금액</th><th>이메일</th><th>사업자번호</th><th>날짜</th><th></th></tr></thead>
       <tbody>${invoices.slice(0,30).map(t => `<tr>
         <td><input type="checkbox" class="taxRowCheck" data-id="${t.id}" style="width:auto;" /></td>
         <td>${escapeHtml(t.client)}</td>
+        <td>${escapeHtml(t.depositorName || '-')}</td>
+        <td>${escapeHtml(t.productTitle || '-')}</td>
+        <td>${Number(t.grandTotal||0).toLocaleString('ko-KR')}원</td>
         <td>${escapeHtml(t.invoiceEmail)}</td>
         <td>${escapeHtml(t.extractedBizNumber || '자동추출 실패')}</td>
         <td>${escapeHtml(prettyDate(fmt(new Date(t.createdAt))))}</td>
