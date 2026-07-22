@@ -22,8 +22,6 @@
   html{font-size:17.5px;}
   body{margin:0;background:var(--page-bg);color:var(--page-text);font-family:var(--sans);font-size:1rem;line-height:1.6;}
   a{color:inherit;}
-
-  /* ---- 앱 셸: 사이드바 + 콘텐츠 영역 ---- */
   .app-shell{display:flex; min-height:100vh;}
   .sidebar{width:264px; flex-shrink:0; background:var(--page-bg); border-right:1px solid var(--page-line); color:var(--text); display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow-y:auto; z-index:20;}
   .brand{display:flex; align-items:center; gap:12px;}
@@ -41,13 +39,11 @@
   .sidebar-foot{padding:16px 20px; border-top:1px solid var(--line);}
   .sidebar-foot button{width:100%; background:var(--surface-2); border:none; color:var(--muted); padding:10px 14px; border-radius:9px; cursor:pointer; font-size:0.85rem; font-weight:600;}
   .sidebar-backdrop{display:none; position:fixed; inset:0; background:rgba(10,10,18,0.5); z-index:15;}
-
   .content-area{flex:1; min-width:0;}
   .content-header{background:#FFFFFF; border-bottom:1px solid var(--page-line); padding:18px 28px; display:flex; flex-wrap:wrap; gap:14px; align-items:center; justify-content:space-between; box-shadow:0 2px 10px rgba(20,20,40,0.03); position:sticky; top:0; z-index:10;}
   .breadcrumb{font-size:0.85rem; color:var(--page-muted); font-weight:600;}
   .breadcrumb span{color:var(--page-text);}
   .hamburger{display:none; background:#FFFFFF; border:1px solid var(--page-line); color:var(--page-text); width:38px; height:38px; border-radius:9px; font-size:1.1rem; cursor:pointer;}
-
   .ticker{font-family:var(--mono);background:#EFEDFB;border:1px solid #DCD6F5;border-radius:14px;padding:10px 16px;display:flex;gap:16px;align-items:center;}
   .ticker .lbl{font-size:0.74rem; color:#6E64B8; letter-spacing:0.08em; text-transform:uppercase;}
   .ticker .val{font-size:1.25rem; font-weight:800; color:var(--navy); font-variant-numeric:tabular-nums;}
@@ -58,23 +54,19 @@
   .role.admin{background:rgba(255,149,0,0.14); color:#B36200;}
   .role.client{background:rgba(58,49,160,0.10); color:var(--navy-2);}
   .refcode{font-family:var(--mono); background:var(--surface-2); border:none; padding:3px 8px; border-radius:7px; color:var(--amber-soft); font-size:0.82rem;}
-
   @media(max-width:900px){
     .sidebar{position:fixed; left:0; top:0; transform:translateX(-100%); transition:transform .25s ease; box-shadow:10px 0 30px rgba(0,0,0,0.3);}
     .sidebar.open{transform:translateX(0);}
     .sidebar-backdrop.open{display:block;}
     .hamburger{display:block;}
   }
-
   .content-body{padding:24px 28px 52px; max-width:1400px; margin:0 auto;}
   main{display:grid; grid-template-columns:440px 1fr; gap:24px;}
   @media(max-width:1000px){ main{grid-template-columns:1fr;} .content-body{padding:16px 14px 40px;} }
-
   .card{background:var(--surface); border:1px solid var(--page-line); border-radius:16px; padding:26px; box-shadow:none; color:var(--text);}
   .card + .card{margin-top:24px;}
   .card h2{font-size:1.25rem; margin:0 0 20px; letter-spacing:-0.01em; color:var(--text); text-transform:none; display:flex; align-items:center; gap:9px; font-weight:800;}
   .card h2 .n{font-family:var(--mono); color:var(--muted); font-size:0.68rem; font-weight:600; background:var(--surface-2); padding:2px 8px; border-radius:6px; letter-spacing:0;}
-
   label{display:block; font-size:0.88rem; color:var(--muted); margin-bottom:7px; margin-top:16px; font-weight:500;}
   label:first-of-type{margin-top:0;}
   input, select, textarea{width:100%; background:var(--surface-2); border:1.5px solid transparent; color:var(--text); padding:13px 15px; border-radius:12px; font-size:1.02rem; font-family:var(--sans); transition:border-color .15s ease, box-shadow .15s ease;}
@@ -85,48 +77,21 @@
   .kw-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
   @media(max-width:420px){ .kw-grid{grid-template-columns:1fr;} }
   @media(max-width:600px){
-    /* 모바일 진행중 캠페인: 제목/금액과 상태 뱃지가 서로 밀어내지 않도록 2단 구조로 고정 */
-    .status-row{
-      display:grid;
-      grid-template-columns:minmax(0,1fr);
-      align-items:start;
-      gap:8px;
-      padding:15px 4px;
-    }
+    .status-row{ display:grid; grid-template-columns:minmax(0,1fr); align-items:start; gap:8px; padding:15px 4px; }
     .status-row-main{min-width:0; width:100%;}
-    .status-row-title{
-      line-height:1.45;
-      word-break:keep-all;
-      overflow-wrap:anywhere;
-    }
-    .status-row-sub{
-      line-height:1.45;
-      white-space:normal;
-    }
-    .status-row-right{
-      width:100%;
-      justify-content:flex-start;
-      align-items:center;
-      flex-wrap:wrap;
-      gap:6px;
-      margin-top:0;
-    }
-    .status-row-right .pill,
-    .status-row-right .dday-badge,
-    .status-row-right .btn{
-      flex:0 0 auto;
-    }
+    .status-row-title{ line-height:1.45; word-break:keep-all; overflow-wrap:anywhere; }
+    .status-row-sub{ line-height:1.45; white-space:normal; }
+    .status-row-right{ width:100%; justify-content:flex-start; align-items:center; flex-wrap:wrap; gap:6px; margin-top:0; }
+    .status-row-right .pill, .status-row-right .dday-badge, .status-row-right .btn{ flex:0 0 auto; }
     .status-chevron{margin-left:auto;}
     .status-detail{padding-left:4px; padding-right:4px;}
     .result-top,.result-bottom{align-items:flex-start;}
     .result-amount{text-align:left;}
   }
   .hint{font-size:0.8rem; color:var(--muted); margin-top:8px; line-height:1.6;}
-
   .seg{display:flex; gap:6px; background:var(--surface-2); border-radius:12px; padding:4px;}
   .seg button{flex:1; padding:11px; border:none; background:none; color:var(--muted); border-radius:9px; font-weight:600; font-size:0.92rem; cursor:pointer; transition:background-color .15s ease, color .15s ease;}
   .seg button.active{background:var(--navy-2); color:#fff;}
-
   .price-box{margin-top:18px; background:var(--surface-2); border:none; border-radius:16px; padding:18px 20px;}
   .price-box .row{display:flex; justify-content:space-between; align-items:baseline; padding:5px 0; font-size:0.92rem;}
   .price-box .row span:first-child{color:var(--muted);}
@@ -134,7 +99,6 @@
   .price-box .row.total{border-top:none; margin-top:10px; padding-top:14px; flex-direction:column; align-items:flex-start; gap:4px;}
   .price-box .row.total span:first-child{color:var(--muted); font-weight:600; font-size:0.82rem;}
   .price-box .row.total span:last-child{font-size:2.1rem; font-weight:800; color:var(--navy-2); letter-spacing:-0.01em;}
-
   .btn{margin-top:20px; width:100%; padding:14px; border:none; border-radius:14px; background:var(--amber); color:#FFFFFF; font-weight:700; font-size:1rem; cursor:pointer; box-shadow:0 4px 14px rgba(58,49,160,0.22); transition:transform .1s ease, opacity .15s ease, box-shadow .15s ease;}
   .btn:active{transform:scale(0.97);}
   .btn:hover:not(:disabled){box-shadow:0 6px 18px rgba(58,49,160,0.28);}
@@ -142,13 +106,11 @@
   .btn.small{margin-top:0; width:auto; padding:9px 16px; font-size:0.85rem; box-shadow:none;}
   .btn:disabled{opacity:0.5; cursor:not-allowed;}
   .btn.is-loading{opacity:0.7; cursor:wait;}
-
   .mono{font-family:var(--mono);}
   .pill{display:inline-block; padding:5px 12px; border-radius:999px; font-size:0.8rem; font-weight:700; white-space:nowrap; transition:background-color .15s ease;}
   .pill.payment_pending{background:rgba(255,149,0,0.12); color:var(--warn);}
   .pill.approved, .pill.confirmed{background:rgba(18,184,134,0.12); color:var(--ok);}
   .pill.done{background:rgba(139,149,161,0.12); color:var(--muted);}
-
   .empty{color:var(--muted); font-size:0.95rem; padding:30px 0; text-align:center;}
   .spinner{width:22px; height:22px; margin:0 auto 10px; border:2.5px solid var(--line); border-top-color:var(--navy-2); border-radius:50%; animation:spin .7s linear infinite;}
   @keyframes spin{ to{ transform:rotate(360deg); } }
@@ -159,13 +121,10 @@
   .msg.show{display:block;}
   .msg.ok{background:rgba(18,184,134,0.10); color:var(--ok); border:1px solid rgba(18,184,134,0.3);}
   .msg.warn{background:rgba(255,149,0,0.10); color:var(--warn); border:1px solid rgba(255,149,0,0.3);}
-
   .bank-banner{background:rgba(255,149,0,0.08); border:1px solid rgba(255,149,0,0.3); border-radius:14px; padding:16px 18px; margin-top:16px;}
   .bank-banner strong{font-size:0.95rem;}
   .bank-banner .acc{font-family:var(--mono); font-size:1.15rem; font-weight:700; color:var(--amber-soft); margin:8px 0;}
   .coupon-item{display:flex; justify-content:space-between; align-items:center; background:var(--surface-2); border:none; border-radius:12px; padding:14px 16px; margin-top:10px; font-size:0.9rem;}
-
-  /* ---- 스플래시(시작) 화면 ---- */
   #splashScreen{position:fixed; inset:0; background:var(--navy); display:flex; align-items:center; justify-content:center; z-index:9999; transition:opacity .6s ease, visibility .6s ease;}
   #splashScreen.hide{opacity:0; visibility:hidden; pointer-events:none;}
   .splash-logo{display:flex; flex-direction:column; align-items:center; gap:2px; animation:splashPop .6s cubic-bezier(.34,1.56,.64,1); padding:0 30px; text-align:center;}
@@ -173,19 +132,11 @@
   .splash-wordmark{color:rgba(255,255,255,0.75); font-size:0.85rem; font-weight:600; letter-spacing:0.22em; margin:0 0 22px;}
   .splash-slogan{color:#fff; font-size:1.5rem; font-weight:800; margin:0; line-height:1.45;}
   @keyframes splashPop{ 0%{opacity:0; transform:scale(0.72);} 65%{opacity:1; transform:scale(1.06);} 100%{opacity:1; transform:scale(1);} }
-
-  /* ---- 게이트웨이(입장) 화면 ---- */
   @keyframes hintLeft{0%,100%{transform:translateX(0);opacity:0.5}50%{transform:translateX(-8px);opacity:1}}
   @keyframes hintUp{0%,100%{transform:translateY(0);opacity:0.45}50%{transform:translateY(-8px);opacity:1}}
-  @keyframes meshDrift{
-    0%,100%{ background-position: 0% 0%, 100% 100%, 0% 0%; }
-    50%{ background-position: 38% 30%, 62% 70%, 0% 0%; }
-  }
+  @keyframes meshDrift{ 0%,100%{ background-position: 0% 0%, 100% 100%, 0% 0%; } 50%{ background-position: 38% 30%, 62% 70%, 0% 0%; } }
   .apple-bg{
-    background:
-      radial-gradient(circle at 0% 0%, rgba(58,49,160,0.20) 0%, rgba(58,49,160,0) 45%),
-      radial-gradient(circle at 100% 100%, rgba(255,178,140,0.16) 0%, rgba(255,178,140,0) 45%),
-      linear-gradient(135deg, #F8F7FD 0%, #FFFFFF 55%, #FFFAF6 100%);
+    background: radial-gradient(circle at 0% 0%, rgba(58,49,160,0.20) 0%, rgba(58,49,160,0) 45%), radial-gradient(circle at 100% 100%, rgba(255,178,140,0.16) 0%, rgba(255,178,140,0) 45%), linear-gradient(135deg, #F8F7FD 0%, #FFFFFF 55%, #FFFAF6 100%);
     background-size: 220% 220%, 220% 220%, 100% 100%;
     background-position: 0% 0%, 100% 100%, 0% 0%;
     animation: meshDrift 7s ease-in-out infinite;
@@ -205,8 +156,6 @@
   .gateway-hint-label{font-size:0.66rem; color:#9AA0A6; font-weight:600; letter-spacing:0.05em;}
   .gateway-hint-bottom{position:absolute; bottom:0; left:0; right:0; padding:0 24px 32px; text-align:center; cursor:pointer;}
   .gateway-peek{position:absolute; top:14%; bottom:14%; right:0; width:26px; background:var(--surface-2); border-radius:18px 0 0 18px; box-shadow:-8px 0 24px rgba(20,20,45,0.10); overflow:hidden;}
-
-  /* ---- 진단 챗봇 화면 ---- */
   #diagnosticScreen{position:fixed; inset:0; z-index:500; display:none; flex-direction:column; overflow-y:auto;}
   #diagnosticScreen.active{display:flex;}
   .diag-header{padding:20px 22px 0;}
@@ -221,13 +170,11 @@
   .diag-thumb-row{display:flex; gap:8px; margin-top:8px;}
   .diag-thumb{width:56px;height:56px;border-radius:10px; background:#fff; border:1px solid var(--page-line); object-fit:cover; flex-shrink:0;}
   .diag-trial-badge{background:#EEECFB; border-radius:16px; padding:15px 17px; display:flex; align-items:center; gap:12px; margin-top:4px;}
-
   #authScreen{min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;}
   .authcard{width:100%; max-width:440px; background:transparent; border:none; border-radius:0; padding:0; color:var(--text); box-shadow:none;}
   .authtabs{display:flex; gap:4px; background:var(--surface-2); border-radius:12px; padding:4px; margin-bottom:22px;}
   .authtabs button{flex:1; padding:11px; border:none; background:none; color:var(--muted); border-radius:9px; font-weight:600; font-size:0.95rem; cursor:pointer;}
   .authtabs button.active{background:var(--navy-2); color:#fff;}
-
   #signupActive{animation:wizardSlideIn .38s cubic-bezier(.22,1,.36,1);}
   @keyframes wizardSlideIn{ from{opacity:0; transform:translateY(28px);} to{opacity:1; transform:translateY(0);} }
   .wizard-title{font-size:1.15rem; font-weight:700; margin:0 0 4px; color:var(--text); line-height:1.4;}
@@ -252,19 +199,14 @@
   .ref-promo-badge{font-size:1.4rem; margin-bottom:8px;}
   .ref-promo-title{color:#191F28; font-size:0.92rem; font-weight:800; line-height:1.4; margin-bottom:6px;}
   .ref-promo-desc{color:#4E5968; font-size:0.78rem; line-height:1.6;}
-
-  /* 답변이 위에 쌓이는 대화형 리스트 (토스 회원가입 참고) */
   #signupAnswered, #resetAnswered{margin-bottom:4px;}
   .answered-row{display:flex; justify-content:space-between; align-items:baseline; gap:12px; padding:12px 0; border-bottom:1.5px solid var(--line); animation:answeredIn .4s cubic-bezier(.22,1,.36,1);}
   .answered-row .q{font-size:0.82rem; color:var(--muted); flex-shrink:0;}
   .answered-row .a{font-size:1rem; color:var(--text); font-weight:700; text-align:right; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   @keyframes answeredIn{ from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);} }
-
-  /* 토스풍 밑줄 인풋 (박스 없이 아래 선만) */
   input.toss-input{background:none; border:none; border-bottom:2px solid var(--line); border-radius:0; padding:9px 2px; font-size:1.02rem; font-weight:600; box-shadow:none !important;}
   input.toss-input:focus{border-bottom-color:var(--navy-2); box-shadow:none !important;}
   input.toss-input::placeholder{font-weight:500; color:var(--muted);}
-
   #successOverlay{position:fixed; inset:0; background:#FFFFFF; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:22px; z-index:9998; opacity:0; visibility:hidden; transition:opacity .3s ease, visibility .3s ease;}
   #successOverlay.show{opacity:1; visibility:visible;}
   .success-icon{width:88px; height:88px;}
@@ -272,8 +214,6 @@
   .success-overlay-anim .success-circle{animation:drawCircle .5s cubic-bezier(.65,0,.35,1) forwards;}
   .success-check{stroke-dasharray:52; stroke-dashoffset:52;}
   .success-overlay-anim .success-check{animation:drawCheck .3s ease .5s forwards;}
-
-  /* ---- 회원가입 완료: 추천인코드 리빌 화면 ---- */
   #referralRevealOverlay{position:fixed; inset:0; z-index:9997; display:none; flex-direction:column; align-items:center; padding:64px 26px 40px; overflow-y:auto;}
   .reveal-eyebrow{font-size:0.76rem; font-weight:700; color:var(--navy-2); letter-spacing:0.04em; text-transform:uppercase; opacity:0; animation:fadeUp .5s ease forwards;}
   .reveal-greeting{font-size:1.6rem; font-weight:800; color:#191F28; text-align:center; line-height:1.4; margin-top:8px; letter-spacing:-0.02em; opacity:0; animation:fadeUp .5s ease .1s forwards;}
@@ -307,8 +247,6 @@
   .panel.active{animation:panelFadeIn .22s ease;}
   @keyframes panelFadeIn{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
   .panel.active{display:block;}
-
-  /* ---- 접수현황 카드 리스트 (표 대신) ---- */
   .result-list{display:flex; flex-direction:column; gap:14px;}
   .status-list{display:flex; flex-direction:column;}
   .status-row{display:flex; align-items:center; justify-content:space-between; gap:14px; padding:16px 6px; border-bottom:1px solid var(--page-line); cursor:pointer;}
@@ -368,8 +306,6 @@
   .result-period{font-size:0.88rem; color:var(--text);}
   .result-period .lbl{color:var(--muted); font-size:0.78rem; display:block; margin-bottom:3px;}
   .result-yt-meta{font-size:0.88rem; color:var(--muted); margin-top:6px; line-height:1.6;}
-
-  /* 관리자용 추천현황 등 남은 표는 모바일에서 가로스크롤로 보이게 */
   table{width:100%; border-collapse:collapse; font-size:0.88rem;}
   th{text-align:left; font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.04em; padding:10px 12px; border-bottom:1px solid var(--line);}
   .sortable-th:hover{color:var(--navy-2);}
@@ -381,8 +317,6 @@
   td{padding:12px; border-bottom:1px solid var(--line); vertical-align:top;}
   tr:last-child td{border-bottom:none;}
   #referralWrap, #couponListWrap{overflow-x:auto;}
-
-  /* ---- 현황판 ---- */
   .dash-wrap{display:flex; flex-direction:column; gap:22px;}
   .donut-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px;}
   .donut-card{background:var(--surface-2); border:none; border-radius:16px; padding:22px; text-align:center;}
@@ -398,8 +332,6 @@
   .donut-legend .row{display:flex; justify-content:space-between; align-items:center; font-size:0.82rem;}
   .donut-legend .dot{display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:7px; flex-shrink:0;}
   .donut-legend .empty-mini{font-size:0.8rem; color:var(--muted); text-align:center;}
-
-  /* ---- 홈 화면 (연라벤더 배경 + 흰카드, 핀트 스타일 참고) ---- */
   .home-wrap{background:#FFFFFF; min-height:100vh; width:100%; max-width:none; padding:28px 20px 40px; display:flex; flex-direction:column; gap:22px; margin:0;}
   .home-header{display:flex; align-items:center; justify-content:space-between; margin-bottom:0;}
   .home-greeting{font-size:1.15rem; font-weight:800; color:#191F28; letter-spacing:-0.01em;}
@@ -430,67 +362,18 @@
   .kw-check-group{display:flex; flex-wrap:wrap; gap:8px;}
   .kw-check-group label{display:flex; align-items:center; gap:6px; background:var(--surface-2); border:none; border-radius:10px; padding:9px 13px; font-size:0.85rem; color:var(--text); margin:0; cursor:pointer;}
   .kw-check-group input{width:auto; accent-color:var(--amber);}
-
   #authScreen{transition:opacity .25s ease;}
   #app.visible{display:block; animation:appFadeIn .35s ease;}
   @keyframes appFadeIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
-
-  /* ---- 접수/현황 아코디언 ---- */
-  #panelMain.main-accordion{
-    display:flex !important;
-    flex-direction:column;
-    gap:14px;
-  }
-  .main-accordion-card{
-    padding:0;
-    overflow:hidden;
-  }
-  .main-accordion-head{
-    width:100%;
-    margin:0;
-    padding:20px 24px;
-    border:0;
-    background:#fff;
-    color:var(--text);
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:16px;
-    cursor:pointer;
-    text-align:left;
-    font-family:var(--sans);
-  }
+  #panelMain.main-accordion{ display:flex !important; flex-direction:column; gap:14px; }
+  .main-accordion-card{ padding:0; overflow:hidden; }
+  .main-accordion-head{ width:100%; margin:0; padding:20px 24px; border:0; background:#fff; color:var(--text); display:flex; align-items:center; justify-content:space-between; gap:16px; cursor:pointer; text-align:left; font-family:var(--sans); }
   .main-accordion-head:hover{background:var(--surface-2);}
-  .main-accordion-title{
-    display:flex;
-    align-items:center;
-    gap:9px;
-    font-size:1.15rem;
-    font-weight:800;
-    min-width:0;
-  }
-  .main-accordion-title .n{
-    font-family:var(--mono);
-    color:var(--muted);
-    font-size:0.68rem;
-    font-weight:600;
-    background:var(--surface-2);
-    padding:2px 8px;
-    border-radius:6px;
-    flex-shrink:0;
-  }
-  .main-accordion-chevron{
-    font-size:1.25rem;
-    color:var(--muted);
-    transition:transform .2s ease;
-    flex-shrink:0;
-  }
+  .main-accordion-title{ display:flex; align-items:center; gap:9px; font-size:1.15rem; font-weight:800; min-width:0; }
+  .main-accordion-title .n{ font-family:var(--mono); color:var(--muted); font-size:0.68rem; font-weight:600; background:var(--surface-2); padding:2px 8px; border-radius:6px; flex-shrink:0; }
+  .main-accordion-chevron{ font-size:1.25rem; color:var(--muted); transition:transform .2s ease; flex-shrink:0; }
   .main-accordion-card.open .main-accordion-chevron{transform:rotate(90deg);}
-  .main-accordion-body{
-    display:none;
-    padding:4px 26px 26px;
-    border-top:1px solid var(--page-line);
-  }
+  .main-accordion-body{ display:none; padding:4px 26px 26px; border-top:1px solid var(--page-line); }
   .main-accordion-card.open .main-accordion-body{display:block;}
   .main-accordion-body .toolbar{margin-top:16px;}
   @media(max-width:600px){
@@ -499,11 +382,72 @@
     .main-accordion-body{padding:2px 16px 20px;}
   }
 
+  /* ---- 모바일 캠페인 행 최종 강제 레이아웃 ----
+     위쪽에 이미 .status-row 관련 규칙이 있지만, 다른 곳(관리자 표 등)의 flex/grid 규칙과
+     로딩 순서에 따라 충돌하면서 제목 영역 폭이 다시 눌리는 문제가 있었다.
+     그래서 이 블록을 파일 맨 마지막에 두고, 핵심 속성을 전부 !important로 못박아서
+     이후에 어떤 규칙이 끼어들어도 절대 다시 눌리지 않게 확정한다. */
+  @media(max-width:640px){
+    .status-row{
+      display:grid !important;
+      grid-template-columns:1fr !important;
+      width:100% !important;
+      min-width:0 !important;
+      align-items:start !important;
+      row-gap:8px !important;
+      padding:16px 4px !important;
+    }
+    .status-row-main{
+      display:block !important;
+      width:100% !important;
+      max-width:100% !important;
+      min-width:0 !important;
+      flex:none !important;
+    }
+    .status-row-title{
+      display:block !important;
+      width:100% !important;
+      max-width:100% !important;
+      min-width:0 !important;
+      white-space:normal !important;
+      word-break:keep-all !important;
+      overflow-wrap:anywhere !important;
+      writing-mode:horizontal-tb !important;
+      line-height:1.45 !important;
+    }
+    .status-row-sub{
+      display:block !important;
+      width:100% !important;
+      max-width:100% !important;
+      min-width:0 !important;
+      white-space:normal !important;
+      word-break:keep-all !important;
+      writing-mode:horizontal-tb !important;
+      line-height:1.45 !important;
+    }
+    .status-row-right{
+      display:flex !important;
+      flex-direction:row !important;
+      flex-wrap:wrap !important;
+      width:100% !important;
+      min-width:0 !important;
+      justify-content:flex-start !important;
+      align-items:center !important;
+      gap:8px !important;
+      margin-top:0 !important;
+    }
+    .status-row-right .pill,
+    .status-row-right .dday-badge,
+    .status-row-right .btn,
+    .status-row-right .extendBtn{
+      flex:0 0 auto !important;
+      width:auto !important;
+    }
+    .status-chevron{ margin-left:auto !important; }
+  }
 </style>
 </head>
 <body>
-
-<!-- ===================== 스플래시(시작) 화면 ===================== -->
 <div id="splashScreen">
   <div class="splash-logo">
     <div class="mark"><svg width="52" height="52" viewBox="0 0 24 24" fill="none"><path d="M4 18L12 5L20 18" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 18L12 9.5L20 18" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/></svg></div>
@@ -512,7 +456,6 @@
   </div>
 </div>
 
-<!-- ===================== 게이트웨이(입장) 화면 ===================== -->
 <div id="gatewayScreen" class="apple-bg">
   <div class="gateway-glow gateway-glow-1"></div>
   <div class="gateway-glow gateway-glow-2"></div>
@@ -524,20 +467,17 @@
     <div class="gateway-headline">내 상품,<br>몇 등일까요?</div>
     <div class="gateway-sub">스마트스토어 링크 하나면 충분해요</div>
   </div>
-
   <div class="gateway-peek">
     <div style="height:64px; background:#272058;"></div>
     <div style="margin:18px 0 0 -34px; width:52px; height:20px; background:#fff; border-radius:10px;"></div>
     <div style="margin:8px 0 0 -34px; width:40px; height:16px; background:#fff; border-radius:8px;"></div>
   </div>
-
   <div id="gatewayRightHint" class="gateway-hint-right">
     <div class="gateway-chevron" style="animation:hintLeft 1.6s ease-in-out infinite;">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="transform:rotate(-90deg);"><path d="M4 18L12 5L20 18" stroke="#3A31A0" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 18L12 9.5L20 18" stroke="#B7ACFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </div>
     <div class="gateway-hint-label" style="writing-mode:vertical-rl;">밀어서 진단 시작</div>
   </div>
-
   <div id="gatewayBottomHint" class="gateway-hint-bottom">
     <div style="font-size:13.5px; color:#191F28; font-weight:700; margin-bottom:12px;">우리의 상위 랭커님이세요?</div>
     <div class="gateway-chevron" style="animation:hintUp 1.6s ease-in-out infinite; display:inline-block;">
@@ -547,7 +487,6 @@
   </div>
 </div>
 
-<!-- ===================== 진단 챗봇 화면 ===================== -->
 <div id="diagnosticScreen" class="apple-bg">
   <div class="diag-header">
     <button class="back-link" id="diagBack" style="margin:0;">‹ 처음으로</button>
@@ -556,7 +495,6 @@
   <div class="msg" id="diagMsg" style="margin:0 22px 20px;"></div>
 </div>
 
-<!-- ===================== 로그인/회원가입 ===================== -->
 <div id="authScreen" class="apple-bg">
   <div class="authcard">
     <div class="auth-brand">
@@ -616,7 +554,6 @@
   </div>
 </div>
 
-<!-- ===================== 성공 애니메이션 오버레이 ===================== -->
 <div id="successOverlay">
   <div class="success-icon">
     <svg width="88" height="88" viewBox="0 0 88 88">
@@ -627,24 +564,19 @@
   <div class="success-text" id="successText">가입 완료!</div>
 </div>
 
-<!-- ===================== 회원가입 완료: 추천인코드 리빌 화면 ===================== -->
 <div id="referralRevealOverlay" class="apple-bg">
   <div class="reveal-eyebrow">Welcome</div>
   <div class="reveal-greeting" id="revealGreeting">나만의 코드가<br>생성되었어요!</div>
-
   <div class="glass-card">
     <div class="code-label">추천인 코드</div>
     <div class="code-chars" id="revealCodeChars"></div>
     <div class="copy-hint" id="revealCopyHint">탭하면 복사돼요</div>
   </div>
-
   <div class="reveal-desc">이 코드로 가입하면,<br>서로에게 혜택이 쌓여요</div>
-
   <div class="benefit-box2">
     <div class="benefit-row">🎁 슬롯 <b>3개</b> 구매 시 <b>1개 무료</b></div>
     <div class="benefit-row">🎁 슬롯 <b>5개</b> 구매 시 <b>2개 무료</b></div>
   </div>
-
   <div class="start-btn-row">
     <button class="start-btn" id="revealStartBtn">
       시작하기
@@ -658,7 +590,6 @@
   </div>
 </div>
 
-<!-- ===================== 메인 앱 ===================== -->
 <div id="app">
 <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 <div class="app-shell">
@@ -797,7 +728,6 @@
       <button id="pt_youtube">유튜브 촬영</button>
     </div>
 
-    <!-- 리워드광고 폼 -->
     <div id="rewardForm">
       <label id="lbl_client">어느 업체로 접수할까요?</label>
       <input id="f_client" type="text" placeholder="예: 경성매트" />
@@ -863,7 +793,6 @@
       </div>
     </div>
 
-    <!-- 유튜브 촬영 폼 -->
     <div id="youtubeForm" style="display:none;">
       <label id="lbl_client_yt">업체명 / 신청자</label>
       <input id="y_client" type="text" placeholder="예: 경성매트" />
@@ -1047,21 +976,19 @@
   </div>
 </div>
 
-    </div><!-- /.content-body -->
-  </div><!-- /.content-area -->
-</div><!-- /.app-shell -->
-</div><!-- /#app -->
-
+    </div>
+  </div>
+</div>
+</div>
 <script>
 const CUTOFF_HOUR = 16;
 const SK_SESSION = 'session';
 let CATALOG = { products: [], bank: {} };
 let COUPONS_CACHE = [];
-let lastStatusMap = {}; // 승인 여부 변경 감지용
+let lastStatusMap = {};
 
 function fmt(d){ const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), dd=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${dd}`; }
 function addDays(d,n){ const r=new Date(d); r.setDate(r.getDate()+n); return r; }
-// "2026-07-16" 또는 ISO 문자열을 "7월 16일(목)" 형태로 예쁘게 표시
 function prettyDate(dateStr){
   if(!dateStr) return '-';
   const d = new Date(dateStr.length>10 ? dateStr : dateStr+'T00:00:00');
@@ -1077,8 +1004,6 @@ function prettyRange(startStr, endStr){
   return `${prettyDate(startStr)} ~ ${prettyDate(endStr)} · 총 ${days}일`;
 }
 function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
-// 숫자만 입력해도 010-1234-5678 형태로 자동 정리 (사용자가 하이픈 직접 안 넣어도 됨)
 function formatPhoneNumber(value){
   const digits = String(value).replace(/[^0-9]/g, '').slice(0, 11);
   if(digits.length <= 3) return digits;
@@ -1094,7 +1019,6 @@ function applyPhoneFormatting(input){
   input.setSelectionRange(newPos, newPos);
 }
 function showMsg(id,text,type){ const el=document.getElementById(id); el.textContent=text; el.className='msg show '+type; setTimeout(()=>{el.className='msg';},6000); }
-// 버튼 클릭 즉시 "처리중" 상태를 보여주기 위한 공용 헬퍼 (서버 응답 기다리는 동안 먹통처럼 느껴지는 것 방지)
 function setBusy(btn, loadingText){
   if(!btn.dataset.origText) btn.dataset.origText = btn.textContent;
   btn.disabled = true;
@@ -1118,8 +1042,6 @@ function updateCountdown(){
 }
 setInterval(updateCountdown,1000); updateCountdown();
 
-// ---------- 서버 설정 ----------
-// 배포 후 여기에 Apps Script 웹앱 URL을 직접 붙여넣으면, 고객은 별도 설정 없이 바로 사용 가능합니다.
 const APPS_SCRIPT_URL_DEFAULT = 'https://script.google.com/macros/s/AKfycbyo5IjxKXqyyf7jRkE9lwdWr8LAmiFCUgTjxU02QffZlnp6O32QM_apAof-VbVXduk/exec';
 
 async function getConfigUrl(){
@@ -1141,8 +1063,6 @@ async function apiCall(action, payload){
   }catch(e){ return { ok:false, error:'서버 통신 실패: '+e }; }
 }
 
-// 접수내역(listSubmissions)은 홈/접수현황/현황판 세 군데에서 다 필요해서,
-// 로그인 직후처럼 짧은 시간 안에 여러 화면이 동시에 요청하면 캐시된 걸 재사용해 중복 호출을 줄인다.
 let _submissionsCache = null;
 let _submissionsCacheAt = 0;
 async function fetchSubmissionsCached(session, forceRefresh){
@@ -1154,12 +1074,10 @@ async function fetchSubmissionsCached(session, forceRefresh){
 }
 function invalidateSubmissionsCache(){ _submissionsCache = null; }
 
-// ---------- 세션 ----------
 async function getSession(){ try{ const v = localStorage.getItem(SK_SESSION); return v?JSON.parse(v):null; }catch(e){ return null; } }
 async function setSession(s){ localStorage.setItem(SK_SESSION, JSON.stringify(s)); }
 async function clearSession(){ localStorage.removeItem(SK_SESSION); }
 
-// ---------- 인증 전환 ----------
 document.getElementById('forgotPasswordLink').addEventListener('click', (e)=>{
   e.preventDefault();
   document.getElementById('loginForm').style.display='none';
@@ -1183,7 +1101,6 @@ document.getElementById('gotoLoginLink').addEventListener('click', (e)=>{
   goToScreen('login');
 });
 
-// ---------- 회원가입: 답변이 위로 쌓이고 새 질문이 이어지는 대화형 흐름 ----------
 const SIGNUP_QUESTIONS = [
   { id:'company',    title:'업체명이 어떻게 되세요?',       sub:'접수 콘솔에 표시될 이름이에요',          type:'text',     placeholder:'예: 경성매트' },
   { id:'email',      title:'이메일을 알려주세요',           sub:'로그인할 때 아이디로 사용해요',          type:'email',    placeholder:'you@company.com' },
@@ -1208,7 +1125,6 @@ async function renderSignupQuestion(){
   const active = document.getElementById('signupActive');
   const input = document.getElementById('signupInput');
 
-  // 기존 질문을 부드럽게 내려보내며 사라지게
   active.style.transition = 'opacity .18s ease, transform .18s ease';
   active.style.opacity = '0';
   active.style.transform = 'translateY(8px)';
@@ -1228,7 +1144,6 @@ async function renderSignupQuestion(){
   document.getElementById('verifyResend').style.display = q.id === 'verifyCode' ? 'block' : 'none';
   document.getElementById('signupNext').textContent = signupIndex === SIGNUP_QUESTIONS.length-1 ? '가입하고 시작하기' : '다음';
 
-  // 새 질문이 아래에서 위로 떠오르며 부드럽게 등장
   active.style.transition = 'none';
   active.style.transform = 'translateY(20px)';
   void active.offsetWidth;
@@ -1274,7 +1189,6 @@ async function handleSignupNext(){
   }
   const btn = document.getElementById('signupNext');
 
-  // 연락처 입력 다음 -> 인증번호 문자 발송
   if(q.id === 'phone'){
     setBusy(btn, '인증번호 전송 중...');
     const res = await apiCall('sendVerificationCode', { phone: value });
@@ -1288,7 +1202,6 @@ async function handleSignupNext(){
     return;
   }
 
-  // 인증번호 확인
   if(q.id === 'verifyCode'){
     setBusy(btn, '확인 중...');
     const res = await apiCall('verifyCode', { phone: signupAnswers.phone, code: value });
@@ -1309,7 +1222,7 @@ async function handleSignupNext(){
     return;
   }
   signupIndex++;
-  await new Promise(r=>setTimeout(r, 160)); // 답변이 자리잡는 동안 살짝 텀을 줘서 순차적으로 느껴지게
+  await new Promise(r=>setTimeout(r, 160));
   renderSignupQuestion();
 }
 document.getElementById('signupNext').addEventListener('click', handleSignupNext);
@@ -1331,14 +1244,12 @@ async function submitSignup(){
   else {
     showMsg('authMsg', res.error || '가입 실패', 'warn');
     clearBusy(btn);
-    // 실패하면 마지막 답변 줄을 다시 지우고 그 질문으로 되돌림
     const q = SIGNUP_QUESTIONS[signupIndex];
     const row = document.getElementById('answered-'+q.id);
     if(row) row.remove();
   }
 }
 
-// ---------- 비밀번호 찾기: 연락처 인증 후 새 비밀번호 설정 ----------
 const RESET_QUESTIONS = [
   { id:'phone',       title:'가입하신 연락처를 입력해주세요', sub:'인증번호를 보내드릴게요',        type:'text',     placeholder:'010-0000-0000' },
   { id:'verifyCode',  title:'인증번호를 입력해주세요',        sub:'',                               type:'text',     placeholder:'6자리 숫자' },
@@ -1439,7 +1350,6 @@ async function handleResetNext(){
     return;
   }
 
-  // 마지막 단계: 새 비밀번호로 변경 요청
   setBusy(btn, '변경 처리 중...');
   const res = await apiCall('resetPassword', { phone: resetAnswers.phone, code: resetAnswers.code, newPassword: value });
   clearBusy(btn);
@@ -1458,8 +1368,6 @@ document.getElementById('resetInput').addEventListener('keydown', (e)=>{
   handleResetNext();
 });
 
-// 체크마크가 그려지는 성공 애니메이션 (토스 인증완료 화면 참고)
-// 회원가입 완료 시: 나만의 추천인 코드를 리빌 화면으로 보여줌
 function showReferralReveal(companyName, code, callback){
   const overlay = document.getElementById('referralRevealOverlay');
   document.getElementById('revealGreeting').innerHTML = `나만의 코드가<br>생성되었어요!`;
@@ -1475,7 +1383,7 @@ function showReferralReveal(companyName, code, callback){
   };
   document.getElementById('revealStartBtn').onclick = ()=>{
     overlay.style.display = 'none';
-    showSuccessThen('가입 완료!', callback); // 리빌 화면 다음엔 기존 체크마크 성공 애니메이션을 거쳐서 앱으로 진입
+    showSuccessThen('가입 완료!', callback);
   };
 }
 
@@ -1483,7 +1391,7 @@ function showSuccessThen(text, callback){
   const overlay = document.getElementById('successOverlay');
   document.getElementById('successText').textContent = text;
   overlay.classList.remove('success-overlay-anim');
-  void overlay.offsetWidth; // 애니메이션 리셋(재실행 되도록)
+  void overlay.offsetWidth;
   overlay.classList.add('show', 'success-overlay-anim');
   setTimeout(()=>{
     overlay.classList.remove('show');
@@ -1504,7 +1412,7 @@ document.getElementById('loginBtn').addEventListener('click', async ()=>{
 
 document.getElementById('logoutBtn').addEventListener('click', async ()=>{
   const session = await getSession();
-  if(session) await apiCall('logout', { token: session.token }); // 서버 세션도 즉시 만료
+  if(session) await apiCall('logout', { token: session.token });
   await clearSession();
   const app = document.getElementById('app');
   app.classList.remove('visible');
@@ -1528,12 +1436,10 @@ document.getElementById('withdrawBtn').addEventListener('click', async ()=>{
   }
 });
 
-// ---------- 탭 네비게이션 ----------
 function switchPanelDOM(panelName){
   const btn = document.querySelector(`.navtab[data-panel="${panelName}"]`);
   if(!btn) return;
   document.querySelectorAll('.navtab').forEach(b=>b.classList.remove('active'));
-  // 모든 패널을 명시적으로 숨김 (인라인 style이 CSS class보다 우선순위가 높아서 꼭 여기서 꺼줘야 함)
   document.querySelectorAll('.panel').forEach(p=>{ p.classList.remove('active'); p.style.display='none'; });
   btn.classList.add('active');
   const panel = document.getElementById(panelName);
@@ -1552,8 +1458,6 @@ function switchPanelDOM(panelName){
 }
 function switchToPanel(panelName, push){
   switchPanelDOM(panelName);
-  // 탭 이동도 히스토리에 남겨서, 뒤로가기 누르면 로그인 화면으로 바로 튕기지 않고
-  // 방금 봤던 탭으로 먼저 돌아가게 한다
   if(push !== false){
     history.pushState({ screen:'app', panel: panelName }, '', '#app-' + panelName);
   }
@@ -1564,8 +1468,6 @@ document.querySelectorAll('.navtab').forEach(btn=>{
 document.getElementById('homeActionNew').addEventListener('click', ()=>{ switchToPanel('panelMain'); setMainAccordion('mainIntakeCard', true); });
 document.getElementById('homeActionCoupon').addEventListener('click', ()=> switchToPanel('panelCoupons'));
 
-
-// ---------- 접수/현황 아코디언 ----------
 function setMainAccordion(cardId, open){
   const card = document.getElementById(cardId);
   if(!card) return;
@@ -1586,19 +1488,16 @@ document.querySelectorAll('[data-main-toggle]').forEach(btn=>{
   });
 });
 
-// 접수/현황 메뉴로 일반 진입하면 둘 다 접힌 상태를 기본값으로 유지한다.
 function resetMainAccordions(){
   setMainAccordion('mainIntakeCard', false);
   setMainAccordion('mainStatusCard', false);
 }
 
-// ---------- 사이드바 열기/닫기 (모바일) ----------
 function openSidebar(){ document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebarBackdrop').classList.add('open'); }
 function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarBackdrop').classList.remove('open'); }
 document.getElementById('sidebarToggle').addEventListener('click', openSidebar);
 document.getElementById('sidebarBackdrop').addEventListener('click', closeSidebar);
 
-// ---------- 상품유형 토글 ----------
 document.getElementById('pt_reward').addEventListener('click', ()=>{
   document.getElementById('pt_reward').classList.add('active'); document.getElementById('pt_youtube').classList.remove('active');
   document.getElementById('rewardForm').style.display='block'; document.getElementById('youtubeForm').style.display='none';
@@ -1610,12 +1509,10 @@ document.getElementById('pt_youtube').addEventListener('click', ()=>{
   document.getElementById('submitBtn').textContent = 'PR영상 제작 시작';
 });
 
-// ---------- 카탈로그 로드 ----------
 async function loadCatalog(){
   const res = await apiCall('getCatalog', {});
   if(res.ok && Array.isArray(res.products) && res.products.length){ CATALOG = { products: res.products, bank: res.bank }; }
   else {
-    // 폴백 (서버 미설정/일시 오류/빈 응답이어도 폼은 볼 수 있게)
     CATALOG = { products: [
       { id:'naver_rankon', channel:'네이버', program:'랭크온', workDays:10, unitPrice:50000 },
       { id:'naver_jump', channel:'네이버', program:'점프', workDays:10, unitPrice:45000 },
@@ -1637,7 +1534,7 @@ document.getElementById('copyBankAccBtn').addEventListener('click', ()=>{
   setTimeout(()=>{ btn.textContent = orig; }, 1500);
 });
 function updateCyclesOptions(){
-  if(!CATALOG.products || !CATALOG.products.length) return; // 카탈로그가 아직 없으면 조용히 넘어감(다음 로드 때 다시 호출됨)
+  if(!CATALOG.products || !CATALOG.products.length) return;
   const product = CATALOG.products.find(p=>p.id===document.getElementById('f_product').value) || CATALOG.products[0];
   const maxCycles = product.workDays >= 30 ? 3 : 9;
   const sel = document.getElementById('f_cycles');
@@ -1647,8 +1544,8 @@ function updateCyclesOptions(){
   toggleKeywordMode(product);
 }
 function toggleKeywordMode(product){
-  const isAuto = product && product.id === 'naver_rankon'; // 랭크온: AI가 1개 자동 선택, 선택 UI 없음
-  const isSelectable = product && (product.id === 'naver_jump' || product.id === 'coupang_best'); // 점프/베스트: 추천 중 골라 담기 + 직접입력 병행
+  const isAuto = product && product.id === 'naver_rankon';
+  const isSelectable = product && (product.id === 'naver_jump' || product.id === 'coupang_best');
   document.getElementById('autoKeywordBlock').style.display = isAuto ? 'block' : 'none';
   document.getElementById('selectKeywordBlock').style.display = isSelectable ? 'block' : 'none';
   document.getElementById('manualKeywordBlock').style.display = isAuto ? 'none' : 'block';
@@ -1656,7 +1553,6 @@ function toggleKeywordMode(product){
 document.getElementById('f_product').addEventListener('change', updateCyclesOptions);
 ['f_qty','f_cycles'].forEach(id=>document.getElementById(id).addEventListener('input', ()=>{ refreshPriceBox(); refreshCouponOptions(); }));
 
-// ---------- 랭크온 키워드 자동추천 ----------
 document.getElementById('autoKeywordBtn').addEventListener('click', async ()=>{
   const productName = document.getElementById('autoKeywordProductName').value.trim();
   if(!productName){ showMsg('submitMsg', '상품명을 먼저 입력해 주세요.', 'warn'); return; }
@@ -1686,11 +1582,10 @@ document.getElementById('autoKeywordShowMore').addEventListener('click', (e)=>{
 function applyAutoKeyword(best){
   document.getElementById('autoKeywordPicked').textContent = best.keyword;
   document.getElementById('autoKeywordMeta').textContent = `월 검색량 ${best.volume.toLocaleString('ko-KR')}회 · 경쟁정도 ${best.compIdx}`;
-  document.getElementById('f_kw1').value = best.keyword; // 실제 제출은 f_kw1~5를 그대로 읽으니, 자동선택 결과를 여기에 채워둔다
+  document.getElementById('f_kw1').value = best.keyword;
   ['f_kw2','f_kw3','f_kw4','f_kw5'].forEach(id=>document.getElementById(id).value='');
 }
 
-// ---------- 점프/쿠팡베스트: 추천 키워드 중 최대 5개까지 선택 ----------
 document.getElementById('selectKeywordBtn').addEventListener('click', async ()=>{
   const productName = document.getElementById('selectKeywordProductName').value.trim();
   if(!productName){ showMsg('submitMsg', '상품명을 먼저 입력해 주세요.', 'warn'); return; }
@@ -1766,18 +1661,13 @@ function refreshCouponOptions(){
   if(usable.length===0){ sel.innerHTML += '<option disabled>주문 갯수를 늘리면 사용 가능</option>'; }
 }
 function req_(c){ return c.type==='3+1'?3 : c.type==='5+2'?5 : c.type==='trial1'?1 : 999; }
-// 쿠폰 타입 코드(trial1, 3+1, 5+2)를 사용자에게 보여줄 이름으로 변환 - "trial1이 뭐냐"는 문의 방지용
 function couponLabel(type){
   if(type === 'trial1') return '웰컴쿠폰';
   if(type === '3+1') return '추천인쿠폰(3+1)';
   if(type === '5+2') return '추천인쿠폰(5+2)';
   return type;
 }
-
-// ---------- 세션 진입 ----------
 async function enterApp(session){
-  // 앱으로 들어왔다는 것도 히스토리에 남겨서, 뒤로가기 눌렀을 때
-  // 사이트 밖으로 바로 튕기지 않고 로그인 전 화면으로 자연스럽게 돌아가게 한다
   if(!history.state || history.state.screen !== 'app'){
     history.pushState({ screen:'app' }, '', '#app');
   }
@@ -1804,14 +1694,13 @@ async function enterApp(session){
     document.getElementById('lbl_client').textContent = '업체명 / 신청자 (관리자 대리접수 가능)';
     document.getElementById('lbl_client_yt').textContent = '업체명 / 신청자 (관리자 대리접수 가능)';
     document.querySelectorAll('.admin-only').forEach(el=>el.style.display='inline-block');
-    document.querySelectorAll('.client-only').forEach(el=>el.style.display='none'); // 홈/접수현황/내현황판/쿠폰함은 고객용 화면이라 관리자에겐 숨김
-    switchToPanel('panelAdmin'); // 관리자는 로그인하면 바로 관리자 대시보드로
+    document.querySelectorAll('.client-only').forEach(el=>el.style.display='none');
+    switchToPanel('panelAdmin');
   }
 
   await loadCatalog();
   await loadCoupons();
 
-  // 진단 챗봇에서 넘어온 경우, 링크/키워드/무료체험 쿠폰을 접수 폼에 자동 반영
   if(window.pendingDiagData){
     if(window.pendingDiagData.link) document.getElementById('f_link').value = window.pendingDiagData.link;
     if(window.pendingDiagData.keyword) document.getElementById('f_kw1').value = window.pendingDiagData.keyword;
@@ -1827,10 +1716,9 @@ async function enterApp(session){
   loadHome();
 }
 
-// ---------- 접수 제출 ----------
-let isSubmittingOrder = false; // 버튼 연타/터치+클릭 중복발생 등으로 접수가 두 번 나가는 것을 막는 잠금장치
+let isSubmittingOrder = false;
 document.getElementById('submitBtn').addEventListener('click', async ()=>{
-  if(isSubmittingOrder) return; // 이미 처리 중이면 추가 클릭 완전히 무시
+  if(isSubmittingOrder) return;
   isSubmittingOrder = true;
   try {
   const session = await getSession();
@@ -1897,21 +1785,16 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
     renderTable();
   } else showMsg('submitMsg', res.error || (isEditing ? '수정 실패' : '접수 실패'),'warn');
   } finally {
-    isSubmittingOrder = false; // 성공하든 실패하든 잠금은 반드시 풀어줘야 다음 접수를 할 수 있다
+    isSubmittingOrder = false;
   }
 });
 
-
-// 세금계산서 첨부 이미지는 원본 15MB까지 받되,
-// Apps Script POST 전송 부담을 줄이기 위해 큰 이미지만 브라우저에서 JPEG로 최적화한다.
+let isUploadingTaxFile = false;
 async function prepareTaxImageForUpload(file){
-  const MAX_ORIGINAL = 15 * 1024 * 1024;
-  const TARGET_BYTES = 4.5 * 1024 * 1024;
+  const TARGET_BYTES = 3.5 * 1024 * 1024;
 
   if(!file) throw new Error('파일이 없습니다.');
-  if(file.size > MAX_ORIGINAL) throw new Error('FILE_TOO_LARGE');
 
-  // 작은 파일은 원본 그대로 보낸다.
   if(file.size <= TARGET_BYTES){
     return { file, fileName:file.name, mimeType:file.type || 'image/jpeg' };
   }
@@ -1920,8 +1803,13 @@ async function prepareTaxImageForUpload(file){
     throw new Error('IMAGE_ONLY');
   }
 
-  const bitmap = await createImageBitmap(file);
-  const maxSide = 2400;
+  let bitmap;
+  try{
+    bitmap = await createImageBitmap(file);
+  }catch(e){
+    throw new Error('IMAGE_DECODE_FAILED');
+  }
+  const maxSide = 2000;
   const scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height));
   const canvas = document.createElement('canvas');
   canvas.width = Math.max(1, Math.round(bitmap.width * scale));
@@ -1933,11 +1821,20 @@ async function prepareTaxImageForUpload(file){
   ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
   if(bitmap.close) bitmap.close();
 
-  let quality = 0.9;
+  let quality = 0.88;
   let blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality));
-  while(blob && blob.size > TARGET_BYTES && quality > 0.55){
+  while(blob && blob.size > TARGET_BYTES && quality > 0.4){
     quality -= 0.08;
     blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality));
+  }
+  if(blob && blob.size > TARGET_BYTES){
+    const canvas2 = document.createElement('canvas');
+    canvas2.width = Math.round(canvas.width * 0.7);
+    canvas2.height = Math.round(canvas.height * 0.7);
+    const ctx2 = canvas2.getContext('2d', { alpha:false });
+    ctx2.fillStyle = '#fff'; ctx2.fillRect(0,0,canvas2.width,canvas2.height);
+    ctx2.drawImage(canvas, 0, 0, canvas2.width, canvas2.height);
+    blob = await new Promise(resolve => canvas2.toBlob(resolve, 'image/jpeg', 0.6));
   }
 
   if(!blob) throw new Error('IMAGE_CONVERT_FAILED');
@@ -1959,7 +1856,6 @@ async function fileToBase64(file){
   });
 }
 
-// ---------- 대시보드 ----------
 function statusLabel(rec){
   if(rec.status === 'cancelled') return {cls:'done', text:'🚫 취소됨'};
   if(rec.status === 'payment_pending') return {cls:'payment_pending', text:'⏳ 결제확인 대기중'};
@@ -1989,7 +1885,6 @@ function buildExtendButton(rec){
   return `<button class="btn small secondary extendBtn" data-id="${rec.id}" title="이전과 동일한 조건으로 다시 접수">🔁 연장하기</button>`;
 }
 
-// 슬롯 시각화: 기본/보너스 슬롯을 색이 다른 네모 블록으로 나란히 표시
 function buildSlotPips(rec){
   if(rec.productType !== 'reward') return '';
   const baseCount = Number(rec.qty || 0);
@@ -2002,9 +1897,8 @@ function buildSlotPips(rec){
   return `<div class="slot-pip-row"><span class="slot-pip-label">슬롯 ${total}개</span>${pips}</div>`;
 }
 
-// 연장하기: 이전 접수 내용을 신규접수 폼에 그대로 채워서 바로 재접수할 수 있게 한다
 function extendRecord(rec){
-  switchToPanel('panelMain'); // 홈/현황판 어디서 눌러도 접수 탭으로 이동
+  switchToPanel('panelMain');
   setMainAccordion('mainIntakeCard', true);
   document.getElementById('pt_reward').click();
   const product = CATALOG.products.find(p => p.channel === rec.channel && p.program === rec.program);
@@ -2021,7 +1915,6 @@ function extendRecord(rec){
   }, 300);
 }
 
-// 수정하기: 승인대기 상태인 기존 접수건을 폼에 채우고, "수정 완료" 모드로 전환한다 (신규접수가 아니라 기존 건을 업데이트)
 let editingSubmissionId = null;
 function startEditSubmission(rec){
   switchToPanel('panelMain');
@@ -2059,18 +1952,15 @@ async function renderTable(quiet){
   const session = await getSession();
   const wrap = document.getElementById('tableWrap');
   if(!session){ wrap.innerHTML='<div class="empty">로그인이 필요합니다.</div>'; return; }
-  // 관리자는 이 화면에선 접수 폼만 쓰고, 전체 접수 현황은 "관리자 대시보드"나 "업체목록"에서 확인
   if(session.role === 'admin'){
     wrap.innerHTML = '<div class="empty">전체 접수건 관리는 "관리자 대시보드" 또는 "업체목록" 메뉴에서 확인해 주세요.</div>';
     return;
   }
-  // 30초 자동갱신 같은 "조용한" 재조회에서는 로딩스피너로 화면을 지워버리지 않는다 (펼쳐본 내용이 깜빡이며 사라지는 것 방지)
+  if(isUploadingTaxFile && quiet) return;
   if(!quiet) wrap.innerHTML = '<div class="empty"><div class="spinner"></div>불러오는 중...</div>';
-  // 재렌더링 전에 지금 펼쳐져 있던 항목들을 기억해뒀다가, 다시 그린 뒤 그대로 복원한다
   const expandedIds = Array.from(document.querySelectorAll('#tableWrap .status-detail'))
     .filter(el => el.style.display !== 'none')
     .map(el => el.id.replace('detail-',''));
-  // 세금계산서 폼도 열려있었으면 열린 상태 + 입력해둔 이메일을 같이 기억 (파일첨부는 브라우저 보안정책상 복원 불가)
   const openTaxForms = {};
   document.querySelectorAll('.tax-form').forEach(f=>{
     if(f.style.display !== 'none'){
@@ -2084,7 +1974,6 @@ async function renderTable(quiet){
   const records = (listRes.submissions||[]).sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt));
   const ranksMap = (rankRes.ok && rankRes.ranks) ? rankRes.ranks : {};
 
-  // 결제대기 -> 승인 으로 바뀐 걸 감지해서 축하 알림
   if(session.role === 'client'){
     let justApproved = false;
     records.forEach(rec=>{
@@ -2147,7 +2036,7 @@ async function renderTable(quiet){
               <input type="email" placeholder="계산서 받을 이메일" id="taxEmail-${rec.id}" style="margin-bottom:8px;" />
               <input type="file" accept="image/*" id="taxFile-${rec.id}" style="margin-bottom:8px;" />
               <div class="msg" id="taxMsg-${rec.id}"></div>
-              <div class="hint" style="margin-bottom:8px;">사업자등록증 사진 1장을 첨부해 주세요 (원본 15MB 이하)</div>
+              <div class="hint" style="margin-bottom:8px;">사업자등록증 사진 1장을 첨부해 주세요. 큰 사진은 자동으로 압축해서 보내드려요.</div>
               <button class="btn small taxSubmitBtn" data-id="${rec.id}">제출하기</button>
             </div>
           </div>`;
@@ -2185,7 +2074,6 @@ async function renderTable(quiet){
   html += '</div>';
   wrap.innerHTML = html;
 
-  // 이전에 펼쳐놨던 항목이 있으면 다시 그린 뒤에도 그대로 펼쳐진 상태로 복원
   expandedIds.forEach(id=>{
     const detail = document.getElementById('detail-'+id);
     const row = document.querySelector(`.status-row[data-toggle="${id}"]`);
@@ -2202,7 +2090,7 @@ async function renderTable(quiet){
 
   document.querySelectorAll('.status-row').forEach(row=>{
     row.addEventListener('click', (e)=>{
-      if(e.target.closest('.extendBtn') || e.target.closest('.approveBtn')) return; // 버튼 클릭은 펼침과 별개로 처리
+      if(e.target.closest('.extendBtn') || e.target.closest('.approveBtn')) return;
       const id = row.dataset.toggle;
       const detail = document.getElementById('detail-'+id);
       const willShow = detail.style.display === 'none';
@@ -2261,10 +2149,9 @@ async function renderTable(quiet){
       const email = document.getElementById('taxEmail-'+id).value.trim();
       const fileInput = document.getElementById('taxFile-'+id);
       const file = fileInput.files[0];
-      const inlineMsg = document.getElementById('taxMsg-'+id);
       if(!email || !file){ showMsg('taxMsg-'+id,'이메일과 사업자등록증 파일을 모두 입력해 주세요.','warn'); return; }
-      if(file.size > 15*1024*1024){ showMsg('taxMsg-'+id,'파일 용량이 너무 커요. 원본 파일은 15MB 이하만 올릴 수 있어요.','warn'); return; }
-      setBusy(btn, '업로드 준비 중...');
+      isUploadingTaxFile = true;
+      setBusy(btn, '이미지 준비 중...');
       try{
         const prepared = await prepareTaxImageForUpload(file);
         btn.textContent = '업로드 중...';
@@ -2283,21 +2170,23 @@ async function renderTable(quiet){
         else { showMsg('taxMsg-'+id, res.error||'요청 실패','warn'); }
       }catch(e){
         clearBusy(btn);
-        showMsg('taxMsg-'+id,'파일 처리 중 오류가 발생했어요.','warn');
+        const msg = e && e.message === 'IMAGE_ONLY' ? '이미지 파일만 업로드할 수 있어요.'
+          : e && e.message === 'IMAGE_DECODE_FAILED' ? '이 이미지 형식은 처리할 수 없어요. 스크린샷이나 갤러리에서 JPG/PNG로 다시 저장 후 시도해 주세요.'
+          : '파일 처리 중 오류가 발생했어요.';
+        showMsg('taxMsg-'+id, msg, 'warn');
+      } finally {
+        isUploadingTaxFile = false;
       }
     });
   });
 }
 document.getElementById('refreshBtn').addEventListener('click', renderTable);
-// 접수현황 화면을 보고 있는 동안 30초마다 조용히 자동 갱신 (승인 여부를 실시간에 가깝게 확인)
 setInterval(async ()=>{
   const session = await getSession();
   const mainPanel = document.getElementById('panelMain');
   if(session && mainPanel && mainPanel.classList.contains('active')) renderTable(true);
 }, 30000);
 
-
-// ---------- 쿠폰함 ----------
 async function loadCoupons(){
   const session = await getSession();
   if(!session) return;
@@ -2310,7 +2199,6 @@ async function renderCoupons(){
   wrap.innerHTML = '<div class="empty"><div class="spinner"></div>로딩중...</div>';
   const session = await getSession();
   if(!session){ wrap.innerHTML = '<div class="empty">로그인이 필요합니다.</div>'; return; }
-  // 로그인 시 캐시해둔 COUPONS_CACHE에 의존하지 않고, 이 화면 진입할 때마다 서버에서 직접 최신 상태를 가져온다
   const res = await apiCall('listCoupons', { token: session.token });
   const coupons = res.ok ? (res.coupons||[]).filter(c=>c.status==='available') : [];
   if(coupons.length===0){ wrap.innerHTML = '<div class="empty">보유한 쿠폰이 없습니다.</div>'; return; }
@@ -2321,8 +2209,7 @@ async function renderCoupons(){
     </div>`).join('');
 }
 
-// ---------- 추천 현황 (관리자) ----------
-let adminAllRecordsCache = []; // 전체 접수건 (필터탭에서 재사용)
+let adminAllRecordsCache = [];
 let pendingSortState = { key: 'createdAt', dir: 'asc' };
 let adminFilterState = 'payment_pending';
 
@@ -2333,7 +2220,7 @@ function filterAdminRecords(records, filter){
   if(filter === 'active') return records.filter(r => r.productType==='reward' && r.status==='approved' && (!r.endDate || r.endDate >= today));
   if(filter === 'expiring') return records.filter(r => r.productType==='reward' && r.status==='approved' && r.endDate && r.endDate >= today && r.endDate <= in3days);
   if(filter === 'done') return records.filter(r => (r.productType==='reward' && r.status==='approved' && r.endDate && r.endDate < today) || r.status==='confirmed');
-  return records; // all
+  return records;
 }
 
 function renderPendingTable(){
@@ -2346,7 +2233,6 @@ function renderPendingTable(){
   const today = fmt(new Date());
   const in3days = fmt(addDays(new Date(), 3));
   const sorted = [...filtered].sort((a,b)=>{
-    // 마감임박 뷰에서는 무조건 종료일 임박한 순으로 최상단 고정 (연장계약 유도)
     if(adminFilterState === 'expiring') return new Date(a.endDate) - new Date(b.endDate);
     let av, bv;
     if(key === 'grandTotal'){ av = Number(a.grandTotal||0); bv = Number(b.grandTotal||0); }
@@ -2411,7 +2297,6 @@ function renderPendingTable(){
       else { showMsg('submitMsg', res.error || '승인 실패', 'warn'); btn.disabled = false; btn.textContent = '승인'; }
     });
   });
-  // 결제대기 탭에서만 일괄처리 툴바 의미가 있으니, 다른 탭에서는 흐리게 처리
   const toolbar = document.querySelector('#panelAdmin .toolbar');
   if(toolbar) toolbar.style.display = isPendingMode ? 'flex' : 'none';
 }
@@ -2425,7 +2310,6 @@ document.querySelectorAll('.admin-status-tab').forEach(tab=>{
   });
 });
 
-// ---------- 진단 리드 (별도 탭, 부가 정보라 관리자 대시보드에서 분리) ----------
 async function loadLeadsPanel(){
   const session = await getSession();
   if(!session || session.role !== 'admin') return;
@@ -2444,17 +2328,15 @@ async function loadLeadsPanel(){
       </tr>`).join('')}</tbody>
     </table></div>`;
 }
-
 async function loadAdmin(){
   const session = await getSession();
   if(!session || session.role !== 'admin') return;
 
-  // 통계: 이미 불러온(또는 캐시된) 전체 접수 데이터로 계산
   const listRes = await fetchSubmissionsCached(session);
   const records = (listRes.ok ? listRes.submissions : []) || [];
   const today = fmt(new Date());
   const weekLater = fmt(addDays(new Date(), 7));
-  const monthStart = today.slice(0,7); // YYYY-MM
+  const monthStart = today.slice(0,7);
 
   const pendingCount = records.filter(r => r.status === 'payment_pending').length;
   const expiringCount = records.filter(r => r.productType==='reward' && r.status==='approved' && r.endDate && r.endDate >= today && r.endDate <= weekLater).length;
@@ -2465,7 +2347,6 @@ async function loadAdmin(){
   document.getElementById('statExpiring').textContent = expiringCount + '건';
   document.getElementById('statRevenue').textContent = monthRevenue.toLocaleString('ko-KR') + '원';
 
-  // 입금확인 · 승인 대기 목록 (표 형태 + 체크박스로 일괄승인/반려 가능)
   adminAllRecordsCache = records;
   const pendingWrap = document.getElementById('adminPendingWrap');
   renderPendingTable();
@@ -2491,13 +2372,11 @@ async function loadAdmin(){
   };
   document.getElementById('exportSubmissionsBtn').onclick = ()=> exportSubmissionsToExcel(records);
 
-  // 진단 리드 건수(요약 통계만 여기서 유지, 목록 자체는 별도 "진단 리드" 탭에서)
   const leadsRes = await apiCall('listLeads', { token: session.token });
   const leads = (leadsRes.ok ? leadsRes.leads : []) || [];
   const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate()-7);
   document.getElementById('statLeads').textContent = leads.filter(l => new Date(l.createdAt) >= weekAgo).length + '건';
 
-  // 세금계산서 요청 목록 (아직 발행완료 처리 안 된 것만, 표 형태 + 체크박스로 zip일괄다운로드)
   const taxRes = await apiCall('listTaxInvoices', { token: session.token });
   const invoices = ((taxRes.ok ? taxRes.invoices : []) || []).filter(t => t.status !== 'completed');
   const taxWrap = document.getElementById('adminTaxWrap');
@@ -2532,7 +2411,7 @@ async function loadAdmin(){
     const ids = Array.from(document.querySelectorAll('.taxRowCheck:checked')).map(cb=>cb.dataset.id);
     const btn = document.getElementById('zipTaxCertsBtn');
     setBusy(btn, 'zip 만드는 중...');
-    const res = await apiCall('zipTaxCerts', { token: session.token, taxIds: ids }); // ids가 비어있으면 전체 다운로드
+    const res = await apiCall('zipTaxCerts', { token: session.token, taxIds: ids });
     clearBusy(btn);
     if(!res.ok){ showMsg('submitMsg', res.error || 'zip 생성 실패', 'warn'); return; }
     const byteChars = atob(res.base64);
@@ -2547,7 +2426,6 @@ async function loadAdmin(){
   };
 }
 
-// 접수 데이터를 엑셀(CSV, 한글 깨짐 방지 처리)로 내보내기 - DB 백업 및 오프라인 작업용
 function exportSubmissionsToExcel(records){
   const cols = ['id','client','phone','productType','channel','program','qty','cycles','totalSlots','bonusSlots','keywords','link','grandTotal','status','createdAt','startDate','endDate'];
   const header = cols.join(',');
@@ -2557,7 +2435,7 @@ function exportSubmissionsToExcel(records){
     v = String(v==null ? '' : v).replace(/"/g,'""');
     return `"${v}"`;
   }).join(','));
-  const csv = '\uFEFF' + [header, ...rows].join('\r\n'); // BOM 붙여서 엑셀에서 한글 안 깨지게
+  const csv = '\uFEFF' + [header, ...rows].join('\r\n');
   const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -2565,7 +2443,6 @@ function exportSubmissionsToExcel(records){
   URL.revokeObjectURL(url);
 }
 
-// ---------- 업체목록 (관리자용 - 업체별 매출/순위변동/히스토리 컨설팅 뷰) ----------
 async function loadClients(){
   const session = await getSession();
   if(!session || session.role !== 'admin') return;
@@ -2573,12 +2450,11 @@ async function loadClients(){
   const records = (listRes.ok ? listRes.submissions : []) || [];
   const referralsRes = await apiCall('listReferrals', { token: session.token });
   const referredEmails = new Set(((referralsRes.ok ? referralsRes.referrals : []) || [])
-    .filter(r => r.referrerCompany !== '(코드 불일치)') // 코드가 실제로 유효하게 매칭된 경우만 "추천가입"으로 인정
+    .filter(r => r.referrerCompany !== '(코드 불일치)')
     .map(r => r.referredEmail));
-  const couponsRes = await apiCall('listCoupons', { token: session.token }); // 관리자는 전체 쿠폰 내역을 받아옴
+  const couponsRes = await apiCall('listCoupons', { token: session.token });
   const allCoupons = (couponsRes.ok ? couponsRes.coupons : []) || [];
 
-  // 업체(이메일 기준)별로 그룹핑해서 요약치 계산
   const clientMap = {};
   const today = fmt(new Date());
   records.forEach(r=>{
@@ -2646,7 +2522,7 @@ function renderClientList(clients){
       const k = th.dataset.sort;
       clientSortState.dir = (clientSortState.key === k && clientSortState.dir === 'desc') ? 'asc' : 'desc';
       clientSortState.key = k;
-      renderClientList(clients); // 원본 clients로 다시 렌더 (정렬만 새로 적용)
+      renderClientList(clients);
     });
   });
 
@@ -2656,7 +2532,6 @@ function renderClientList(clients){
       const detailRow = document.getElementById('detailrow-client-'+i);
       const detail = document.getElementById('detail-client-'+i);
       const willShow = detailRow.style.display === 'none';
-      // 아코디언처럼 한 번에 하나만 펼쳐지게
       document.querySelectorAll('#clientListWrap .client-detail-row').forEach(d=>d.style.display='none');
       if(willShow){
         detailRow.style.display = 'table-row';
@@ -2669,7 +2544,6 @@ function renderClientList(clients){
 async function renderClientDetail(container, c){
   container.innerHTML = '<div class="empty"><div class="spinner"></div>불러오는 중...</div>';
 
-  // 월별 매출 집계 (승인/확정된 건만 매출로 인정)
   const monthly = {};
   c.records.forEach(r=>{
     if(r.status!=='approved' && r.status!=='confirmed') return;
@@ -2681,7 +2555,6 @@ async function renderClientDetail(container, c){
   const chartId = 'clientRevChart_' + Math.random().toString(36).slice(2,8);
   const sortedRecords = [...c.records].sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt));
 
-  // 뎁스2: 이 업체의 슬롯(접수건) 목록 - 클릭하면 뎁스3(세부현황)이 그 아래 펼쳐짐
   const slotRows = sortedRecords.map((r,i) => {
     const st = statusLabel(r);
     const title = r.productType==='reward' ? `${escapeHtml(r.channel)}·${escapeHtml(r.program)} ${r.qty}개` : '유튜브 촬영';
@@ -2739,7 +2612,7 @@ async function renderClientDetail(container, c){
     if(res.ok){
       showMsg('submitMsg', '쿠폰을 지급했어요.', 'ok');
       c.coupons.push({ type, grantedAt: new Date().toISOString(), grantedBy: (await getSession()).email, status:'available' });
-      renderClientDetail(container, c); // 방금 지급한 내역이 바로 표에 반영되도록 다시 그림
+      renderClientDetail(container, c);
     }
     else { showMsg('submitMsg', res.error || '지급 실패', 'warn'); btn.disabled = false; btn.textContent = '🎁 이 업체에 쿠폰 지급'; }
   });
@@ -2755,7 +2628,6 @@ async function renderClientDetail(container, c){
     else { showMsg('submitMsg', res.error || '처리 실패', 'warn'); btn.disabled = false; btn.textContent = '🚫 강제 회원탈퇴'; }
   });
 
-  // 매출 그래프
   requestAnimationFrame(()=>{
     new Chart(document.getElementById(chartId).getContext('2d'), {
       type:'bar',
@@ -2765,7 +2637,6 @@ async function renderClientDetail(container, c){
     });
   });
 
-  // 뎁스3: 슬롯 클릭하면 그 슬롯 하나만의 순위그래프+세부정보를 펼쳐서 보여줌 (아코디언, 한번에 하나만)
   container.querySelectorAll('.slot-row').forEach((row,i)=>{
     row.addEventListener('click', ()=>{
       const detailRow = document.getElementById('slotdetailrow-'+i);
@@ -2780,7 +2651,6 @@ async function renderClientDetail(container, c){
   });
 }
 
-// 뎁스3: 슬롯 하나의 세부현황 (그 상품/키워드만의 순위 그래프)
 async function renderSlotDetail(container, rec){
   container.innerHTML = '<div class="empty"><div class="spinner"></div>불러오는 중...</div>';
   const kws = Array.isArray(rec.keywords) ? rec.keywords : String(rec.keywords||'').split(',').map(k=>k.trim()).filter(Boolean);
@@ -2868,7 +2738,6 @@ async function renderReferrals(){
   });
 }
 
-// ---------- 홈 ----------
 async function loadHome(){
   const session = await getSession();
   if(!session) return;
@@ -2892,7 +2761,7 @@ async function loadHome(){
   graphCard.style.display = hasRewardData ? 'block' : 'none';
   if(hasRewardData){
     initChartDefaultDates('home_');
-    populateChartSubmissionSelect(records, 'home_'); // 현황판과 완전히 동일한 그래프 컨트롤/로직 재사용
+    populateChartSubmissionSelect(records, 'home_');
   }
 
   renderHomeProgress(active[0]);
@@ -2960,7 +2829,7 @@ function renderHomeProgress(rec){
   if(!rec){ card.style.display='none'; return; }
   card.style.display = 'block';
   const today = fmt(new Date());
-  let stepIndex = 2; // 0접수 1입금확인 2진행중 3종료 - approved 상태는 최소 입금확인까지 완료
+  let stepIndex = 2;
   if(rec.endDate && today > rec.endDate) stepIndex = 3;
   else if(rec.startDate && today < rec.startDate) stepIndex = 1;
 
@@ -2978,8 +2847,7 @@ function renderHomeProgress(rec){
   document.getElementById('homeProgressNote').textContent = rec.endDate ? `${prettyDate(rec.endDate)} 종료 예정` : '승인 후 일정이 확정돼요';
 }
 
-// ---------- 현황판 ----------
-const rankChartInstances = {}; // prefix별로 별도 Chart 인스턴스 보관 ('' = 현황판, 'home_' = 홈)
+const rankChartInstances = {};
 const donutCharts = {};
 
 async function loadDashboard(){
@@ -3003,8 +2871,6 @@ function initChartDefaultDates(prefix){
   }
 }
 
-// 종료된 캠페인은 "최근 30일"과 실제 집행기간이 안 겹칠 수 있어서, 상품을 고르면
-// 그 상품이 실제로 진행됐던 기간(시작일 ~ 종료일, 진행중이면 오늘까지)으로 조회기간을 자동으로 맞춘다.
 function setChartRangeForRecord(rec, prefix){
   if(!rec || !rec.acceptDate){ initChartDefaultDates(prefix); return; }
   const start = rec.acceptDate;
@@ -3013,7 +2879,6 @@ function setChartRangeForRecord(rec, prefix){
   document.getElementById(prefix+'chart_end').value = end;
 }
 
-// 채널/프로그램별로 슬롯수(갯수+보너스)를 합산
 function groupSlots(list){
   const map = {};
   list.forEach(r=>{
@@ -3127,12 +2992,10 @@ function renderHistoryList(records){
       const key = row.dataset.toggle;
       const detail = document.getElementById('detail-'+key);
       const willShow = detail.style.display === 'none';
-      // 아코디언처럼 한 번에 하나만 펼쳐지게
       document.querySelectorAll('#historyListWrap .status-detail').forEach(d=>d.style.display='none');
       document.querySelectorAll('#historyListWrap .status-row').forEach(r=>r.classList.remove('expanded'));
       if(willShow){ detail.style.display='block'; row.classList.add('expanded'); }
 
-      // 클릭한 상품에 맞게 위쪽 그래프도 자동으로 그 상품 기준으로 갱신
       const recId = row.dataset.histId;
       const sel = document.getElementById('chart_submission');
       if(recId && sel.querySelector(`option[value="${recId}"]`)){
@@ -3153,7 +3016,6 @@ function renderHistoryList(records){
   });
 }
 
-// prefix: '' = 현황판, 'home_' = 홈. 컨트롤 구조가 완전히 동일해서 이 함수 하나로 둘 다 처리
 function populateChartSubmissionSelect(records, prefix){
   const rewardRecords = records.filter(r => r.productType === 'reward');
   const sel = document.getElementById(prefix+'chart_submission');
@@ -3169,8 +3031,6 @@ function populateChartSubmissionSelect(records, prefix){
   sel._recordsCache = rewardRecords;
   updateKeywordCheckboxes(rewardRecords[0], prefix);
   setChartRangeForRecord(rewardRecords[0], prefix);
-  // 방금 화면(display:none -> block)이 보이기 시작한 직후라 브라우저가 아직 크기를 못 잡았을 수 있어서,
-  // 한 프레임 넘긴 뒤에 그래프를 그린다 (그래야 캔버스가 0크기로 잘못 측정되는 걸 막을 수 있음)
   requestAnimationFrame(()=> fetchAndRenderChart(prefix));
 }
 
@@ -3181,7 +3041,6 @@ function updateKeywordCheckboxes(rec, prefix){
   wrap.innerHTML = kws.map(k => `<label><input type="checkbox" value="${escapeHtml(k)}" checked/> ${escapeHtml(k)}</label>`).join('');
 }
 
-// 현황판(prefix='')과 홈(prefix='home_') 양쪽 컨트롤에 동일하게 이벤트 연결
 ['', 'home_'].forEach(prefix=>{
   document.getElementById(prefix+'chart_submission').addEventListener('change', (e)=>{
     const records = e.target._recordsCache || [];
@@ -3220,11 +3079,10 @@ async function fetchAndRenderChart(prefix){
   const res = await apiCall('getRankHistory', { token: session.token, submissionId, startDate, endDate });
   if(!res.ok || !res.history || res.history.length === 0){ renderEmptyChart(prefix); return; }
 
-  // 키워드별 -> 대상(내 상품 / 경쟁사 A,B,C)별로 그룹핑
   const grouped = {};
   res.history.forEach(h=>{
     if(selectedKeywords.length && !selectedKeywords.includes(h.keyword)) return;
-    if(!h.rank || isNaN(Number(h.rank))) return; // "100위 밖" 등은 그래프에서 제외(끊어보이게)
+    if(!h.rank || isNaN(Number(h.rank))) return;
     const subj = h.subject || 'me';
     if(!grouped[h.keyword]) grouped[h.keyword] = {};
     if(!grouped[h.keyword][subj]) grouped[h.keyword][subj] = { label: h.subjectLabel || '내 상품', points: [] };
@@ -3276,9 +3134,6 @@ function renderEmptyChart(prefix){
   if(rankChartInstances[prefix]){ rankChartInstances[prefix].destroy(); rankChartInstances[prefix] = null; }
 }
 
-// ---------- 게이트웨이(입장) 화면 ----------
-// 화면 전환을 브라우저 히스토리에 남겨서, 뒤로가기/앞으로가기가 사이트 밖이 아니라
-// 우리 화면들(게이트웨이/진단챗봇/로그인/회원가입) 사이를 오가도록 만든다.
 function goToScreen(screen, push){
   document.getElementById('gatewayScreen').classList.remove('active');
   document.getElementById('diagnosticScreen').classList.remove('active');
@@ -3307,9 +3162,6 @@ function goToScreen(screen, push){
     history.pushState({ screen }, '', '#' + screen);
   }
 }
-// 뒤로가기/앞으로가기 처리. history.state를 우선 신뢰하되,
-// 혹시 state가 비어있거나 예상 못한 상황이어도 "빈 화면"이 뜨지 않도록
-// 실제 로그인 세션 여부를 기준으로 항상 안전하게 복구한다.
 window.addEventListener('popstate', async (e)=>{
   const app = document.getElementById('app');
   const screen = (e.state && e.state.screen) || null;
@@ -3320,7 +3172,7 @@ window.addEventListener('popstate', async (e)=>{
       const s = await getSession();
       if(s) await enterApp(s); else { goToScreen('gateway', false); return; }
     }
-    if(panel) switchPanelDOM(panel); // 탭 이동으로 쌓인 히스토리면 그 탭으로 복원
+    if(panel) switchPanelDOM(panel);
     return;
   }
   if(screen){
@@ -3328,7 +3180,6 @@ window.addEventListener('popstate', async (e)=>{
     goToScreen(screen, false);
     return;
   }
-  // state를 못 받은 경우 - 세션 있으면 앱으로, 없으면 게이트웨이로 안전하게 복구
   const s = await getSession();
   if(s){ if(!app.classList.contains('visible')) await enterApp(s); }
   else {
@@ -3337,10 +3188,8 @@ window.addEventListener('popstate', async (e)=>{
   }
 });
 
-// 모바일 브라우저의 bfcache(뒤로가기 시 페이지를 새로 안 그리고 스냅샷 복원하는 기능) 대응:
-// 캐시에서 복원된 경우 화면 상태가 실제와 어긋날 수 있어, 세션 기준으로 한번 더 맞춰준다
 window.addEventListener('pageshow', async (e)=>{
-  if(!e.persisted) return; // bfcache에서 복원된 경우만 처리
+  if(!e.persisted) return;
   const app = document.getElementById('app');
   const s = await getSession();
   if(s && !app.classList.contains('visible')) await enterApp(s);
@@ -3353,7 +3202,6 @@ document.getElementById('gatewayRightHint').addEventListener('click', openDiagno
 document.getElementById('gatewayBottomHint').addEventListener('click', openLoginFromGateway);
 document.getElementById('diagBack').addEventListener('click', showGateway);
 
-// 스와이프 제스처 감지 (오른→왼: 진단, 아래→위: 로그인). 터치 미지원 기기는 힌트 탭으로 대체 가능
 (function(){
   const gw = document.getElementById('gatewayScreen');
   let sx=0, sy=0;
@@ -3366,7 +3214,6 @@ document.getElementById('diagBack').addEventListener('click', showGateway);
   }, {passive:true});
 })();
 
-// ---------- 진단 챗봇 ----------
 let diagData = {};
 function resetDiagnostic(){
   diagData = {};
@@ -3427,7 +3274,6 @@ function diagAskEmail(){
   diagAppendInput('you@company.com', (v)=>{ diagAppendUser(v); diagData.email=v; diagRunDiagnosis(); }, 'email',
     (v)=> /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? null : '이메일 형식을 확인해 주세요. (예: name@example.com)');
 }
-// 상품명에 키워드가 포함되어 있는지, 상위권 상품들과 비교해서 인사이트 생성
 function buildTitleInsight(myTitle, keyword, top3){
   const hasKeyword = myTitle.includes(keyword);
   const posRatio = hasKeyword ? myTitle.indexOf(keyword) / myTitle.length : null;
@@ -3484,7 +3330,6 @@ async function diagRunDiagnosis(){
   document.getElementById('diagChatBody').appendChild(card);
   document.getElementById('diagChatBody').scrollTop = document.getElementById('diagChatBody').scrollHeight;
 
-  // 상품명 키워드 최적화 인사이트 (리뷰/평점 대신 확보 가능한 데이터로 구성)
   if(res.myTitle){
     const titleCard = buildTitleInsight(res.myTitle, diagData.keyword, res.top3||[]);
     setTimeout(()=>{
@@ -3551,20 +3396,14 @@ function diagGotoSignup(){
   goToScreen('signup');
 }
 
-
-// 최초 렌더 전에 현재 viewport 기준 레이아웃을 즉시 확정.
-// 외부 폰트/차트/API 로딩과 무관하게 PC에서는 처음부터 PC 폭을 사용한다.
 function stabilizeInitialViewport(){
   const root = document.documentElement;
   root.style.setProperty('--initial-vw', window.innerWidth + 'px');
-  // 강제 reflow로 첫 paint 전에 미디어쿼리/레이아웃 계산을 확정
   void document.body.offsetWidth;
 }
 stabilizeInitialViewport();
 window.addEventListener('resize', stabilizeInitialViewport, { passive:true });
 
-// ---------- 초기 로드 ----------
-// ?admin=1 로 접속했을 때만 서버 연결 설정(고급 옵션)을 노출
 if(new URLSearchParams(window.location.search).get('admin') === '1'){
   document.getElementById('serverConfigBox').style.display = 'block';
 }
@@ -3572,13 +3411,10 @@ if(new URLSearchParams(window.location.search).get('admin') === '1'){
   const session = await getSession();
   if(session){ await enterApp(session); }
   else {
-    history.replaceState({ screen:'gateway' }, '', '#gateway'); // 최초 진입은 히스토리 쌓지 않고 시작점만 표시
+    history.replaceState({ screen:'gateway' }, '', '#gateway');
     goToScreen('gateway', false);
   }
 })();
-// 스플래시 로고 화면 잠깐 보여주고 부드럽게 사라짐
-// 새로고침(당겨서새로고침 포함)으로 들어온 건지, 처음 접속한 건지 구분해서
-// 새로고침이면 스플래시를 생략하고, 처음 접속일 때만 정상적으로 보여줌
 (function(){
   const navEntries = performance.getEntriesByType && performance.getEntriesByType('navigation');
   const navType = (navEntries && navEntries.length) ? navEntries[0].type
