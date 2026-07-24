@@ -2149,6 +2149,120 @@ function applyRoleUi(session){
   return isAdmin ? 'admin' : 'client';
 }
 
+
+// ===== PWA / 공유 / 딥링크 안전 헬퍼 =====
+let deferredPwaPrompt = null;
+let pendingRankVerify = null;
+let currentRankVerifyRecord = null;
+
+function appBaseUrl(){
+  const u = new URL(window.location.href);
+  u.search = '';
+  u.hash = '';
+  return u.toString();
+}
+function isIosDevice(){ return /iphone|ipad|ipod/i.test(navigator.userAgent); }
+function isStandalonePwa(){
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+function syncInstallButton(){
+  const btn = document.getElementById('installAppBtn');
+  if(!btn) return;
+  const sessionRaw = localStorage.getItem(SK_SESSION);
+  let role = '';
+  try { role = sessionRaw ? normalizeRole(JSON.parse(sessionRaw).role) : ''; } catch(e){}
+  if(role === 'admin' || isStandalonePwa()) btn.style.display = 'none';
+  else btn.style.display = '';
+}
+function referralUrl(code){
+  const u = new URL(appBaseUrl());
+  u.searchParams.set('ref', String(code || '').trim().toUpperCase());
+  return u.toString();
+}
+function referralMessage(code){
+  return `네이버·쿠팡 상품 운영하고 있으면 올림컴퍼니 한번 써봐!\n\n가입하면 무료체험 1회 받을 수 있고 상품 순위와 캠페인 현황도 확인할 수 있어.\n\n내 추천 링크로 가입하면 추천코드도 자동 적용돼 👇\n${referralUrl(code)}`;
+}
+async function copyTextSafe(text){
+  if(navigator.clipboard && window.isSecureContext){
+    await navigator.clipboard.writeText(text);
+    return true;
+  }
+  const ta=document.createElement('textarea');
+  ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  const ok=document.execCommand('copy'); ta.remove(); return ok;
+}
+function closePwaInstallModal(){
+  const m=document.getElementById('pwaInstallModal');
+  if(m){m.classList.remove('show');m.setAttribute('aria-hidden','true');}
+}
+async function openPwaInstallModal(reason='manual'){
+  if(isStandalonePwa()) return;
+  const m=document.getElementById('pwaInstallModal');
+  if(!m) return;
+  m.dataset.reason=reason;
+  const guide=document.getElementById('iosInstallGuide');
+  const btn=document.getElementById('pwaInstallConfirmBtn');
+  if(guide && btn){
+    if(isIosDevice() && !deferredPwaPrompt){
+      guide.style.display='block'; btn.textContent='설치 방법 보기';
+    }else{
+      guide.style.display='none'; btn.textContent='홈 화면에 추가';
+    }
+  }
+  m.classList.add('show'); m.setAttribute('aria-hidden','false');
+}
+function scheduleInstallOffer(reason){
+  if(isStandalonePwa()) return;
+  const key=reason==='signup'?'ollim_pwa_offer_signup':'ollim_pwa_offer_campaign';
+  if(localStorage.getItem(key)==='1') return;
+  localStorage.setItem(key,'1');
+  setTimeout(()=>openPwaInstallModal(reason),900);
+}
+function parseDeepLinks(){
+  const params=new URLSearchParams(location.search);
+  const ref=String(params.get('ref')||'').trim().toUpperCase();
+  if(ref) window.pendingReferralCode=ref;
+  const sid=params.get('verify'), kw=params.get('kw');
+  if(sid) pendingRankVerify={submissionId:sid,keyword:kw||''};
+}
+async function handlePendingRankVerify(){
+  if(!pendingRankVerify) return;
+  const session=await getSession();
+  if(!session || normalizeRole(session.role)!=='client') return;
+  const res=await apiCall('listSubmissions',{token:session.token});
+  if(!res.ok) return;
+  const rec=(res.submissions||[]).find(r=>String(r.id)===String(pendingRankVerify.submissionId));
+  if(!rec) return;
+  let ranks={}; try{ranks=rec.ranksJson?JSON.parse(rec.ranksJson):{};}catch(e){}
+  const kw=pendingRankVerify.keyword ||
+    (Array.isArray(rec.keywords)?rec.keywords[0]:String(rec.keywords||'').split(',')[0].trim());
+  const info=ranks[kw]||{};
+  currentRankVerifyRecord={rec,kw,info};
+  const title=document.getElementById('rankVerifyTitle');
+  const rank=document.getElementById('verifyRank');
+  const meta=document.getElementById('rankVerifyMeta');
+  const modal=document.getElementById('rankVerifyModal');
+  if(title) title.textContent=`'${kw}' 순위 직접 확인`;
+  if(rank){
+    rank.textContent=typeof rankObservationLabel==='function' ? rankObservationLabel(info) : (typeof info.rank==='number'?`${info.rank}위`:'확인중');
+  }
+  if(meta){
+    const checked=info.checkedAt?new Date(info.checkedAt).toLocaleString('ko-KR'):'최근 관측시간 없음';
+    meta.textContent=`올림 관측: ${checked} · 검색결과는 시점과 검색환경에 따라 달라질 수 있어요.`;
+  }
+  if(modal){modal.classList.add('show');modal.setAttribute('aria-hidden','false');}
+  pendingRankVerify=null;
+}
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault(); deferredPwaPrompt=e; syncInstallButton();
+});
+window.addEventListener('appinstalled',()=>{
+  deferredPwaPrompt=null; closePwaInstallModal(); syncInstallButton();
+  localStorage.setItem('ollim_pwa_installed','1');
+});
+parseDeepLinks();
+
 async function enterApp(session){
   if(!history.state || history.state.screen !== 'app'){
     history.pushState({ screen:'app' }, '', '#app');
@@ -2167,12 +2281,18 @@ async function enterApp(session){
   document.getElementById('myRefCode').textContent = session.referralCode || '-';
   const shareCodeEl = document.getElementById('shareReferralCode');
   if(shareCodeEl) shareCodeEl.textContent = session.referralCode || '-';
-  syncInstallButton();
+
+  // 역할 UI를 가장 먼저 확정한다.
+  // 부가 기능(PWA 등) 오류가 있어도 관리자/사용자 화면 전환은 절대 중단되지 않게 한다.
+  const activeRole = applyRoleUi(session);
+
+  try { syncInstallButton(); } catch(e) { console.error('PWA 설치버튼 동기화 오류:', e); }
 
   const clientInput = document.getElementById('f_client');
   const ytClientInput = document.getElementById('y_client');
-  const activeRole = applyRoleUi(session);
   const isAdmin = activeRole === 'admin';
+  const buildBadge = document.getElementById('buildBadge');
+  if(buildBadge) buildBadge.style.display = isAdmin ? 'block' : 'none';
 
   if(!isAdmin){
     clientInput.value = session.companyName; clientInput.disabled = true;
@@ -2559,7 +2679,7 @@ async function renderTable(quiet){
   const session = await getSession();
   const wrap = document.getElementById('tableWrap');
   if(!session){ wrap.innerHTML='<div class="empty">로그인이 필요합니다.</div>'; return; }
-  if(session.role === 'admin'){
+  if(normalizeRole(session.role) === 'admin'){
     wrap.innerHTML = '<div class="empty">전체 접수건 관리는 "관리자 대시보드" 또는 "업체목록" 메뉴에서 확인해 주세요.</div>';
     return;
   }
@@ -2600,7 +2720,7 @@ async function renderTable(quiet){
     const title = campaignProductName(rec);
     const campaignMeta = campaignMetaTitle(rec);
     const dday = rec.productType==='reward' ? ddayInfo(rec) : null;
-    const approveBtn = (session.role==='admin' && rec.status==='payment_pending')
+    const approveBtn = (normalizeRole(session.role)==='admin' && rec.status==='payment_pending')
       ? `<button class="btn small approveBtn" data-id="${rec.id}">입금확인 · 승인하기</button>` : '';
 
     let editCancelHtml = '';
@@ -2928,7 +3048,7 @@ document.querySelectorAll('.admin-status-tab').forEach(tab=>{
 
 async function loadLeadsPanel(){
   const session = await getSession();
-  if(!session || session.role !== 'admin') return;
+  if(!session || normalizeRole(session.role) !== 'admin') return;
   const leadsWrap = document.getElementById('adminLeadsWrap');
   leadsWrap.innerHTML = '<div class="empty"><div class="spinner"></div>로딩중...</div>';
   const leadsRes = await apiCall('listLeads', { token: session.token });
@@ -2946,7 +3066,7 @@ async function loadLeadsPanel(){
 }
 async function loadAdmin(){
   const session = await getSession();
-  if(!session || session.role !== 'admin') return;
+  if(!session || normalizeRole(session.role) !== 'admin') return;
 
   const listRes = await fetchSubmissionsCached(session);
   const records = (listRes.ok ? listRes.submissions : []) || [];
@@ -3064,7 +3184,7 @@ function exportSubmissionsToExcel(records){
 
 async function loadClients(){
   const session = await getSession();
-  if(!session || session.role !== 'admin') return;
+  if(!session || normalizeRole(session.role) !== 'admin') return;
   const listRes = await fetchSubmissionsCached(session);
   const records = (listRes.ok ? listRes.submissions : []) || [];
   const referralsRes = await apiCall('listReferrals', { token: session.token });
@@ -3324,7 +3444,7 @@ async function renderSlotDetail(container, rec){
 async function renderReferrals(){
   const session = await getSession();
   const wrap = document.getElementById('referralWrap');
-  if(!session || session.role!=='admin'){ wrap.innerHTML='<div class="empty">관리자만 볼 수 있습니다.</div>'; return; }
+  if(!session || normalizeRole(session.role)!=='admin'){ wrap.innerHTML='<div class="empty">관리자만 볼 수 있습니다.</div>'; return; }
   const res = await apiCall('listReferrals', { token: session.token });
   if(!res.ok){ wrap.innerHTML = `<div class="empty">${escapeHtml(res.error||'조회 실패')}</div>`; return; }
   const referrals = res.referrals || [];
@@ -4190,5 +4310,6 @@ document.getElementById('privacyEmailToggle')?.addEventListener('change',savePri
 document.getElementById('privacyWithdrawBtn')?.addEventListener('click',()=>document.getElementById('withdrawBtn')?.click());
 
 </script>
+<div id="buildBadge" style="display:none;position:fixed;right:10px;bottom:8px;z-index:99999;font:10px/1.2 monospace;color:#8B95A1;background:rgba(255,255,255,.85);padding:3px 6px;border-radius:6px;">ROLEFIX-V3</div>
 </body>
 </html>
