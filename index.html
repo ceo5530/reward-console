@@ -1,15 +1,17 @@
 <!DOCTYPE html>
+<!-- OLLIM FRONTEND BUILD: 2026-07-24 V4-STABLE-MERGE -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="theme-color" content="#272058" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="default" />
-<meta name="apple-mobile-web-app-title" content="올림컴퍼니" />
-<link rel="manifest" href="./manifest.webmanifest" />
-<link rel="apple-touch-icon" href="./icons/icon-192.png" />
 <title>올림컴퍼니 · 접수 콘솔</title>
+  <meta name="theme-color" content="#272058" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="올림컴퍼니" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -82,6 +84,18 @@
   .row2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
   .kw-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
   @media(max-width:420px){ .kw-grid{grid-template-columns:1fr;} }
+  @media(max-width:600px){
+    .status-row{ display:grid; grid-template-columns:minmax(0,1fr); align-items:start; gap:8px; padding:15px 4px; }
+    .status-row-main{min-width:0; width:100%;}
+    .status-row-title{ line-height:1.45; word-break:keep-all; overflow-wrap:anywhere; }
+    .status-row-sub{ line-height:1.45; white-space:normal; }
+    .status-row-right{ width:100%; justify-content:flex-start; align-items:center; flex-wrap:wrap; gap:6px; margin-top:0; }
+    .status-row-right .pill, .status-row-right .dday-badge, .status-row-right .btn{ flex:0 0 auto; }
+    .status-chevron{margin-left:auto;}
+    .status-detail{padding-left:4px; padding-right:4px;}
+    .result-top,.result-bottom{align-items:flex-start;}
+    .result-amount{text-align:left;}
+  }
   .hint{font-size:0.8rem; color:var(--muted); margin-top:8px; line-height:1.6;}
   .seg{display:flex; gap:6px; background:var(--surface-2); border-radius:12px; padding:4px;}
   .seg button{flex:1; padding:11px; border:none; background:none; color:var(--muted); border-radius:9px; font-weight:600; font-size:0.92rem; cursor:pointer; transition:background-color .15s ease, color .15s ease;}
@@ -440,20 +454,8 @@
     .status-chevron{ margin-left:auto !important; }
   }
 
-  /* ---- AI 순위 엔진 상태 아이콘 ----
-     로딩 스피너 대신 '데이터를 계산하며 위로 밀어올리는 엔진' 느낌.
-     집행중: 막대 파형 + 상승 화살표 애니메이션
-     종료: 동일 형태, 흑백/정지 */
-  .campaign-title-line{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    min-width:0;
-  }
-  .campaign-title-line .status-row-title{
-    min-width:0;
-    flex:1;
-  }
+
+  /* ===== V4 STABLE MERGE ADDITIONS ===== */
   .rank-engine{
     position:relative;
     width:30px;
@@ -679,6 +681,7 @@
   #app.role-admin .sidebar-nav .admin-only{display:flex !important;}
   #app.role-client .sidebar-nav .client-only{display:flex !important;}
 
+
 </style>
 </head>
 <body>
@@ -777,8 +780,7 @@
         <div class="hint" id="signupHint" style="display:none; text-align:center;">가입 즉시 고객 권한으로 로그인됩니다.</div>
       </div>
     </div>
-
-      <div id="signupConsentPanel" style="display:none;">
+    <div id="signupConsentPanel" style="display:none;">
         <h2 class="wizard-title">마지막으로 약관을 확인해주세요</h2>
         <p class="wizard-sub">기존 가입 질문은 그대로 끝났어요. 아래 동의만 확인하면 가입이 완료돼요.</p>
         <div class="legal-consent-card">
@@ -823,12 +825,61 @@
       <input id="cfg_url" type="url" placeholder="https://script.google.com/macros/s/.../exec" />
       <button class="btn secondary" id="saveCfgBtn" style="margin-top:10px;">이 브라우저에 임시 저장</button>
     </details>
-<div class="legal-foot-links" id="globalLegalLinks">
-  <button type="button" data-legal-open="terms">이용약관</button>
-  <button type="button" data-legal-open="privacy">개인정보 처리방침</button>
-  <span>개인정보 문의: ceo@ollimcompany.com · 1644-1154</span>
+    <div class="legal-foot-links" id="globalLegalLinks">
+      <button type="button" data-legal-open="terms">이용약관</button>
+      <button type="button" data-legal-open="privacy">개인정보 처리방침</button>
+      <span>개인정보 문의: ceo@ollimcompany.com · 1644-1154</span>
+    </div>
+
+  </div>
 </div>
 
+
+<div id="legalModal" class="legal-modal" aria-hidden="true">
+  <div class="legal-modal-card">
+    <div class="legal-modal-head">
+      <div class="legal-modal-title" id="legalModalTitle">약관</div>
+      <button type="button" class="legal-close" id="legalModalClose">×</button>
+    </div>
+    <div class="legal-body" id="legalModalBody"></div>
+  </div>
+</div>
+
+
+<div id="pwaInstallModal" class="ollim-modal" aria-hidden="true">
+  <div class="ollim-modal-card">
+    <div class="ollim-modal-icon">📱</div>
+    <h3 class="ollim-modal-title">올림컴퍼니를 홈 화면에 추가할까요?</h3>
+    <p class="ollim-modal-sub">다음부터 주소를 찾지 않고 앱처럼 바로 열 수 있어요.</p>
+    <div class="ios-guide" id="iosInstallGuide"></div>
+    <div class="ollim-modal-actions">
+      <button class="btn secondary" id="pwaLaterBtn">나중에</button>
+      <button class="btn" id="pwaInstallConfirmBtn">홈 화면에 추가</button>
+    </div>
+  </div>
+</div>
+
+
+<div id="rankVerifyModal" class="ollim-modal" aria-hidden="true">
+  <div class="ollim-modal-card">
+    <div class="ollim-modal-icon">🔎</div>
+    <h3 class="ollim-modal-title" id="rankVerifyTitle">순위 직접 확인</h3>
+    <p class="ollim-modal-sub">올림이 관측한 순위와 지금 네이버 검색 결과를 비교해보세요.</p>
+    <div class="verify-rank-grid single">
+      <div class="verify-rank-box">
+        <div class="label">OLLIM 자연순위</div>
+        <div class="rank" id="verifyRank">-</div>
+      </div>
+    </div>
+    <div class="verify-meta" id="rankVerifyMeta"></div>
+    <div class="verify-feedback-row">
+      <button class="btn secondary" id="rankVerifyMatchBtn">맞아요</button>
+      <button class="btn secondary" id="rankVerifyMismatchBtn">달라요</button>
+    </div>
+    <div class="ollim-modal-actions">
+      <button class="btn secondary" id="rankVerifyCloseBtn">닫기</button>
+      <button class="btn" id="rankVerifyNaverBtn">네이버에서 직접 확인</button>
+    </div>
   </div>
 </div>
 
@@ -886,6 +937,7 @@
       <button class="navtab client-only" data-panel="panelMain" data-label="접수 / 현황">📝 접수 / 현황</button>
       <button class="navtab client-only" data-panel="panelDashboard" data-label="내 현황판">📊 내 현황판</button>
       <button class="navtab client-only" data-panel="panelCoupons" data-label="보유 쿠폰함">🎟 보유 쿠폰함</button>
+      <button class="navtab client-only" data-panel="panelPrivacy" data-label="내 정보 / 개인정보">🔐 내 정보 / 개인정보</button>
       <button class="navtab admin-only" data-panel="panelAdmin" data-label="관리자 대시보드" style="display:none;">🛠 관리자 대시보드</button>
       <button class="navtab admin-only" data-panel="panelClients" data-label="업체목록" style="display:none;">🏢 업체목록</button>
       <button class="navtab admin-only" data-panel="panelLeads" data-label="진단 리드" style="display:none;">🔍 진단 리드</button>
@@ -1189,20 +1241,22 @@
 <div id="panelCoupons" class="panel">
   <div class="dash-wrap">
     <div class="card">
-      <h2><span class="n">03</span> 받은 혜택이 있어요</h2>
+
       <div class="share-card client-only" id="referralShareCard">
-        <div class="share-card-title">친구에게 올림컴퍼니 소개하기 🎁</div>
-        <div class="share-card-sub">내 추천 링크로 친구가 가입하면 추천관계가 자동으로 연결돼요. 코드를 따로 입력할 필요가 없어요.</div>
+        <div class="share-card-title">친구에게 올림컴퍼니 소개하기</div>
+        <div class="share-card-sub">내 추천 링크로 가입하면 추천코드가 자동 적용돼요.</div>
         <div class="share-code-row">
-          <span style="font-size:.78rem;color:var(--muted);">내 추천코드</span>
+          <span>내 추천코드</span>
           <span class="code" id="shareReferralCode">-</span>
         </div>
         <div class="share-actions">
-          <button class="btn" id="shareReferralBtn">공유하기</button>
           <button class="btn secondary" id="copyReferralBtn">메시지 복사</button>
+          <button class="btn" id="shareReferralBtn">공유하기</button>
         </div>
         <div class="hint" id="referralShareMsg" style="display:none;"></div>
       </div>
+
+      <h2><span class="n">03</span> 받은 혜택이 있어요</h2>
       <div id="couponListWrap"><div class="empty"><div class="spinner"></div>로딩중...</div></div>
       <div class="hint" style="margin-top:14px;">추천으로 가입시킨 업체가 결제+승인까지 완료하면, 관리자가 확인 후 쿠폰을 지급해 드려요. 3+1 쿠폰은 3개 이상, 5+2 쿠폰은 5개 이상 주문 시 접수 폼에서 바로 적용할 수 있어요.</div>
     </div>
@@ -1267,7 +1321,6 @@
   </div>
 </div>
 
-
 <div id="panelPrivacy" class="panel">
   <div class="dash-wrap">
     <div class="card">
@@ -1314,7 +1367,7 @@
 </div>
 </div>
 <script>
-const OLLIM_BUILD_ROLEFIX_V2 = '2026-07-24-rolefix-v2';
+const OLLIM_FRONTEND_BUILD = '2026-07-24-V4-STABLE-MERGE';
 const CUTOFF_HOUR = 16;
 const SK_SESSION = 'session';
 let CATALOG = { products: [], bank: {} };
@@ -1334,7 +1387,9 @@ function prettyRange(startStr, endStr){
   if(!startStr || !endStr) return null;
   const s = new Date(startStr.length>10 ? startStr : startStr+'T00:00:00');
   const e = new Date(endStr.length>10 ? endStr : endStr+'T00:00:00');
+  if(isNaN(s) || isNaN(e)) return null;
   const days = Math.round((e-s)/86400000)+1;
+  if(days < 1) return `${prettyDate(startStr)} ~ ${prettyDate(endStr)} · 일정 확인 필요`;
   return `${prettyDate(startStr)} ~ ${prettyDate(endStr)} · 총 ${days}일`;
 }
 function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
@@ -1435,7 +1490,6 @@ document.getElementById('gotoLoginLink').addEventListener('click', (e)=>{
   goToScreen('login');
 });
 
-
 const OLLIM_TERMS_VERSION = '2026-07-24-v1';
 const OLLIM_PRIVACY_VERSION = '2026-07-24-v1';
 
@@ -1509,6 +1563,7 @@ const LEGAL_CONTENT = {
     `
   }
 };
+
 
 const SIGNUP_QUESTIONS = [
   { id:'company',    title:'업체명이 어떻게 되세요?',       sub:'접수 콘솔에 표시될 이름이에요',          type:'text',     placeholder:'예: 경성매트' },
@@ -1744,7 +1799,7 @@ document.getElementById('resetBack').addEventListener('click', ()=>{
 
 document.getElementById('resendResetCodeLink').addEventListener('click', async (e)=>{
   e.preventDefault();
-  const res = await apiCall('sendVerificationCode', { phone: resetAnswers.phone, purpose:'password_reset' });
+  const res = await apiCall('sendVerificationCode', { phone: resetAnswers.phone, purpose:'reset' });
   showMsg('authMsg', res.ok ? '인증번호를 다시 보냈어요.' : (res.error||'재전송 실패'), res.ok ? 'ok' : 'warn');
 });
 
@@ -1842,23 +1897,18 @@ document.getElementById('loginBtn').addEventListener('click', async ()=>{
 });
 
 document.getElementById('logoutBtn').addEventListener('click', async ()=>{
-  const session = await getSession();
-  if(session) await apiCall('logout', { token: session.token });
   await clearSession();
   const app = document.getElementById('app');
   app.classList.remove('visible','role-admin','role-client');
   app.style.display='none';
-
-  // 다음 로그인 계정의 권한이 달라도 이전 역할 UI가 남지 않도록 로그아웃 시 초기화
   document.querySelectorAll('.admin-only').forEach(el=>el.style.display='none');
   document.querySelectorAll('.client-only').forEach(el=>el.style.display='');
   document.querySelectorAll('.navtab').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.panel').forEach(p=>{ p.classList.remove('active'); p.style.display='none'; });
-
   showGateway();
 });
 document.getElementById('withdrawBtn').addEventListener('click', async ()=>{
-  if(!confirm('정말 탈퇴하시겠어요? 로그인 계정과 직접 식별정보는 삭제·분리 처리됩니다. 다만 법령상 보존의무가 있는 거래·세금 기록은 정해진 기간 동안 별도 보관될 수 있어요.')) return;
+  if(!confirm('정말 탈퇴하시겠어요? 계정은 즉시 삭제되고 되돌릴 수 없어요. (접수 이력 자체는 매출 기록 보존을 위해 남아있어요)')) return;
   if(!confirm('마지막 확인이에요. 탈퇴를 진행할까요?')) return;
   const session = await getSession();
   if(!session) return;
@@ -1868,10 +1918,6 @@ document.getElementById('withdrawBtn').addEventListener('click', async ()=>{
     const app = document.getElementById('app');
     app.classList.remove('visible');
     app.style.display='none';
-    document.querySelectorAll('.admin-only').forEach(el=>el.style.display='none');
-    document.querySelectorAll('.client-only').forEach(el=>el.style.display='');
-    document.querySelectorAll('.navtab').forEach(b=>b.classList.remove('active'));
-    document.querySelectorAll('.panel').forEach(p=>{ p.classList.remove('active'); p.style.display='none'; });
     showGateway();
   } else {
     alert(res.error || '탈퇴 처리에 실패했어요.');
@@ -2126,7 +2172,6 @@ function couponLabel(type){
   if(type === '5+2') return '추천인쿠폰(5+2)';
   return type;
 }
-
 function normalizeRole(role){
   return String(role || '').trim().toLowerCase();
 }
@@ -2149,22 +2194,22 @@ function applyRoleUi(session){
   return isAdmin ? 'admin' : 'client';
 }
 
-
-// ===== PWA / 공유 / 딥링크 안전 헬퍼 =====
 let deferredPwaPrompt = null;
 let pendingRankVerify = null;
 let currentRankVerifyRecord = null;
-
 function appBaseUrl(){
   const u = new URL(window.location.href);
   u.search = '';
   u.hash = '';
   return u.toString();
 }
+
 function isIosDevice(){ return /iphone|ipad|ipod/i.test(navigator.userAgent); }
+
 function isStandalonePwa(){
   return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 }
+
 function syncInstallButton(){
   const btn = document.getElementById('installAppBtn');
   if(!btn) return;
@@ -2174,14 +2219,17 @@ function syncInstallButton(){
   if(role === 'admin' || isStandalonePwa()) btn.style.display = 'none';
   else btn.style.display = '';
 }
+
 function referralUrl(code){
   const u = new URL(appBaseUrl());
   u.searchParams.set('ref', String(code || '').trim().toUpperCase());
   return u.toString();
 }
+
 function referralMessage(code){
   return `네이버·쿠팡 상품 운영하고 있으면 올림컴퍼니 한번 써봐!\n\n가입하면 무료체험 1회 받을 수 있고 상품 순위와 캠페인 현황도 확인할 수 있어.\n\n내 추천 링크로 가입하면 추천코드도 자동 적용돼 👇\n${referralUrl(code)}`;
 }
+
 async function copyTextSafe(text){
   if(navigator.clipboard && window.isSecureContext){
     await navigator.clipboard.writeText(text);
@@ -2192,10 +2240,12 @@ async function copyTextSafe(text){
   document.body.appendChild(ta); ta.focus(); ta.select();
   const ok=document.execCommand('copy'); ta.remove(); return ok;
 }
+
 function closePwaInstallModal(){
   const m=document.getElementById('pwaInstallModal');
   if(m){m.classList.remove('show');m.setAttribute('aria-hidden','true');}
 }
+
 async function openPwaInstallModal(reason='manual'){
   if(isStandalonePwa()) return;
   const m=document.getElementById('pwaInstallModal');
@@ -2212,6 +2262,7 @@ async function openPwaInstallModal(reason='manual'){
   }
   m.classList.add('show'); m.setAttribute('aria-hidden','false');
 }
+
 function scheduleInstallOffer(reason){
   if(isStandalonePwa()) return;
   const key=reason==='signup'?'ollim_pwa_offer_signup':'ollim_pwa_offer_campaign';
@@ -2219,6 +2270,7 @@ function scheduleInstallOffer(reason){
   localStorage.setItem(key,'1');
   setTimeout(()=>openPwaInstallModal(reason),900);
 }
+
 function parseDeepLinks(){
   const params=new URLSearchParams(location.search);
   const ref=String(params.get('ref')||'').trim().toUpperCase();
@@ -2226,6 +2278,7 @@ function parseDeepLinks(){
   const sid=params.get('verify'), kw=params.get('kw');
   if(sid) pendingRankVerify={submissionId:sid,keyword:kw||''};
 }
+
 async function handlePendingRankVerify(){
   if(!pendingRankVerify) return;
   const session=await getSession();
@@ -2254,6 +2307,7 @@ async function handlePendingRankVerify(){
   if(modal){modal.classList.add('show');modal.setAttribute('aria-hidden','false');}
   pendingRankVerify=null;
 }
+
 window.addEventListener('beforeinstallprompt',e=>{
   e.preventDefault(); deferredPwaPrompt=e; syncInstallButton();
 });
@@ -2380,9 +2434,6 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
     const competitorLinks = [1,2,3].map(n=>document.getElementById('f_comp'+n).value.trim()).filter(Boolean);
     const couponId = document.getElementById('f_coupon').value;
     const isAutoKeywordMode = document.getElementById('autoKeywordBlock').style.display !== 'none';
-    const productName = (isAutoKeywordMode
-      ? document.getElementById('autoKeywordProductName').value
-      : document.getElementById('selectKeywordProductName').value).trim();
     if(!client || !link || !qty){
       const missing = [];
       if(!client) missing.push('업체명');
@@ -2391,16 +2442,12 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
       showMsg('submitMsg', `다음 항목이 비어있어요: ${missing.join(', ')}`, 'warn');
       return;
     }
-    if(!productName){
-      showMsg('submitMsg','상품명을 입력해 주세요.', 'warn');
-      return;
-    }
     if(keywords.length < 1){
       if(isAutoKeywordMode) showMsg('submitMsg','먼저 상품명을 입력하고 "관련 키워드 찾기"를 눌러주세요.', 'warn');
       else showMsg('submitMsg','키워드를 최소 1개 입력해 주세요.', 'warn');
       return;
     }
-    Object.assign(payload, { client, phone, link, productId, productName, qty: Number(qty), cycles: Number(cycles), keywords, competitorLinks, couponId });
+    Object.assign(payload, { client, phone, link, productId, qty: Number(qty), cycles: Number(cycles), keywords, competitorLinks, couponId });
   }
 
   const submitBtn = document.getElementById('submitBtn');
@@ -2420,15 +2467,9 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
       if(res.bank) document.getElementById('bankAcc').textContent = `${res.bank.bank} ${res.bank.account} (${res.bank.holder})`;
       lastSubmittedId = res.id; // 입금자 성함 저장 버튼에서 이 접수건을 대상으로 함
       document.getElementById('depositorNameInput').value = '';
-      scheduleInstallOffer('campaign');
     }
     if(isYoutube){ ['y_phone','y_date','y_location','y_notes'].forEach(id=>document.getElementById(id).value=''); }
-    else {
-      ['f_phone','f_link','f_qty','f_kw1','f_kw2','f_kw3','f_kw4','f_kw5','f_comp1','f_comp2','f_comp3','autoKeywordProductName','selectKeywordProductName']
-        .forEach(id=>document.getElementById(id).value='');
-      document.getElementById('f_coupon').value='';
-      refreshPriceBox();
-    }
+    else { ['f_phone','f_link','f_qty','f_kw1','f_kw2','f_kw3','f_kw4','f_kw5','f_comp1','f_comp2','f_comp3'].forEach(id=>document.getElementById(id).value=''); document.getElementById('f_coupon').value=''; refreshPriceBox(); }
     await loadCoupons();
     invalidateSubmissionsCache();
     renderTable();
@@ -2505,6 +2546,37 @@ async function fileToBase64(file){
   });
 }
 
+function rankObservationLabel(info){
+  if(!info) return '조회 전';
+  const st = String(info.observationStatus || '').toLowerCase();
+  if(st === 'found' && typeof info.rank === 'number') return `${info.rank}위`;
+  if(st === 'not_found') return '100위 내 미확인';
+  if(st === 'error') return '관측 오류';
+  if(typeof info.rank === 'number') return `${info.rank}위`;
+  if(info.rank && info.rank !== '100위 밖') return String(info.rank);
+  return '확인중';
+}
+
+function rankObservationClass(info){
+  const st = String(info?.observationStatus || '').toLowerCase();
+  if(st === 'found') return 'rank-found';
+  if(st === 'not_found') return 'rank-not-found';
+  if(st === 'error') return 'rank-error';
+  return 'rank-pending';
+}
+
+function campaignProductName(rec){
+  const name = String(rec?.productName || '').trim();
+  const looksLikeUrl = /https?:\/\//i.test(name) || /naver\.me\//i.test(name);
+  if(name && !looksLikeUrl && name.length <= 160) return name;
+  if(rec?.productType === 'youtube') return 'PR영상 제작';
+  return `${rec?.channel || ''} · ${rec?.program || ''} — ${rec?.qty || 0}개`.trim();
+}
+
+function campaignMetaTitle(rec){
+  if(rec?.productType === 'youtube') return 'PR영상 제작';
+  return `${rec?.channel || '-'} · ${rec?.program || '-'} — ${rec?.qty || 0}개`;
+}
 
 function campaignEngineState(rec){
   if(!rec || rec.productType !== 'reward') return null;
@@ -2547,37 +2619,6 @@ function buildCampaignEngine(rec, withLabel){
     </span>
     ${withLabel ? `<span class="rank-engine-label ${state}">${label}</span>` : ''}
   `;
-}
-
-
-
-function rankObservationLabel(info){
-  if(!info) return '조회 전';
-  const st = String(info.observationStatus || '').toLowerCase();
-  if(st === 'found' && typeof info.rank === 'number') return `${info.rank}위`;
-  if(st === 'not_found') return '100위 내 미확인';
-  if(st === 'error') return '관측 오류';
-  if(typeof info.rank === 'number') return `${info.rank}위`;
-  if(info.rank && info.rank !== '100위 밖') return String(info.rank);
-  return '확인중';
-}
-function rankObservationClass(info){
-  const st = String(info?.observationStatus || '').toLowerCase();
-  if(st === 'found') return 'rank-found';
-  if(st === 'not_found') return 'rank-not-found';
-  if(st === 'error') return 'rank-error';
-  return 'rank-pending';
-}
-
-function campaignProductName(rec){
-  const name = String(rec?.productName || '').trim();
-  if(name) return name;
-  if(rec?.productType === 'youtube') return 'PR영상 제작';
-  return `${rec?.channel || ''} · ${rec?.program || ''} — ${rec?.qty || 0}개`.trim();
-}
-function campaignMetaTitle(rec){
-  if(rec?.productType === 'youtube') return 'PR영상 제작';
-  return `${rec?.channel || '-'} · ${rec?.program || '-'} — ${rec?.qty || 0}개`;
 }
 
 function statusLabel(rec){
@@ -2654,10 +2695,6 @@ function startEditSubmission(rec){
     document.getElementById('pt_reward').click();
     const product = CATALOG.products.find(p => p.channel === rec.channel && p.program === rec.program);
     if(product) document.getElementById('f_product').value = product.id;
-    updateCyclesOptions();
-    const editName = rec.productName || '';
-    if(product && product.id === 'naver_rankon') document.getElementById('autoKeywordProductName').value = editName;
-    else document.getElementById('selectKeywordProductName').value = editName;
     document.getElementById('f_link').value = rec.link || '';
     document.getElementById('f_phone').value = rec.phone || '';
     const kws = Array.isArray(rec.keywords) ? rec.keywords : String(rec.keywords||'').split(',').map(k=>k.trim()).filter(Boolean);
@@ -2666,6 +2703,7 @@ function startEditSubmission(rec){
     [1,2,3].forEach(n => { document.getElementById('f_comp'+n).value = comps[n-1] || ''; });
     document.getElementById('f_qty').value = rec.qty || 1;
     document.getElementById('f_cycles').value = rec.cycles || 1;
+    updateCyclesOptions();
   }
   editingSubmissionId = rec.id;
   document.getElementById('submitBtn').textContent = '수정 완료';
@@ -2701,7 +2739,7 @@ async function renderTable(quiet){
   const records = (listRes.submissions||[]).sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt));
   const ranksMap = (rankRes.ok && rankRes.ranks) ? rankRes.ranks : {};
 
-  if(session.role === 'client'){
+  if(normalizeRole(session.role) === 'client'){
     let justApproved = false;
     records.forEach(rec=>{
       const prev = lastStatusMap[rec.id];
@@ -2740,7 +2778,7 @@ async function renderTable(quiet){
       const ranks = ranksMap[rec.id] || {};
       const kwTags = kws.map(k=>{
         const info=ranks[k];
-        const label=info ? rankObservationLabel(info) : '조회 전';
+        const label = info ? rankObservationLabel(info) : '조회 전';
         return `<span>${escapeHtml(k)} · <b class="${rankObservationClass(info)}">${escapeHtml(label)}</b></span>`;
       }).join('');
       midHtml = `
@@ -2769,7 +2807,7 @@ async function renderTable(quiet){
               <input type="email" placeholder="계산서 받을 이메일" id="taxEmail-${rec.id}" style="margin-bottom:8px;" />
               <input type="file" accept="image/*" id="taxFile-${rec.id}" style="margin-bottom:8px;" />
               <div class="msg" id="taxMsg-${rec.id}"></div>
-              <div class="hint" style="margin-bottom:8px;">사업자등록증 사진 1장을 첨부해 주세요. 큰 사진은 자동으로 압축해서 보내드려요.</div>
+              <div class="hint" style="margin-bottom:8px;">사업자등록증 이미지 1장을 첨부해 주세요. 최대 15MB까지 가능하며 큰 이미지는 자동으로 압축해 전송해요.</div>
               <button class="btn small taxSubmitBtn" data-id="${rec.id}">제출하기</button>
             </div>
           </div>`;
@@ -2886,6 +2924,11 @@ async function renderTable(quiet){
       const fileInput = document.getElementById('taxFile-'+id);
       const file = fileInput.files[0];
       if(!email || !file){ showMsg('taxMsg-'+id,'이메일과 사업자등록증 파일을 모두 입력해 주세요.','warn'); return; }
+      const MAX_ORIGINAL_BYTES = 15 * 1024 * 1024;
+      if(file.size > MAX_ORIGINAL_BYTES){
+        showMsg('taxMsg-'+id,'사업자등록증 이미지는 최대 15MB까지 업로드할 수 있어요.','warn');
+        return;
+      }
       isUploadingTaxFile = true;
       setBusy(btn, '이미지 준비 중...');
       try{
@@ -3526,10 +3569,7 @@ function renderHomeTicker(active){
   if(items.length === 0){ card.style.display='none'; return; }
   card.style.display = 'block';
   const buildRow = ()=> items.map(it=>{
-    const rankText = it.status === 'not_found' ? '100위 내 미확인'
-      : it.status === 'error' ? '관측 오류'
-      : typeof it.cur === 'number' ? `${it.cur}위`
-      : (it.cur || '확인중');
+    const rankText = typeof it.cur === 'number' ? `${it.cur}위` : (it.cur || '확인중');
     let deltaHtml = '<span style="font-size:0.68rem; color:#9AA0A6; font-weight:700;">-</span>';
     if(typeof it.cur === 'number' && typeof it.prv === 'number'){
       const diff = it.prv - it.cur;
@@ -3550,8 +3590,7 @@ function renderHomeHero(active){
     try{ prev = r.prevRanksJson ? JSON.parse(r.prevRanksJson) : {}; }catch(e){}
     Object.keys(ranks).forEach(kw=>{
       const v = ranks[kw].rank;
-      if((!ranks[kw].observationStatus || ranks[kw].observationStatus === 'found') &&
-         typeof v === 'number' && (best === null || v < best)){ best = v; bestKw = kw; bestPrev = prev[kw] ? prev[kw].rank : null; bestProduct = campaignProductName(r); }
+      if(typeof v === 'number' && (best === null || v < best)){ best = v; bestKw = kw; bestPrev = prev[kw] ? prev[kw].rank : null; bestProduct = `${r.channel}·${r.program}`; }
     });
   });
   if(best === null){ heroCard.style.display = 'none'; return; }
@@ -3774,7 +3813,7 @@ function populateChartSubmissionSelect(records, prefix){
     return;
   }
   sel.innerHTML = rewardRecords.map(r =>
-    `<option value="${r.id}">${escapeHtml(campaignProductName(r))} · ${escapeHtml(r.channel)}/${escapeHtml(r.program)} (${prettyDate(r.acceptDate || fmt(new Date(r.createdAt)))} 접수)</option>`
+    `<option value="${r.id}">${escapeHtml(r.client)} · ${escapeHtml(r.channel)}/${escapeHtml(r.program)} (${prettyDate(r.acceptDate || fmt(new Date(r.createdAt)))} 접수)</option>`
   ).join('');
   sel._recordsCache = rewardRecords;
   updateKeywordCheckboxes(rewardRecords[0], prefix);
@@ -4176,6 +4215,7 @@ if(new URLSearchParams(window.location.search).get('admin') === '1'){
   }
 })();
 
+
 // ===== PWA 설치 버튼 =====
 document.getElementById('installAppBtn')?.addEventListener('click',()=>openPwaInstallModal('manual'));
 document.getElementById('pwaLaterBtn')?.addEventListener('click',closePwaInstallModal);
@@ -4309,7 +4349,8 @@ document.getElementById('privacySmsToggle')?.addEventListener('change',savePriva
 document.getElementById('privacyEmailToggle')?.addEventListener('change',savePrivacySettings);
 document.getElementById('privacyWithdrawBtn')?.addEventListener('click',()=>document.getElementById('withdrawBtn')?.click());
 
+
 </script>
-<div id="buildBadge" style="display:none;position:fixed;right:10px;bottom:8px;z-index:99999;font:10px/1.2 monospace;color:#8B95A1;background:rgba(255,255,255,.85);padding:3px 6px;border-radius:6px;">ROLEFIX-V3</div>
+<div id="buildBadge" style="display:none;position:fixed;right:10px;bottom:8px;z-index:99999;font:10px/1.2 monospace;color:#8B95A1;background:rgba(255,255,255,.85);padding:3px 6px;border-radius:6px;">V4-STABLE-MERGE</div>
 </body>
 </html>
