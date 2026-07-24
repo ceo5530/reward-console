@@ -3,6 +3,12 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#272058" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="올림컴퍼니" />
+<link rel="manifest" href="./manifest.webmanifest" />
+<link rel="apple-touch-icon" href="./icons/icon-192.png" />
 <title>올림컴퍼니 · 접수 콘솔</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -76,18 +82,6 @@
   .row2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
   .kw-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
   @media(max-width:420px){ .kw-grid{grid-template-columns:1fr;} }
-  @media(max-width:600px){
-    .status-row{ display:grid; grid-template-columns:minmax(0,1fr); align-items:start; gap:8px; padding:15px 4px; }
-    .status-row-main{min-width:0; width:100%;}
-    .status-row-title{ line-height:1.45; word-break:keep-all; overflow-wrap:anywhere; }
-    .status-row-sub{ line-height:1.45; white-space:normal; }
-    .status-row-right{ width:100%; justify-content:flex-start; align-items:center; flex-wrap:wrap; gap:6px; margin-top:0; }
-    .status-row-right .pill, .status-row-right .dday-badge, .status-row-right .btn{ flex:0 0 auto; }
-    .status-chevron{margin-left:auto;}
-    .status-detail{padding-left:4px; padding-right:4px;}
-    .result-top,.result-bottom{align-items:flex-start;}
-    .result-amount{text-align:left;}
-  }
   .hint{font-size:0.8rem; color:var(--muted); margin-top:8px; line-height:1.6;}
   .seg{display:flex; gap:6px; background:var(--surface-2); border-radius:12px; padding:4px;}
   .seg button{flex:1; padding:11px; border:none; background:none; color:var(--muted); border-radius:9px; font-weight:600; font-size:0.92rem; cursor:pointer; transition:background-color .15s ease, color .15s ease;}
@@ -445,6 +439,239 @@
     }
     .status-chevron{ margin-left:auto !important; }
   }
+
+  /* ---- AI 순위 엔진 상태 아이콘 ----
+     로딩 스피너 대신 '데이터를 계산하며 위로 밀어올리는 엔진' 느낌.
+     집행중: 막대 파형 + 상승 화살표 애니메이션
+     종료: 동일 형태, 흑백/정지 */
+  .campaign-title-line{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:0;
+  }
+  .campaign-title-line .status-row-title{
+    min-width:0;
+    flex:1;
+  }
+  .rank-engine{
+    position:relative;
+    width:30px;
+    height:28px;
+    flex:0 0 30px;
+    display:inline-flex;
+    align-items:flex-end;
+    justify-content:center;
+    gap:2px;
+    padding:5px 7px 5px 5px;
+    border-radius:9px;
+    background:rgba(58,49,160,0.08);
+    overflow:visible;
+  }
+  .rank-engine-bars{
+    height:17px;
+    display:flex;
+    align-items:flex-end;
+    gap:2px;
+  }
+  .rank-engine-bar{
+    display:block;
+    width:3px;
+    border-radius:2px 2px 1px 1px;
+    background:linear-gradient(180deg,#796DE0 0%,#3A31A0 100%);
+    transform-origin:bottom;
+  }
+  .rank-engine.running .rank-engine-bar:nth-child(1){height:5px; animation:rankBar1 1.45s ease-in-out infinite;}
+  .rank-engine.running .rank-engine-bar:nth-child(2){height:9px; animation:rankBar2 1.45s ease-in-out infinite;}
+  .rank-engine.running .rank-engine-bar:nth-child(3){height:13px; animation:rankBar3 1.45s ease-in-out infinite;}
+  .rank-engine.running .rank-engine-bar:nth-child(4){height:17px; animation:rankBar4 1.45s ease-in-out infinite;}
+  .rank-engine-arrow{
+    position:absolute;
+    right:3px;
+    top:1px;
+    width:9px;
+    height:9px;
+    color:#3A31A0;
+  }
+  .rank-engine.running .rank-engine-arrow{
+    animation:rankArrowLift 1.45s cubic-bezier(.22,1,.36,1) infinite;
+  }
+  .rank-engine.running::after{
+    content:'';
+    position:absolute;
+    width:3px;
+    height:3px;
+    border-radius:50%;
+    background:#8B7FFF;
+    right:7px;
+    bottom:5px;
+    box-shadow:-6px -3px 0 rgba(58,49,160,.35), -10px 3px 0 rgba(58,49,160,.18);
+    animation:rankDataPulse 1.45s ease-in-out infinite;
+  }
+  .rank-engine.done{
+    background:#F2F4F6;
+    filter:grayscale(1);
+    opacity:.72;
+  }
+  .rank-engine.done .rank-engine-bar{
+    animation:none !important;
+    background:#AEB4BC;
+  }
+  .rank-engine.done .rank-engine-bar:nth-child(1){height:5px;}
+  .rank-engine.done .rank-engine-bar:nth-child(2){height:8px;}
+  .rank-engine.done .rank-engine-bar:nth-child(3){height:11px;}
+  .rank-engine.done .rank-engine-bar:nth-child(4){height:13px;}
+  .rank-engine.done .rank-engine-arrow{
+    color:#9AA0A6;
+    animation:none;
+    transform:translate(0,1px);
+  }
+  .rank-engine-label{
+    font-size:.68rem;
+    font-weight:700;
+    white-space:nowrap;
+  }
+  .rank-engine-label.running{color:#5C52B7;}
+  .rank-engine-label.done{color:#9AA0A6;}
+
+  @keyframes rankBar1{
+    0%,100%{transform:scaleY(.7);opacity:.45}
+    28%{transform:scaleY(1.55);opacity:1}
+    62%{transform:scaleY(.9);opacity:.65}
+  }
+  @keyframes rankBar2{
+    0%,100%{transform:scaleY(.75);opacity:.5}
+    18%{transform:scaleY(.82);opacity:.6}
+    45%{transform:scaleY(1.42);opacity:1}
+    75%{transform:scaleY(.95);opacity:.7}
+  }
+  @keyframes rankBar3{
+    0%,100%{transform:scaleY(.78);opacity:.55}
+    32%{transform:scaleY(.9);opacity:.65}
+    58%{transform:scaleY(1.28);opacity:1}
+    85%{transform:scaleY(.92);opacity:.7}
+  }
+  @keyframes rankBar4{
+    0%,100%{transform:scaleY(.82);opacity:.6}
+    48%{transform:scaleY(.96);opacity:.72}
+    72%{transform:scaleY(1.16);opacity:1}
+  }
+  @keyframes rankArrowLift{
+    0%,30%{transform:translate(-2px,3px);opacity:.25}
+    62%{transform:translate(1px,-2px);opacity:1}
+    100%{transform:translate(2px,-4px);opacity:0}
+  }
+  @keyframes rankDataPulse{
+    0%,100%{opacity:.15;transform:translateX(-3px)}
+    55%{opacity:1;transform:translateX(2px)}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .rank-engine.running .rank-engine-bar,
+    .rank-engine.running .rank-engine-arrow,
+    .rank-engine.running::after{animation:none !important;}
+  }
+
+
+  /* ===== PWA 설치 / 친구 소개 / 순위 직접확인 ===== */
+  .utility-btn{
+    width:100%; border:none; border-radius:10px; padding:10px 12px;
+    font-family:var(--sans); font-size:.85rem; font-weight:700; cursor:pointer;
+    background:#EEECFB; color:var(--navy-2); margin-bottom:8px;
+  }
+  .utility-btn:hover{background:#E5E1F8;}
+  .share-card{
+    background:linear-gradient(135deg,#F4F1FF 0%,#FFFFFF 100%);
+    border:1px solid #E4DEF8; border-radius:18px; padding:20px; margin-bottom:18px;
+  }
+  .share-card-title{font-size:1.02rem;font-weight:800;color:var(--text);}
+  .share-card-sub{font-size:.82rem;color:var(--muted);margin-top:5px;line-height:1.55;}
+  .share-code-row{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    margin-top:14px;padding:12px 14px;background:#fff;border-radius:12px;
+  }
+  .share-code-row .code{font-family:var(--mono);font-weight:800;color:var(--navy-2);letter-spacing:.06em;}
+  .share-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;}
+  .share-actions .btn{margin-top:0;padding:12px;font-size:.88rem;}
+  @media(max-width:420px){.share-actions{grid-template-columns:1fr;}}
+
+  .ollim-modal{
+    position:fixed;inset:0;z-index:10020;display:none;align-items:flex-end;justify-content:center;
+    background:rgba(18,20,30,.48);padding:18px;
+  }
+  .ollim-modal.show{display:flex;}
+  .ollim-modal-card{
+    width:min(520px,100%);background:#fff;border-radius:24px;padding:24px;
+    box-shadow:0 24px 70px rgba(20,20,40,.25);animation:ollimSheetIn .28s cubic-bezier(.22,1,.36,1);
+  }
+  @keyframes ollimSheetIn{from{transform:translateY(28px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .ollim-modal-icon{
+    width:52px;height:52px;border-radius:16px;background:#EEECFB;color:var(--navy-2);
+    display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:14px;
+  }
+  .ollim-modal-title{font-size:1.2rem;font-weight:800;margin:0;color:var(--text);}
+  .ollim-modal-sub{font-size:.88rem;color:var(--muted);line-height:1.65;margin:8px 0 0;}
+  .ollim-modal-actions{display:flex;gap:8px;margin-top:20px;}
+  .ollim-modal-actions .btn{margin-top:0;}
+  .ollim-modal-actions .btn.secondary{flex:.7;}
+  .ollim-modal-actions .btn:not(.secondary){flex:1;}
+  .ios-guide{
+    margin-top:14px;background:#F7F8FA;border-radius:14px;padding:14px;
+    font-size:.84rem;line-height:1.65;color:#4E5968;display:none;
+  }
+
+  .verify-rank-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;
+  }
+  .verify-rank-grid.single{grid-template-columns:1fr;}
+  .verify-rank-box{background:#F7F6FC;border-radius:15px;padding:15px;}
+  .verify-rank-box .label{font-size:.72rem;color:var(--muted);font-weight:700;}
+  .verify-rank-box .rank{font-size:1.6rem;color:var(--navy-2);font-weight:800;margin-top:3px;}
+  .verify-meta{font-size:.76rem;color:var(--muted);margin-top:12px;line-height:1.5;}
+  .verify-feedback-row{display:flex;gap:8px;margin-top:12px;}
+  .verify-feedback-row .btn{margin-top:0;}
+
+
+  /* ===== 순위 관측 상태 ===== */
+  .rank-found{color:var(--navy-2);font-weight:800;}
+  .rank-not-found{color:var(--warn);font-weight:800;}
+  .rank-error{color:var(--bad);font-weight:800;}
+  .rank-pending{color:var(--muted);font-weight:700;}
+  .rank-observation-note{
+    margin-top:6px;font-size:.72rem;color:var(--muted);line-height:1.5;
+  }
+
+
+  /* ===== Legal / Privacy / Security v1.3 ===== */
+  .legal-consent-card{background:#F7F6FC;border-radius:18px;padding:18px;margin-top:4px;}
+  .consent-all{display:flex;align-items:flex-start;gap:10px;padding:13px 0;border-bottom:1px solid var(--line);font-weight:800;}
+  .consent-row{display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid var(--line);}
+  .consent-row:last-child{border-bottom:none;}
+  .consent-row input,.consent-all input{width:18px;height:18px;margin:3px 0 0;accent-color:var(--navy-2);flex-shrink:0;}
+  .consent-copy{flex:1;min-width:0;font-size:.88rem;line-height:1.55;color:var(--text);}
+  .consent-copy small{display:block;color:var(--muted);font-size:.76rem;margin-top:2px;}
+  .consent-link{border:0;background:none;color:var(--navy-2);font-weight:700;font-size:.78rem;cursor:pointer;padding:2px 0;white-space:nowrap;}
+  .legal-modal{position:fixed;inset:0;z-index:10050;background:rgba(18,20,30,.5);display:none;align-items:center;justify-content:center;padding:18px;}
+  .legal-modal.show{display:flex;}
+  .legal-modal-card{background:#fff;border-radius:22px;width:min(720px,100%);max-height:86vh;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,.25);}
+  .legal-modal-head{padding:20px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center;}
+  .legal-modal-title{font-size:1.05rem;font-weight:800;}
+  .legal-close{border:0;background:#F2F4F6;border-radius:999px;width:34px;height:34px;cursor:pointer;font-size:18px;}
+  .legal-body{padding:20px 22px;overflow:auto;font-size:.86rem;line-height:1.75;color:#4E5968;}
+  .legal-body h3{font-size:.95rem;color:var(--text);margin:22px 0 6px;}
+  .legal-body h3:first-child{margin-top:0;}
+  .legal-body table{font-size:.78rem;margin:8px 0 14px;}
+  .legal-body th,.legal-body td{padding:8px;border:1px solid var(--line);vertical-align:top;}
+  .legal-foot-links{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px;font-size:.76rem;color:var(--muted);}
+  .legal-foot-links button{border:0;background:none;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:.76rem;}
+  .privacy-panel-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .privacy-setting{background:var(--surface-2);border-radius:15px;padding:16px;}
+  .privacy-setting strong{display:block;font-size:.9rem;}
+  .privacy-setting p{font-size:.78rem;color:var(--muted);margin:5px 0 12px;}
+  .toggle-line{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .toggle-line input{width:20px;height:20px;accent-color:var(--navy-2);}
+  .security-note{font-size:.76rem;color:var(--muted);line-height:1.6;background:#F7F8FA;border-radius:12px;padding:12px;margin-top:14px;}
+  @media(max-width:600px){.privacy-panel-grid{grid-template-columns:1fr;}}
+
 </style>
 </head>
 <body>
@@ -543,6 +770,44 @@
         <div class="hint" id="signupHint" style="display:none; text-align:center;">가입 즉시 고객 권한으로 로그인됩니다.</div>
       </div>
     </div>
+
+      <div id="signupConsentPanel" style="display:none;">
+        <h2 class="wizard-title">마지막으로 약관을 확인해주세요</h2>
+        <p class="wizard-sub">기존 가입 질문은 그대로 끝났어요. 아래 동의만 확인하면 가입이 완료돼요.</p>
+        <div class="legal-consent-card">
+          <label class="consent-all" style="margin:0;">
+            <input type="checkbox" id="consentAll">
+            <span class="consent-copy">전체 동의<small>선택 항목은 언제든 다시 해제할 수 있어요.</small></span>
+          </label>
+          <div class="consent-row">
+            <input type="checkbox" id="consentAge">
+            <div class="consent-copy"><b>[필수]</b> 만 14세 이상입니다.</div>
+          </div>
+          <div class="consent-row">
+            <input type="checkbox" id="consentTerms">
+            <div class="consent-copy"><b>[필수]</b> 서비스 이용약관에 동의합니다.</div>
+            <button type="button" class="consent-link" data-legal-open="terms">보기</button>
+          </div>
+          <div class="consent-row">
+            <input type="checkbox" id="consentPrivacy">
+            <div class="consent-copy"><b>[필수]</b> 개인정보 수집·이용 및 처리방침을 확인하고 동의합니다.<small>이메일, 휴대폰번호, 업체명 등 서비스 제공에 필요한 최소정보를 처리합니다.</small></div>
+            <button type="button" class="consent-link" data-legal-open="privacy">보기</button>
+          </div>
+          <div class="consent-row">
+            <input type="checkbox" id="consentMarketingSms">
+            <div class="consent-copy"><b>[선택]</b> 광고성 SMS 수신에 동의합니다.<small>이벤트·할인·프로모션 등 광고성 정보. 동의하지 않아도 서비스 이용 가능.</small></div>
+            <button type="button" class="consent-link" data-legal-open="marketing">보기</button>
+          </div>
+          <div class="consent-row">
+            <input type="checkbox" id="consentMarketingEmail">
+            <div class="consent-copy"><b>[선택]</b> 광고성 이메일 수신에 동의합니다.<small>나중에 ‘내 정보 / 개인정보’에서 변경할 수 있어요.</small></div>
+          </div>
+        </div>
+        <div class="wizard-nav-row">
+          <button class="btn back-btn" id="signupConsentBack">‹ 이전</button>
+          <button class="btn" id="signupConsentSubmit">동의하고 가입하기</button>
+        </div>
+      </div>
     <div class="msg" id="authMsg"></div>
     <details class="config" id="serverConfigBox" style="margin-top:20px; display:none;">
       <summary>⚙ 서버 연결 설정 (관리자/테스트용)</summary>
@@ -551,6 +816,12 @@
       <input id="cfg_url" type="url" placeholder="https://script.google.com/macros/s/.../exec" />
       <button class="btn secondary" id="saveCfgBtn" style="margin-top:10px;">이 브라우저에 임시 저장</button>
     </details>
+<div class="legal-foot-links" id="globalLegalLinks">
+  <button type="button" data-legal-open="terms">이용약관</button>
+  <button type="button" data-legal-open="privacy">개인정보 처리방침</button>
+  <span>개인정보 문의: ceo@ollimcompany.com · 1644-1154</span>
+</div>
+
   </div>
 </div>
 
@@ -614,6 +885,7 @@
       <button class="navtab admin-only" data-panel="panelReferrals" data-label="추천 현황" style="display:none;">👥 추천 현황(관리자)</button>
     </nav>
     <div class="sidebar-foot">
+      <button id="installAppBtn" class="client-only utility-btn" style="display:none;">📱 올림컴퍼니 앱 설치</button>
       <button id="logoutBtn">로그아웃</button>
       <button id="withdrawBtn" class="client-only" style="margin-top:8px; color:var(--bad);">회원탈퇴</button>
     </div>
@@ -911,6 +1183,19 @@
   <div class="dash-wrap">
     <div class="card">
       <h2><span class="n">03</span> 받은 혜택이 있어요</h2>
+      <div class="share-card client-only" id="referralShareCard">
+        <div class="share-card-title">친구에게 올림컴퍼니 소개하기 🎁</div>
+        <div class="share-card-sub">내 추천 링크로 친구가 가입하면 추천관계가 자동으로 연결돼요. 코드를 따로 입력할 필요가 없어요.</div>
+        <div class="share-code-row">
+          <span style="font-size:.78rem;color:var(--muted);">내 추천코드</span>
+          <span class="code" id="shareReferralCode">-</span>
+        </div>
+        <div class="share-actions">
+          <button class="btn" id="shareReferralBtn">공유하기</button>
+          <button class="btn secondary" id="copyReferralBtn">메시지 복사</button>
+        </div>
+        <div class="hint" id="referralShareMsg" style="display:none;"></div>
+      </div>
       <div id="couponListWrap"><div class="empty"><div class="spinner"></div>로딩중...</div></div>
       <div class="hint" style="margin-top:14px;">추천으로 가입시킨 업체가 결제+승인까지 완료하면, 관리자가 확인 후 쿠폰을 지급해 드려요. 3+1 쿠폰은 3개 이상, 5+2 쿠폰은 5개 이상 주문 시 접수 폼에서 바로 적용할 수 있어요.</div>
     </div>
@@ -971,6 +1256,39 @@
       <h2><span class="n">C1</span> 업체별로 살펴보기</h2>
       <input id="clientSearchInput" class="toss-input" type="text" placeholder="업체명으로 검색" style="margin-bottom:14px;" />
       <div id="clientListWrap"><div class="empty"><div class="spinner"></div>로딩중...</div></div>
+    </div>
+  </div>
+</div>
+
+
+<div id="panelPrivacy" class="panel">
+  <div class="dash-wrap">
+    <div class="card">
+      <h2><span class="n">MY</span> 내 정보 / 개인정보</h2>
+      <div class="privacy-panel-grid">
+        <div class="privacy-setting">
+          <strong>광고성 SMS 수신</strong>
+          <p>이벤트, 할인, 프로모션 등 광고성 메시지에만 적용돼요. 인증번호·순위 리포트 같은 서비스 알림과는 별개입니다.</p>
+          <div class="toggle-line"><span id="privacySmsState">확인중</span><input id="privacySmsToggle" type="checkbox"></div>
+        </div>
+        <div class="privacy-setting">
+          <strong>광고성 이메일 수신</strong>
+          <p>마케팅 이메일 수신 여부를 언제든 변경할 수 있어요.</p>
+          <div class="toggle-line"><span id="privacyEmailState">확인중</span><input id="privacyEmailToggle" type="checkbox"></div>
+        </div>
+      </div>
+      <div class="security-note">
+        인증번호, 접수 결과, 순위 리포트, 현재 이용 중인 캠페인 상태 안내는 광고성 정보가 아닌 서비스 알림으로 발송될 수 있습니다.
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px;">
+        <button class="btn secondary small" data-legal-open="privacy">개인정보 처리방침</button>
+        <button class="btn secondary small" data-legal-open="terms">서비스 이용약관</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2><span class="n">ACCOUNT</span> 계정 관리</h2>
+      <p class="hint">회원탈퇴 시 로그인 계정과 직접 식별정보는 삭제·분리 처리됩니다. 다만 법령상 보존의무가 있는 거래·세금 관련 기록은 정해진 기간 동안 별도 보관될 수 있습니다.</p>
+      <button class="btn secondary" id="privacyWithdrawBtn" style="color:var(--bad);">회원탈퇴</button>
     </div>
   </div>
 </div>
@@ -1109,6 +1427,81 @@ document.getElementById('gotoLoginLink').addEventListener('click', (e)=>{
   goToScreen('login');
 });
 
+
+const OLLIM_TERMS_VERSION = '2026-07-24-v1';
+const OLLIM_PRIVACY_VERSION = '2026-07-24-v1';
+
+const LEGAL_CONTENT = {
+  terms: {
+    title: '올림컴퍼니 서비스 이용약관',
+    html: `
+      <p><b>시행일: 2026년 7월 24일 / 버전: 2026-07-24-v1</b></p>
+      <h3>제1조 목적</h3>
+      <p>본 약관은 주식회사 더봄이 운영하는 올림컴퍼니 서비스(이하 “서비스”)의 이용조건과 회사 및 이용자의 권리·의무를 정합니다.</p>
+      <h3>제2조 서비스 내용</h3>
+      <p>서비스는 광고·콘텐츠 관련 캠페인 접수, 진행현황 관리, 검색 노출 순위 관측, 쿠폰·추천 기능, 촬영 접수, 세금계산서 요청 보조 기능 등을 제공합니다.</p>
+      <h3>제3조 계정</h3>
+      <p>이용자는 정확한 가입정보를 제공해야 하며 계정·비밀번호를 안전하게 관리해야 합니다. 타인의 정보를 도용하거나 서비스를 부정하게 이용해서는 안 됩니다.</p>
+      <h3>제4조 순위 관측 데이터</h3>
+      <p>“OLLIM 자연순위”는 올림컴퍼니가 특정 시점의 검색 결과를 관측하여 광고성 노출로 판별된 항목을 제외하고 산정한 참고 데이터입니다. 검색 시점, 개인화, 기기·지역·로그인 상태, 검색 플랫폼 변경 등에 따라 실제 화면과 차이가 발생할 수 있습니다.</p>
+      <p><b>회사는 특정 순위의 달성·유지 또는 매출 증가를 보장하지 않습니다.</b></p>
+      <h3>제5조 이용요금·결제·환불</h3>
+      <p>상품별 이용요금, 작업기간, 환불·취소 조건은 접수 화면 및 개별 안내 내용을 따릅니다. 관계 법령이 적용되는 경우 해당 법령이 우선합니다.</p>
+      <h3>제6조 금지행위</h3>
+      <p>시스템 침해, 비정상적 자동접근, 타인의 계정 사용, 허위정보 입력, 서비스 또는 제3자의 권리를 침해하는 행위를 금지합니다.</p>
+      <h3>제7조 서비스 변경·중단</h3>
+      <p>검색 플랫폼 정책 변경, 외부 서비스 장애, 점검 등 합리적인 사유가 있는 경우 서비스 일부가 변경·중단될 수 있습니다.</p>
+      <h3>제8조 계약 해지</h3>
+      <p>이용자는 서비스 내 회원탈퇴 기능을 이용할 수 있습니다. 법령상 보존의무가 있는 거래기록 등은 해당 기간 동안 별도 보관될 수 있습니다.</p>
+      <h3>제9조 문의</h3>
+      <p>운영자: 주식회사 더봄(올림컴퍼니)<br>이메일: ceo@ollimcompany.com<br>대표 문의: 1644-1154</p>
+    `
+  },
+  privacy: {
+    title: '올림컴퍼니 개인정보 처리방침 및 수집·이용 안내',
+    html: `
+      <p><b>시행일: 2026년 7월 24일 / 버전: 2026-07-24-v1</b></p>
+      <p>주식회사 더봄(올림컴퍼니)은 서비스 제공에 필요한 최소한의 개인정보를 처리하고 관계 법령을 준수합니다.</p>
+      <h3>1. 처리하는 개인정보와 목적</h3>
+      <table>
+        <tr><th>구분</th><th>항목</th><th>목적</th><th>보유기간</th></tr>
+        <tr><td>회원가입</td><td>이메일, 휴대폰번호, 업체명, 암호화된 비밀번호 값, 추천코드</td><td>회원 식별, 로그인, 본인확인, 고객지원</td><td>회원탈퇴 시까지. 단, 법령상 보존의무 기록은 해당 기간</td></tr>
+        <tr><td>서비스 이용</td><td>상품 URL, 상품명, 키워드, 캠페인 내역, 순위 관측·피드백 기록, 이용기록</td><td>캠페인 운영, 순위 관측, 품질 개선, 분쟁 대응</td><td>서비스 이용기간 및 관련 법령상 보존기간</td></tr>
+        <tr><td>휴대폰 인증</td><td>휴대폰번호, 인증코드 해시값, 발송·인증 기록</td><td>본인확인, 부정가입 방지</td><td>인증 목적 달성 후 필요한 최소기간</td></tr>
+        <tr><td>세금계산서 요청</td><td>계산서 이메일, 사업자등록증 이미지/OCR, 사업자번호</td><td>세금계산서 발행 처리</td><td>발행 완료 후 첨부 이미지·OCR·추출 사업자번호는 삭제·최소화. 법정 증빙은 관련 법령에 따라 보관</td></tr>
+      </table>
+      <h3>2. 필수·선택 구분</h3>
+      <p>회원가입·인증·서비스 수행에 필요한 정보는 필수이며, 광고성 정보 수신 동의는 선택입니다. 선택 동의를 하지 않아도 기본 서비스를 이용할 수 있습니다.</p>
+      <h3>3. 처리위탁·외부 서비스</h3>
+      <p>서비스 운영을 위해 Google(Apps Script, Sheets, Drive), 문자발송 사업자 알리고 등 외부 서비스를 사용할 수 있습니다. 실제 운영환경의 문자 중계 서버 및 클라우드 사업자는 운영 전 현행화하여 공개합니다.</p>
+      <h3>4. 국외 처리 가능성</h3>
+      <p>Google 등 글로벌 클라우드 서비스를 사용하는 과정에서 서비스 제공자의 정책에 따라 국외 처리·보관이 발생할 가능성이 있습니다. 실제 저장 위치와 이전 구조는 운영환경 확인 후 구체적으로 반영합니다.</p>
+      <h3>5. 이용자의 권리</h3>
+      <p>이용자는 개인정보 열람·정정·삭제·처리정지, 마케팅 수신동의 철회, 회원탈퇴 등을 요청할 수 있습니다. 서비스 내 ‘내 정보 / 개인정보’ 또는 아래 문의처를 이용할 수 있습니다.</p>
+      <h3>6. 안전성 확보조치</h3>
+      <p>비밀번호와 인증번호는 평문 저장을 피하고, API 키·비밀키는 소스코드가 아닌 서버 설정 영역에 보관하며 관리자 접근권한을 제한합니다.</p>
+      <h3>7. 브라우저 저장정보</h3>
+      <p>로그인 유지를 위해 브라우저 localStorage에 세션 정보가 저장될 수 있습니다. 공용 PC에서는 이용 후 로그아웃을 권장합니다.</p>
+      <h3>8. 파기</h3>
+      <p>보유기간이 경과하거나 처리목적이 달성된 개인정보는 지체 없이 삭제하고, 법령상 보존 대상은 다른 정보와 분리하여 보관합니다.</p>
+      <h3>9. 개인정보 문의</h3>
+      <p>주식회사 더봄(올림컴퍼니)<br>이메일: ceo@ollimcompany.com<br>전화: 1644-1154</p>
+      <p><b>출시 전 확인:</b> 문자 중계 서버의 실제 호스팅 사업자와 서버 리전(국내/국외)을 확인해 본 방침의 처리위탁·국외이전 부분을 최종 확정해야 합니다.</p>
+    `
+  },
+  marketing: {
+    title: '광고성 정보 수신 동의 안내',
+    html: `
+      <p>선택 동의 항목입니다. 동의하지 않아도 기본 서비스를 이용할 수 있습니다.</p>
+      <h3>목적</h3><p>신규 서비스, 이벤트, 할인, 쿠폰, 프로모션 등 영리목적의 광고성 정보 제공</p>
+      <h3>채널</h3><p>이용자가 선택한 SMS 및/또는 이메일</p>
+      <h3>보유·이용 기간</h3><p>동의 철회 또는 회원탈퇴 시까지</p>
+      <h3>철회</h3><p>로그인 후 ‘내 정보 / 개인정보’에서 언제든 변경할 수 있습니다.</p>
+      <p>인증번호, 접수 결과, 순위 리포트, 캠페인 상태 등 서비스 수행에 필요한 알림은 광고성 정보와 구분됩니다.</p>
+    `
+  }
+};
+
 const SIGNUP_QUESTIONS = [
   { id:'company',    title:'업체명이 어떻게 되세요?',       sub:'접수 콘솔에 표시될 이름이에요',          type:'text',     placeholder:'예: 경성매트' },
   { id:'email',      title:'이메일을 알려주세요',           sub:'로그인할 때 아이디로 사용해요',          type:'email',    placeholder:'you@company.com' },
@@ -1122,6 +1515,12 @@ let signupIndex = 0;
 
 function resetSignup(){
   signupAnswers = {};
+  document.getElementById('signupConsentPanel').style.display='none';
+  document.getElementById('signupActive').style.display='block';
+  ['consentAll','consentAge','consentTerms','consentPrivacy','consentMarketingSms','consentMarketingEmail'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.checked=false;
+  });
+  if(window.pendingReferralCode) signupAnswers.ref = window.pendingReferralCode;
   signupIndex = 0;
   if(window.pendingDiagData && window.pendingDiagData.email){ signupAnswers.email = window.pendingDiagData.email; }
   document.getElementById('signupAnswered').innerHTML = '';
@@ -1150,7 +1549,7 @@ async function renderSignupQuestion(){
   document.getElementById('signupHint').style.display = signupIndex === SIGNUP_QUESTIONS.length-1 ? 'block' : 'none';
   document.getElementById('refPromoCard').style.display = q.id === 'ref' ? 'block' : 'none';
   document.getElementById('verifyResend').style.display = q.id === 'verifyCode' ? 'block' : 'none';
-  document.getElementById('signupNext').textContent = signupIndex === SIGNUP_QUESTIONS.length-1 ? '가입하고 시작하기' : '다음';
+  document.getElementById('signupNext').textContent = '다음';
 
   active.style.transition = 'none';
   active.style.transform = 'translateY(20px)';
@@ -1173,7 +1572,7 @@ function appendAnsweredRow(q, value, labelOverride){
 
 document.getElementById('resendCodeLink').addEventListener('click', async (e)=>{
   e.preventDefault();
-  const res = await apiCall('sendVerificationCode', { phone: signupAnswers.phone });
+  const res = await apiCall('sendVerificationCode', { phone: signupAnswers.phone, purpose:'signup' });
   showMsg('authMsg', res.ok ? '인증번호를 다시 보냈어요.' : (res.error||'재전송 실패'), res.ok ? 'ok' : 'warn');
 });
 
@@ -1199,7 +1598,7 @@ async function handleSignupNext(){
 
   if(q.id === 'phone'){
     setBusy(btn, '인증번호 전송 중...');
-    const res = await apiCall('sendVerificationCode', { phone: value });
+    const res = await apiCall('sendVerificationCode', { phone: value, purpose:'signup' });
     clearBusy(btn);
     if(!res.ok){ showMsg('authMsg', res.error||'인증번호 전송에 실패했어요.', 'warn'); return; }
     signupAnswers.phone = value;
@@ -1212,9 +1611,10 @@ async function handleSignupNext(){
 
   if(q.id === 'verifyCode'){
     setBusy(btn, '확인 중...');
-    const res = await apiCall('verifyCode', { phone: signupAnswers.phone, code: value });
+    const res = await apiCall('verifyCode', { phone: signupAnswers.phone, code: value, purpose:'signup' });
     clearBusy(btn);
     if(!res.ok){ showMsg('authMsg', res.error||'인증번호가 올바르지 않아요.', 'warn'); return; }
+    signupAnswers.verificationToken = res.verificationToken;
     appendAnsweredRow(q, '완료 ✓', '휴대폰 인증');
     signupIndex++;
     await new Promise(r=>setTimeout(r, 160));
@@ -1226,7 +1626,8 @@ async function handleSignupNext(){
   appendAnsweredRow(q, value);
 
   if(signupIndex === SIGNUP_QUESTIONS.length-1){
-    await submitSignup();
+    document.getElementById('signupActive').style.display='none';
+    document.getElementById('signupConsentPanel').style.display='block';
     return;
   }
   signupIndex++;
@@ -1246,9 +1647,23 @@ async function submitSignup(){
   const res = await apiCall('signup', {
     companyName: signupAnswers.company, email: signupAnswers.email,
     phone: signupAnswers.phone, password: signupAnswers.password,
-    referredByCode: (signupAnswers.ref || '').toUpperCase()
+    referredByCode: (signupAnswers.ref || '').toUpperCase(),
+    verificationToken: signupAnswers.verificationToken,
+    ageConfirmed: !!signupAnswers.ageConfirmed,
+    termsAgreed: !!signupAnswers.termsAgreed,
+    privacyAgreed: !!signupAnswers.privacyAgreed,
+    marketingSmsAgreed: !!signupAnswers.marketingSmsAgreed,
+    marketingEmailAgreed: !!signupAnswers.marketingEmailAgreed,
+    termsVersion: OLLIM_TERMS_VERSION,
+    privacyVersion: OLLIM_PRIVACY_VERSION
   });
-  if(res.ok){ await setSession(res); showReferralReveal(signupAnswers.company, res.referralCode, ()=> enterApp(res)); }
+  if(res.ok){
+    await setSession(res);
+    showReferralReveal(signupAnswers.company, res.referralCode, async ()=>{
+      await enterApp(res);
+      scheduleInstallOffer('signup');
+    });
+  }
   else {
     showMsg('authMsg', res.error || '가입 실패', 'warn');
     clearBusy(btn);
@@ -1321,7 +1736,7 @@ document.getElementById('resetBack').addEventListener('click', ()=>{
 
 document.getElementById('resendResetCodeLink').addEventListener('click', async (e)=>{
   e.preventDefault();
-  const res = await apiCall('sendVerificationCode', { phone: resetAnswers.phone });
+  const res = await apiCall('sendVerificationCode', { phone: resetAnswers.phone, purpose:'password_reset' });
   showMsg('authMsg', res.ok ? '인증번호를 다시 보냈어요.' : (res.error||'재전송 실패'), res.ok ? 'ok' : 'warn');
 });
 
@@ -1334,7 +1749,7 @@ async function handleResetNext(){
 
   if(q.id === 'phone'){
     setBusy(btn, '인증번호 전송 중...');
-    const res = await apiCall('sendVerificationCode', { phone: value });
+    const res = await apiCall('sendVerificationCode', { phone: value, purpose:'password_reset' });
     clearBusy(btn);
     if(!res.ok){ showMsg('authMsg', res.error||'전송에 실패했어요.', 'warn'); return; }
     resetAnswers.phone = value;
@@ -1347,10 +1762,10 @@ async function handleResetNext(){
 
   if(q.id === 'verifyCode'){
     setBusy(btn, '확인 중...');
-    const res = await apiCall('verifyCode', { phone: resetAnswers.phone, code: value });
+    const res = await apiCall('verifyCode', { phone: resetAnswers.phone, code: value, purpose:'password_reset' });
     clearBusy(btn);
     if(!res.ok){ showMsg('authMsg', res.error||'인증번호가 올바르지 않아요.', 'warn'); return; }
-    resetAnswers.code = value;
+    resetAnswers.verificationToken = res.verificationToken;
     appendResetRow(q, '완료 ✓', '휴대폰 인증');
     resetIndex++;
     await new Promise(r=>setTimeout(r,160));
@@ -1359,7 +1774,7 @@ async function handleResetNext(){
   }
 
   setBusy(btn, '변경 처리 중...');
-  const res = await apiCall('resetPassword', { phone: resetAnswers.phone, code: resetAnswers.code, newPassword: value });
+  const res = await apiCall('resetPassword', { phone: resetAnswers.phone, verificationToken: resetAnswers.verificationToken, newPassword: value });
   clearBusy(btn);
   if(!res.ok){ showMsg('authMsg', res.error||'비밀번호 변경에 실패했어요.', 'warn'); return; }
   showSuccessThen('비밀번호 변경 완료!', ()=>{
@@ -1428,7 +1843,7 @@ document.getElementById('logoutBtn').addEventListener('click', async ()=>{
   showGateway();
 });
 document.getElementById('withdrawBtn').addEventListener('click', async ()=>{
-  if(!confirm('정말 탈퇴하시겠어요? 계정은 즉시 삭제되고 되돌릴 수 없어요. (접수 이력 자체는 매출 기록 보존을 위해 남아있어요)')) return;
+  if(!confirm('정말 탈퇴하시겠어요? 로그인 계정과 직접 식별정보는 삭제·분리 처리됩니다. 다만 법령상 보존의무가 있는 거래·세금 기록은 정해진 기간 동안 별도 보관될 수 있어요.')) return;
   if(!confirm('마지막 확인이에요. 탈퇴를 진행할까요?')) return;
   const session = await getSession();
   if(!session) return;
@@ -1464,6 +1879,7 @@ function switchPanelDOM(panelName){
   const safeRun = (fn) => { try { fn(); } catch(e) { console.error('패널 로딩 중 오류(' + panelName + '):', e); } };
   if(panelName === 'panelMain') safeRun(loadCoupons); // 관리자가 방금 지급한 쿠폰이 있을 수 있어서, 접수폼 들어갈 때마다 최신 쿠폰 목록으로 갱신
   if(panelName === 'panelCoupons') safeRun(renderCoupons);
+  if(panelName === 'panelPrivacy') safeRun(loadPrivacySettings);
   if(panelName === 'panelReferrals') safeRun(renderReferrals);
   if(panelName === 'panelDashboard'){
     safeRun(loadDashboard);
@@ -1707,6 +2123,9 @@ async function enterApp(session){
   roleEl.textContent = session.role==='admin' ? '관리자' : '고객';
   roleEl.className = 'role ' + session.role;
   document.getElementById('myRefCode').textContent = session.referralCode || '-';
+  const shareCodeEl = document.getElementById('shareReferralCode');
+  if(shareCodeEl) shareCodeEl.textContent = session.referralCode || '-';
+  syncInstallButton();
 
   const clientInput = document.getElementById('f_client');
   const ytClientInput = document.getElementById('y_client');
@@ -1789,6 +2208,9 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
     const competitorLinks = [1,2,3].map(n=>document.getElementById('f_comp'+n).value.trim()).filter(Boolean);
     const couponId = document.getElementById('f_coupon').value;
     const isAutoKeywordMode = document.getElementById('autoKeywordBlock').style.display !== 'none';
+    const productName = (isAutoKeywordMode
+      ? document.getElementById('autoKeywordProductName').value
+      : document.getElementById('selectKeywordProductName').value).trim();
     if(!client || !link || !qty){
       const missing = [];
       if(!client) missing.push('업체명');
@@ -1797,12 +2219,16 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
       showMsg('submitMsg', `다음 항목이 비어있어요: ${missing.join(', ')}`, 'warn');
       return;
     }
+    if(!productName){
+      showMsg('submitMsg','상품명을 입력해 주세요.', 'warn');
+      return;
+    }
     if(keywords.length < 1){
       if(isAutoKeywordMode) showMsg('submitMsg','먼저 상품명을 입력하고 "관련 키워드 찾기"를 눌러주세요.', 'warn');
       else showMsg('submitMsg','키워드를 최소 1개 입력해 주세요.', 'warn');
       return;
     }
-    Object.assign(payload, { client, phone, link, productId, qty: Number(qty), cycles: Number(cycles), keywords, competitorLinks, couponId });
+    Object.assign(payload, { client, phone, link, productId, productName, qty: Number(qty), cycles: Number(cycles), keywords, competitorLinks, couponId });
   }
 
   const submitBtn = document.getElementById('submitBtn');
@@ -1822,9 +2248,15 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
       if(res.bank) document.getElementById('bankAcc').textContent = `${res.bank.bank} ${res.bank.account} (${res.bank.holder})`;
       lastSubmittedId = res.id; // 입금자 성함 저장 버튼에서 이 접수건을 대상으로 함
       document.getElementById('depositorNameInput').value = '';
+      scheduleInstallOffer('campaign');
     }
     if(isYoutube){ ['y_phone','y_date','y_location','y_notes'].forEach(id=>document.getElementById(id).value=''); }
-    else { ['f_phone','f_link','f_qty','f_kw1','f_kw2','f_kw3','f_kw4','f_kw5','f_comp1','f_comp2','f_comp3'].forEach(id=>document.getElementById(id).value=''); document.getElementById('f_coupon').value=''; refreshPriceBox(); }
+    else {
+      ['f_phone','f_link','f_qty','f_kw1','f_kw2','f_kw3','f_kw4','f_kw5','f_comp1','f_comp2','f_comp3','autoKeywordProductName','selectKeywordProductName']
+        .forEach(id=>document.getElementById(id).value='');
+      document.getElementById('f_coupon').value='';
+      refreshPriceBox();
+    }
     await loadCoupons();
     invalidateSubmissionsCache();
     renderTable();
@@ -1901,6 +2333,81 @@ async function fileToBase64(file){
   });
 }
 
+
+function campaignEngineState(rec){
+  if(!rec || rec.productType !== 'reward') return null;
+  const today = fmt(new Date());
+
+  // 종료일이 지났거나 취소된 건은 정지된 회색 엔진
+  if(rec.status === 'cancelled' || (rec.endDate && today > rec.endDate)){
+    return 'done';
+  }
+
+  // 실제 집행 상태만 움직이는 엔진으로 표현.
+  // 승인됐고 시작일이 오늘 이전(또는 시작일 미기록)인 건을 집행중으로 본다.
+  if(rec.status === 'approved' && (!rec.startDate || today >= rec.startDate)){
+    return 'running';
+  }
+
+  return null;
+}
+
+function buildCampaignEngine(rec, withLabel){
+  const state = campaignEngineState(rec);
+  if(!state) return '';
+
+  const label = state === 'running' ? '집행중' : '종료';
+  const title = state === 'running'
+    ? 'AI 순위 엔진 집행중'
+    : '캠페인 종료';
+
+  return `
+    <span class="rank-engine ${state}" role="img" aria-label="${label}" title="${title}">
+      <span class="rank-engine-bars" aria-hidden="true">
+        <span class="rank-engine-bar"></span>
+        <span class="rank-engine-bar"></span>
+        <span class="rank-engine-bar"></span>
+        <span class="rank-engine-bar"></span>
+      </span>
+      <svg class="rank-engine-arrow" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+        <path d="M2 9L9 2M5 2h4v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+    ${withLabel ? `<span class="rank-engine-label ${state}">${label}</span>` : ''}
+  `;
+}
+
+
+
+function rankObservationLabel(info){
+  if(!info) return '조회 전';
+  const st = String(info.observationStatus || '').toLowerCase();
+  if(st === 'found' && typeof info.rank === 'number') return `${info.rank}위`;
+  if(st === 'not_found') return '100위 내 미확인';
+  if(st === 'error') return '관측 오류';
+  if(typeof info.rank === 'number') return `${info.rank}위`;
+  if(info.rank && info.rank !== '100위 밖') return String(info.rank);
+  return '확인중';
+}
+function rankObservationClass(info){
+  const st = String(info?.observationStatus || '').toLowerCase();
+  if(st === 'found') return 'rank-found';
+  if(st === 'not_found') return 'rank-not-found';
+  if(st === 'error') return 'rank-error';
+  return 'rank-pending';
+}
+
+function campaignProductName(rec){
+  const name = String(rec?.productName || '').trim();
+  if(name) return name;
+  if(rec?.productType === 'youtube') return 'PR영상 제작';
+  return `${rec?.channel || ''} · ${rec?.program || ''} — ${rec?.qty || 0}개`.trim();
+}
+function campaignMetaTitle(rec){
+  if(rec?.productType === 'youtube') return 'PR영상 제작';
+  return `${rec?.channel || '-'} · ${rec?.program || '-'} — ${rec?.qty || 0}개`;
+}
+
 function statusLabel(rec){
   if(rec.status === 'cancelled') return {cls:'done', text:'🚫 취소됨'};
   if(rec.status === 'payment_pending') return {cls:'payment_pending', text:'⏳ 결제확인 대기중'};
@@ -1975,6 +2482,10 @@ function startEditSubmission(rec){
     document.getElementById('pt_reward').click();
     const product = CATALOG.products.find(p => p.channel === rec.channel && p.program === rec.program);
     if(product) document.getElementById('f_product').value = product.id;
+    updateCyclesOptions();
+    const editName = rec.productName || '';
+    if(product && product.id === 'naver_rankon') document.getElementById('autoKeywordProductName').value = editName;
+    else document.getElementById('selectKeywordProductName').value = editName;
     document.getElementById('f_link').value = rec.link || '';
     document.getElementById('f_phone').value = rec.phone || '';
     const kws = Array.isArray(rec.keywords) ? rec.keywords : String(rec.keywords||'').split(',').map(k=>k.trim()).filter(Boolean);
@@ -1983,7 +2494,6 @@ function startEditSubmission(rec){
     [1,2,3].forEach(n => { document.getElementById('f_comp'+n).value = comps[n-1] || ''; });
     document.getElementById('f_qty').value = rec.qty || 1;
     document.getElementById('f_cycles').value = rec.cycles || 1;
-    updateCyclesOptions();
   }
   editingSubmissionId = rec.id;
   document.getElementById('submitBtn').textContent = '수정 완료';
@@ -2035,7 +2545,8 @@ async function renderTable(quiet){
   for(const rec of records){
     const st = statusLabel(rec);
     const amount = rec.productType==='reward' ? `${Number(rec.grandTotal||0).toLocaleString('ko-KR')}원` : '협의 후 안내';
-    const title = rec.productType==='reward' ? `${rec.channel} · ${rec.program} — ${rec.qty}개` : '🎥 유튜브 인터뷰 촬영';
+    const title = campaignProductName(rec);
+    const campaignMeta = campaignMetaTitle(rec);
     const dday = rec.productType==='reward' ? ddayInfo(rec) : null;
     const approveBtn = (session.role==='admin' && rec.status==='payment_pending')
       ? `<button class="btn small approveBtn" data-id="${rec.id}">입금확인 · 승인하기</button>` : '';
@@ -2055,9 +2566,14 @@ async function renderTable(quiet){
     if(rec.productType === 'reward'){
       const kws = Array.isArray(rec.keywords) ? rec.keywords : String(rec.keywords||'').split(',').map(k=>k.trim()).filter(Boolean);
       const ranks = ranksMap[rec.id] || {};
-      const kwTags = kws.map(k=>{ const info=ranks[k]; return `<span>${escapeHtml(info?`${k} · ${info.rank}위`:k)}</span>`; }).join('');
+      const kwTags = kws.map(k=>{
+        const info=ranks[k];
+        const label=info ? rankObservationLabel(info) : '조회 전';
+        return `<span>${escapeHtml(k)} · <b class="${rankObservationClass(info)}">${escapeHtml(label)}</b></span>`;
+      }).join('');
       midHtml = `
-        <div class="result-product">${escapeHtml(rec.channel)} · ${escapeHtml(rec.program)} — ${rec.qty}개${rec.bonusSlots?` <span style="color:var(--ok)">(+${rec.bonusSlots} 보너스)</span>`:''}</div>
+        <div class="result-product">${escapeHtml(campaignProductName(rec))}</div>
+        <div class="result-phone" style="margin-top:3px;">${escapeHtml(campaignMetaTitle(rec))}${rec.bonusSlots?` <span style="color:var(--ok)">(+${rec.bonusSlots} 보너스)</span>`:''}</div>
         <a class="result-link" href="${escapeHtml(rec.link)}" target="_blank">상품링크 열기 ↗</a>
         <div class="kw-tags">${kwTags}</div>`;
       const periodText = rec.startDate ? prettyRange(rec.startDate, rec.endDate) : null;
@@ -2091,8 +2607,11 @@ async function renderTable(quiet){
     html += `
     <div class="status-row" data-toggle="${rec.id}">
       <div class="status-row-main">
-        <div class="status-row-title">${escapeHtml(title)}</div>
-        <div class="status-row-sub">${escapeHtml(rec.client)} · ${amount}</div>
+        <div class="campaign-title-line">
+          ${buildCampaignEngine(rec, false)}
+          <div class="status-row-title">${escapeHtml(title)}</div>
+        </div>
+        <div class="status-row-sub">${escapeHtml(campaignMeta)} · ${escapeHtml(rec.client)} · ${amount}</div>
       </div>
       <div class="status-row-right">
         ${dday ? `<span class="dday-badge ${dday.cls}">${dday.text}</span>` : ''}
@@ -2798,7 +3317,7 @@ async function loadHome(){
   const active = rewardApproved.filter(r=> !r.endDate || today <= r.endDate);
 
   document.getElementById('homeSub').textContent = active.length
-    ? `${active[0].channel}·${active[0].program} 캠페인 진행중`
+    ? `${campaignProductName(active[0])} 캠페인 진행중`
     : '진행중인 캠페인이 아직 없어요';
 
   renderHomeTicker(active);
@@ -2835,7 +3354,10 @@ function renderHomeTicker(active){
   if(items.length === 0){ card.style.display='none'; return; }
   card.style.display = 'block';
   const buildRow = ()=> items.map(it=>{
-    const rankText = typeof it.cur === 'number' ? `${it.cur}위` : (it.cur || '확인중');
+    const rankText = it.status === 'not_found' ? '100위 내 미확인'
+      : it.status === 'error' ? '관측 오류'
+      : typeof it.cur === 'number' ? `${it.cur}위`
+      : (it.cur || '확인중');
     let deltaHtml = '<span style="font-size:0.68rem; color:#9AA0A6; font-weight:700;">-</span>';
     if(typeof it.cur === 'number' && typeof it.prv === 'number'){
       const diff = it.prv - it.cur;
@@ -2856,7 +3378,8 @@ function renderHomeHero(active){
     try{ prev = r.prevRanksJson ? JSON.parse(r.prevRanksJson) : {}; }catch(e){}
     Object.keys(ranks).forEach(kw=>{
       const v = ranks[kw].rank;
-      if(typeof v === 'number' && (best === null || v < best)){ best = v; bestKw = kw; bestPrev = prev[kw] ? prev[kw].rank : null; bestProduct = `${r.channel}·${r.program}`; }
+      if((!ranks[kw].observationStatus || ranks[kw].observationStatus === 'found') &&
+         typeof v === 'number' && (best === null || v < best)){ best = v; bestKw = kw; bestPrev = prev[kw] ? prev[kw].rank : null; bestProduct = campaignProductName(r); }
     });
   });
   if(best === null){ heroCard.style.display = 'none'; return; }
@@ -2995,7 +3518,8 @@ function renderHistoryList(records){
   let html = '<div class="status-list">';
   sorted.forEach(rec=>{
     const st = statusLabel(rec);
-    const title = rec.productType==='reward' ? `${rec.channel} · ${rec.program} — ${rec.qty}개` : '🎥 유튜브 인터뷰 촬영';
+    const title = campaignProductName(rec);
+    const campaignMeta = campaignMetaTitle(rec);
     const amount = rec.productType==='reward' ? `${Number(rec.grandTotal||0).toLocaleString('ko-KR')}원` : '협의 후 안내';
     const dday = rec.productType==='reward' ? ddayInfo(rec) : null;
 
@@ -3006,8 +3530,8 @@ function renderHistoryList(records){
       const kws = Array.isArray(rec.keywords) ? rec.keywords : String(rec.keywords||'').split(',').map(k=>k.trim()).filter(Boolean);
       const kwRows = kws.map(k=>{
         const r = ranks[k];
-        const rankText = (r && typeof r.rank === 'number') ? `${r.rank}위` : (r ? r.rank : '조회중');
-        return `<div class="detail-kw-row"><span>${escapeHtml(k)}</span><span>${escapeHtml(String(rankText))}</span></div>`;
+        const rankText = r ? rankObservationLabel(r) : '조회 전';
+        return `<div class="detail-kw-row"><span>${escapeHtml(k)}</span><span class="${rankObservationClass(r)}">${escapeHtml(String(rankText))}</span></div>`;
       }).join('');
       const compCount = String(rec.competitorLinks||'').split(',').map(s=>s.trim()).filter(Boolean).length;
       detailHtml = `
@@ -3078,7 +3602,7 @@ function populateChartSubmissionSelect(records, prefix){
     return;
   }
   sel.innerHTML = rewardRecords.map(r =>
-    `<option value="${r.id}">${escapeHtml(r.client)} · ${escapeHtml(r.channel)}/${escapeHtml(r.program)} (${prettyDate(r.acceptDate || fmt(new Date(r.createdAt)))} 접수)</option>`
+    `<option value="${r.id}">${escapeHtml(campaignProductName(r))} · ${escapeHtml(r.channel)}/${escapeHtml(r.program)} (${prettyDate(r.acceptDate || fmt(new Date(r.createdAt)))} 접수)</option>`
   ).join('');
   sel._recordsCache = rewardRecords;
   updateKeywordCheckboxes(rewardRecords[0], prefix);
@@ -3479,6 +4003,140 @@ if(new URLSearchParams(window.location.search).get('admin') === '1'){
     setTimeout(()=>{ splash.classList.add('hide'); }, 2800);
   }
 })();
+
+// ===== PWA 설치 버튼 =====
+document.getElementById('installAppBtn')?.addEventListener('click',()=>openPwaInstallModal('manual'));
+document.getElementById('pwaLaterBtn')?.addEventListener('click',closePwaInstallModal);
+document.getElementById('pwaInstallModal')?.addEventListener('click',e=>{
+  if(e.target.id==='pwaInstallModal') closePwaInstallModal();
+});
+document.getElementById('pwaInstallConfirmBtn')?.addEventListener('click',async()=>{
+  if(deferredPwaPrompt){
+    try{await deferredPwaPrompt.prompt();await deferredPwaPrompt.userChoice;}catch(e){}
+    deferredPwaPrompt=null; closePwaInstallModal(); syncInstallButton(); return;
+  }
+  const guide=document.getElementById('iosInstallGuide');
+  guide.style.display='block';
+  guide.innerHTML=isIosDevice()
+    ? 'Safari 하단의 <strong>공유 버튼</strong> → <strong>홈 화면에 추가</strong>를 눌러주세요.'
+    : '브라우저 메뉴에서 <strong>앱 설치</strong> 또는 <strong>홈 화면에 추가</strong>를 선택해 주세요.';
+});
+
+// ===== 추천 공유 =====
+document.getElementById('copyReferralBtn')?.addEventListener('click',async()=>{
+  const session=await getSession(); if(!session?.referralCode) return;
+  await copyTextSafe(referralMessage(session.referralCode));
+  const msg=document.getElementById('referralShareMsg');
+  msg.style.display='block'; msg.textContent='소개 메시지를 복사했어요 ✓';
+});
+document.getElementById('shareReferralBtn')?.addEventListener('click',async()=>{
+  const session=await getSession(); if(!session?.referralCode) return;
+  const url=referralUrl(session.referralCode), text=referralMessage(session.referralCode);
+  if(navigator.share){
+    try{await navigator.share({title:'올림컴퍼니',text,url});return;}
+    catch(e){if(e?.name==='AbortError') return;}
+  }
+  await copyTextSafe(text);
+  const msg=document.getElementById('referralShareMsg');
+  msg.style.display='block'; msg.textContent='공유 기능 대신 메시지를 복사했어요 ✓';
+});
+
+// ===== 순위 직접확인 =====
+document.getElementById('rankVerifyCloseBtn')?.addEventListener('click',()=>{
+  document.getElementById('rankVerifyModal').classList.remove('show');
+});
+document.getElementById('rankVerifyModal')?.addEventListener('click',e=>{
+  if(e.target.id==='rankVerifyModal') e.currentTarget.classList.remove('show');
+});
+document.getElementById('rankVerifyNaverBtn')?.addEventListener('click',()=>{
+  if(!currentRankVerifyRecord) return;
+  const q=encodeURIComponent(currentRankVerifyRecord.kw);
+  window.open(`https://search.shopping.naver.com/ns/search?query=${q}`,'_blank','noopener');
+});
+document.getElementById('rankVerifyMatchBtn')?.addEventListener('click',()=>reportRankFeedback(true));
+document.getElementById('rankVerifyMismatchBtn')?.addEventListener('click',()=>reportRankFeedback(false));
+
+
+// ===== Legal / consent events =====
+function openLegalModal(type){
+  const item=LEGAL_CONTENT[type]; if(!item) return;
+  document.getElementById('legalModalTitle').textContent=item.title;
+  document.getElementById('legalModalBody').innerHTML=item.html;
+  document.getElementById('legalModal').classList.add('show');
+  document.getElementById('legalModal').setAttribute('aria-hidden','false');
+}
+function closeLegalModal(){
+  document.getElementById('legalModal').classList.remove('show');
+  document.getElementById('legalModal').setAttribute('aria-hidden','true');
+}
+document.addEventListener('click',e=>{
+  const opener=e.target.closest('[data-legal-open]');
+  if(opener){e.preventDefault();openLegalModal(opener.dataset.legalOpen);}
+});
+document.getElementById('legalModalClose')?.addEventListener('click',closeLegalModal);
+document.getElementById('legalModal')?.addEventListener('click',e=>{if(e.target.id==='legalModal')closeLegalModal();});
+
+function syncConsentAll(){
+  const ids=['consentAge','consentTerms','consentPrivacy','consentMarketingSms','consentMarketingEmail'];
+  document.getElementById('consentAll').checked=ids.every(id=>document.getElementById(id).checked);
+}
+document.getElementById('consentAll')?.addEventListener('change',e=>{
+  ['consentAge','consentTerms','consentPrivacy','consentMarketingSms','consentMarketingEmail'].forEach(id=>{
+    document.getElementById(id).checked=e.target.checked;
+  });
+});
+['consentAge','consentTerms','consentPrivacy','consentMarketingSms','consentMarketingEmail'].forEach(id=>{
+  document.getElementById(id)?.addEventListener('change',syncConsentAll);
+});
+
+document.getElementById('signupConsentBack')?.addEventListener('click',()=>{
+  document.getElementById('signupConsentPanel').style.display='none';
+  document.getElementById('signupActive').style.display='block';
+  renderSignupQuestion();
+});
+document.getElementById('signupConsentSubmit')?.addEventListener('click',async()=>{
+  const age=document.getElementById('consentAge').checked;
+  const terms=document.getElementById('consentTerms').checked;
+  const privacy=document.getElementById('consentPrivacy').checked;
+  if(!age||!terms||!privacy){
+    showMsg('authMsg','필수 동의 항목을 확인해 주세요.','warn'); return;
+  }
+  signupAnswers.ageConfirmed=age;
+  signupAnswers.termsAgreed=terms;
+  signupAnswers.privacyAgreed=privacy;
+  signupAnswers.marketingSmsAgreed=document.getElementById('consentMarketingSms').checked;
+  signupAnswers.marketingEmailAgreed=document.getElementById('consentMarketingEmail').checked;
+  await submitSignup();
+});
+
+async function loadPrivacySettings(){
+  const session=await getSession();
+  if(!session||session.role!=='client') return;
+  const res=await apiCall('getMyPrivacySettings',{token:session.token});
+  if(!res.ok) return;
+  document.getElementById('privacySmsToggle').checked=!!res.marketingSmsAgreed;
+  document.getElementById('privacyEmailToggle').checked=!!res.marketingEmailAgreed;
+  document.getElementById('privacySmsState').textContent=res.marketingSmsAgreed?'수신 동의':'수신 안 함';
+  document.getElementById('privacyEmailState').textContent=res.marketingEmailAgreed?'수신 동의':'수신 안 함';
+}
+async function savePrivacySettings(){
+  const session=await getSession(); if(!session) return;
+  const sms=document.getElementById('privacySmsToggle').checked;
+  const email=document.getElementById('privacyEmailToggle').checked;
+  const res=await apiCall('updateMarketingConsent',{
+    token:session.token,marketingSmsAgreed:sms,marketingEmailAgreed:email
+  });
+  if(res.ok){
+    document.getElementById('privacySmsState').textContent=sms?'수신 동의':'수신 안 함';
+    document.getElementById('privacyEmailState').textContent=email?'수신 동의':'수신 안 함';
+  }else{
+    alert(res.error||'설정 저장에 실패했어요.'); loadPrivacySettings();
+  }
+}
+document.getElementById('privacySmsToggle')?.addEventListener('change',savePrivacySettings);
+document.getElementById('privacyEmailToggle')?.addEventListener('change',savePrivacySettings);
+document.getElementById('privacyWithdrawBtn')?.addEventListener('click',()=>document.getElementById('withdrawBtn')?.click());
+
 </script>
 </body>
 </html>
