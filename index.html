@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-24 V4-STABLE-MERGE -->
+<!-- OLLIM FRONTEND BUILD: 2026-07-27 V4-STABLE-MERGE + NAVERME-HARD-BLOCK -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -1064,8 +1064,15 @@
       <input id="f_client" type="text" placeholder="예: 경성매트" />
       <label>연락처</label>
       <input id="f_phone" type="text" placeholder="010-0000-0000" />
-      <label>어떤 상품인가요? 링크를 붙여주세요</label>
-      <input id="f_link" type="url" placeholder="https://smartstore.naver.com/..." />
+      <label>어떤 상품인가요? 네이버 상품 전체 URL을 붙여주세요</label>
+      <input id="f_link" type="url" inputmode="url" autocomplete="url"
+             placeholder="예: https://smartstore.naver.com/스토어명/products/상품번호"
+             aria-describedby="f_link_help f_link_error" />
+      <div id="f_link_help" class="hint">
+        네이버 <b>공유용 단축 링크(naver.me)</b>는 사용할 수 없습니다.<br>
+        상품 페이지를 브라우저에서 연 뒤, 주소창의 <b>상품번호가 포함된 전체 URL</b>을 복사해 주세요.
+      </div>
+      <div id="f_link_error" class="msg warn" role="alert" aria-live="polite"></div>
 
       <label>어떤 상품으로 진행할까요?</label>
       <select id="f_product"></select>
@@ -2407,6 +2414,131 @@ document.getElementById('saveDepositorBtn').addEventListener('click', async ()=>
 });
 document.getElementById('submitBtn').addEventListener('click', async ()=>{
   if(isSubmittingOrder) return;
+
+function validateNaverProductUrl(raw){
+  const original = String(raw || '').trim();
+  if(!original) return { ok:false, message:'네이버 상품 URL을 입력해 주세요.' };
+
+  // 공유용 링크는 URL 파싱 전에 문자열 단계에서 무조건 차단한다.
+  const compact = original.replace(/\s+/g,'').toLowerCase();
+  if(
+    compact.includes('naver.me/') ||
+    compact === 'naver.me' ||
+    compact.startsWith('http://naver.me') ||
+    compact.startsWith('https://naver.me') ||
+    /(^|[/:.])naver\.me([/?#:]|$)/i.test(compact)
+  ){
+    return {
+      ok:false,
+      message:'공유용 단축 링크(naver.me)는 접수할 수 없습니다. 상품 페이지를 직접 연 뒤 주소창의 전체 URL을 복사해 주세요.'
+    };
+  }
+
+  let candidate = original;
+  // 사용자가 프로토콜을 생략한 경우에도 정상 네이버 URL이면 검사 가능하게 한다.
+  if(!/^https?:\/\//i.test(candidate)) candidate = 'https://' + candidate;
+
+  let url;
+  try { url = new URL(candidate); }
+  catch(_e){
+    return { ok:false, message:'올바른 URL 형식이 아닙니다. 네이버 상품 페이지의 전체 주소를 붙여주세요.' };
+  }
+
+  const host = url.hostname.toLowerCase().replace(/^www\./,'');
+  if(host === 'naver.me' || host.endsWith('.naver.me')){
+    return {
+      ok:false,
+      message:'공유용 단축 링크(naver.me)는 접수할 수 없습니다. 상품 페이지를 직접 연 뒤 주소창의 전체 URL을 복사해 주세요.'
+    };
+  }
+
+  const isNaver = host === 'naver.com' || host.endsWith('.naver.com');
+  if(!isNaver){
+    return { ok:false, message:'네이버 상품 페이지 URL만 사용할 수 있습니다.' };
+  }
+
+  // 정식 스마트스토어/브랜드스토어 상품 URL의 /products/상품번호를 우선 인정.
+  const productMatch = url.pathname.match(/\/products\/(\d+)(?:\/|$)/i);
+  const queryProductId =
+    url.searchParams.get('productId') ||
+    url.searchParams.get('productNo') ||
+    url.searchParams.get('nvMid') ||
+    url.searchParams.get('nv_mid');
+
+  if(!productMatch && !/^\d{5,}$/.test(String(queryProductId || ''))){
+    return {
+      ok:false,
+      message:'상품번호가 포함된 네이버 정식 상품 URL을 입력해 주세요. 공유 버튼의 링크가 아니라 브라우저 주소창의 전체 주소를 사용해 주세요.'
+    };
+  }
+
+  // 추적 파라미터가 붙어 있어도 접수 가능. 스마트스토어 상품은 핵심 URL로 정규화한다.
+  let normalized = url.href;
+  if(productMatch && /(^|\.)smartstore\.naver\.com$/i.test(host)){
+    const parts = url.pathname.split('/').filter(Boolean);
+    if(parts.length >= 3 && parts[1].toLowerCase() === 'products'){
+      normalized = `https://${host}/${parts[0]}/products/${productMatch[1]}`;
+    }
+  }
+
+  return { ok:true, normalized };
+}
+function setProductLinkValidation(showEmpty){
+  const input = document.getElementById('f_link');
+  const error = document.getElementById('f_link_error');
+  if(!input || !error) return true;
+
+  const value = input.value.trim();
+  if(!value && !showEmpty){
+    error.className = 'msg warn';
+    error.textContent = '';
+    input.removeAttribute('aria-invalid');
+    return true;
+  }
+
+  const result = validateNaverProductUrl(value);
+  if(result.ok){
+    error.className = 'msg warn';
+    error.textContent = '';
+    input.removeAttribute('aria-invalid');
+    return true;
+  }
+
+  error.textContent = result.message;
+  error.className = 'msg warn show';
+  input.setAttribute('aria-invalid','true');
+  return false;
+}
+
+
+// HARD GUARD: 어떤 접수 경로를 타더라도 공유링크/비정상 링크는 submit 전에 차단한다.
+document.addEventListener('submit', (e)=>{
+  const input = document.getElementById('f_link');
+  if(!input) return;
+
+  const result = validateNaverProductUrl(input.value);
+  if(result.ok){
+    // 정상 링크는 추적 파라미터를 제거한 핵심 상품 URL로 정리해서 이후 로직에 넘긴다.
+    input.value = result.normalized;
+    return;
+  }
+
+  e.preventDefault();
+  e.stopImmediatePropagation();
+  setProductLinkValidation(true);
+  if(typeof showMsg === 'function'){
+    try { showMsg('submitMsg', result.message, 'warn'); } catch(_e){}
+  }
+  input.focus();
+}, true);
+
+document.addEventListener('input', (e)=>{
+  if(e.target && e.target.id === 'f_link') setProductLinkValidation(false);
+});
+document.addEventListener('blur', (e)=>{
+  if(e.target && e.target.id === 'f_link') setProductLinkValidation(false);
+}, true);
+
   isSubmittingOrder = true;
   try {
   const session = await getSession();
@@ -2426,7 +2558,16 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
   } else {
     const client = document.getElementById('f_client').value.trim();
     const phone = document.getElementById('f_phone').value.trim();
-    const link = document.getElementById('f_link').value.trim();
+    const rawLink = document.getElementById('f_link').value.trim();
+    const productUrlCheck = validateNaverProductUrl(rawLink);
+    if(!productUrlCheck.ok){
+      setProductLinkValidation(true);
+      showMsg('submitMsg', productUrlCheck.message, 'warn');
+      document.getElementById('f_link').focus();
+      return;
+    }
+    const link = productUrlCheck.normalized;
+    document.getElementById('f_link').value = link;
     const productId = document.getElementById('f_product').value;
     const qty = document.getElementById('f_qty').value;
     const cycles = document.getElementById('f_cycles').value;
