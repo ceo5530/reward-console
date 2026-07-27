@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-27 V4-STABLE-MERGE + RANK-FINAL-ONEPAGE -->
+<!-- OLLIM FRONTEND BUILD: 2026-07-27 V4-STABLE-MERGE + RANK-POLISH-TOP-CONTROLS -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -1341,6 +1341,83 @@
 }
 </style>
 
+
+<style id="ollim-rank-card-polish-css">
+#app .rank-final-stack{gap:16px}
+#app .rank-final-toolbar{
+  order:-10;
+  grid-template-columns:minmax(220px,1fr) minmax(220px,1fr) auto;
+  align-items:end;
+}
+#app .rank-final-toolbar>div:first-child,
+#app .rank-final-toolbar>div:nth-child(2){max-width:320px}
+#app .rank-final-rule{align-self:center;padding:22px 0 0}
+
+#app .rank-final-product-titleline{
+  display:flex;align-items:flex-start;gap:8px;min-width:0
+}
+#app .rank-final-product-titleline strong{min-width:0;flex:1}
+#app .rank-final-open-link{
+  width:28px;height:28px;flex:0 0 28px;
+  display:inline-flex;align-items:center;justify-content:center;
+  border:1px solid #d8e2ee;border-radius:8px;
+  color:#6f7f94;background:#fff;text-decoration:none
+}
+#app .rank-final-open-link:hover{color:var(--ol-blue);border-color:#bcd6ff;background:#f7fbff}
+#app .rank-final-open-link svg{
+  width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round
+}
+#app .rank-final-product-sub{margin-top:4px;color:#77859a;font-size:.78rem}
+#app .rank-final-product .tag.neutral{background:#fff;color:#5b677a;border:1px solid #dde4ed}
+
+#app .rank-card-topline{
+  display:flex;align-items:center;justify-content:space-between;gap:10px
+}
+#app .rank-title-icon.crown{
+  color:#1677ff;font-size:26px;line-height:1;
+  transform:translateY(-1px)
+}
+#app .rank-title-icon.medal{
+  width:30px;height:30px;border-radius:50%;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:.78rem;font-weight:900;position:relative;
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.65)
+}
+#app .rank-title-icon.medal::after{
+  content:"";position:absolute;left:7px;right:7px;bottom:-8px;height:11px;
+  clip-path:polygon(0 0,45% 20%,50% 100%,55% 20%,100% 0);
+  background:currentColor;opacity:.35
+}
+#app .rank-title-icon.silver{background:#edf0f4;color:#aeb7c3}
+#app .rank-title-icon.bronze{background:#f7e5d8;color:#d69269}
+
+#app .rank-final-card-name{
+  min-height:2.3em;
+  margin-top:7px;
+  font-size:.78rem;
+  line-height:1.45;
+  font-weight:700;
+  color:#4d596c
+}
+#app .rank-final-card-change{
+  display:flex;align-items:center;gap:10px;
+  margin-top:10px;font-size:.72rem;color:#66758a
+}
+#app .rank-final-card-change .up{color:#14945a;font-weight:850}
+#app .rank-final-card-change .down{color:#ef4444;font-weight:850}
+#app .rank-final-card-change .same{color:#8592a4;font-weight:850}
+#app .rank-final-card-time{display:none}
+
+@media(max-width:760px){
+  #app .rank-final-toolbar{grid-template-columns:1fr}
+  #app .rank-final-toolbar>div:first-child,
+  #app .rank-final-toolbar>div:nth-child(2){max-width:none}
+  #app .rank-final-rule{padding:0}
+  #app .rank-title-icon.crown{font-size:22px}
+  #app .rank-title-icon.medal{width:26px;height:26px}
+}
+</style>
+
 </head>
 <body>
 <div id="splashScreen">
@@ -1848,15 +1925,6 @@
   </div>
 
   <div class="rank-final-stack">
-    <section class="card rank-final-overview">
-      <div id="rankFinalHero" class="rank-final-hero"></div>
-      <div class="rank-final-stats">
-        <div><span>총 작업 수량</span><strong id="rankFinalQty">-</strong></div>
-        <div><span>총 작업 기간</span><strong id="rankFinalDays">-</strong></div>
-        <div><span>시작일</span><strong id="rankFinalStart">-</strong></div>
-        <div><span>종료 예정일</span><strong id="rankFinalEnd">-</strong></div>
-      </div>
-    </section>
 
     <section class="card rank-final-toolbar">
       <div>
@@ -1868,6 +1936,15 @@
         <select id="rankFinalKeyword"></select>
       </div>
       <div class="rank-final-rule">● 현재 롤링 중인 캠페인만 표시됩니다.</div>
+    </section>
+    <section class="card rank-final-overview">
+      <div id="rankFinalHero" class="rank-final-hero"></div>
+      <div class="rank-final-stats">
+        <div><span>총 작업 수량</span><strong id="rankFinalQty">-</strong></div>
+        <div><span>총 작업 기간</span><strong id="rankFinalDays">-</strong></div>
+        <div><span>시작일</span><strong id="rankFinalStart">-</strong></div>
+        <div><span>종료 예정일</span><strong id="rankFinalEnd">-</strong></div>
+      </div>
     </section>
 
     <section>
@@ -5591,12 +5668,22 @@ document.getElementById('privacyWithdrawBtn')?.addEventListener('click',()=>docu
     const total=Number(rec.totalSlots||0) || (Number(rec.qty||0)+Number(rec.bonusSlots||0));
     const base=Number(rec.qty||0), bonus=Number(rec.bonusSlots||0);
     const totalDays=(Number(rec.workDays||0)*Number(rec.cycles||1)) || '';
+    const workDaysTotal=(Number(rec.workDays||0)*Number(rec.cycles||1)) || Number(rec.workDays||0) || 0;
     $('rankFinalHero').innerHTML=`<div class="rank-final-hero-inner">
       ${imgOrFallback(rec.productImage,rec.productName)}
       <div class="rank-final-product">
-        <strong>${esc(rec.productName||rec.client||'등록 상품')}</strong>
-        <a href="${esc(rec.link||'#')}" target="_blank" rel="noopener">${esc(rec.link||'')}</a>
-        <div class="tags"><span class="tag">${Number(rec.cycles||1)}회차 진행중</span><span class="tag ok">진행중</span></div>
+        <div class="rank-final-product-titleline">
+          <strong>${esc(rec.productName||rec.client||'등록 상품')}</strong>
+          <a class="rank-final-open-link" href="${esc(rec.link||'#')}" target="_blank" rel="noopener" title="상품 바로가기" aria-label="상품 바로가기">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5M10 14 19 5"/><path d="M19 13v6H5V5h6"/></svg>
+          </a>
+        </div>
+        <div class="rank-final-product-sub">네이버 / 랭크온</div>
+        <div class="tags">
+          ${workDaysTotal ? `<span class="tag neutral">${workDaysTotal}일 작업</span>` : ''}
+          <span class="tag">${Number(rec.cycles||1)}회차 진행중</span>
+          <span class="tag ok">진행중</span>
+        </div>
       </div>
     </div>`;
     $('rankFinalQty').textContent=total ? `${total}개${bonus?` (+${bonus} 보너스)`:''}` : '-';
@@ -5625,13 +5712,37 @@ document.getElementById('privacyWithdrawBtn')?.addEventListener('click',()=>docu
       name:(meta[i]&&meta[i].title)||('경쟁사 '+String.fromCharCode(65+i)),
       cls:'comp'+(i+1)
     }));
-    box.innerHTML=cards.map(c=>{
+    function previousRankFor(subjectKey){
+      const rows=currentHistory
+        .filter(h=>h.keyword===kw && (h.subject||'me')===subjectKey && Number(h.rank)>0)
+        .sort((a,b)=>new Date(b.checkedAt)-new Date(a.checkedAt));
+      return rows.length>1 ? Number(rows[1].rank) : null;
+    }
+    function rankChangeHtml(curr, prev){
+      const c=Number(curr), p=Number(prev);
+      if(!Number.isFinite(c)||c<=0||!Number.isFinite(p)||p<=0) return '<span class="same">-</span>';
+      const diff=p-c; // rank number smaller = improvement
+      if(diff>0) return `<span class="up">↑ ${diff}</span>`;
+      if(diff<0) return `<span class="down">↓ ${Math.abs(diff)}</span>`;
+      return '<span class="same">-</span>';
+    }
+    function titleIcon(i){
+      if(i===0) return '<span class="rank-title-icon crown" aria-hidden="true">♛</span>';
+      if(i===1) return '<span class="rank-title-icon medal silver" aria-hidden="true">1</span>';
+      if(i===2) return '<span class="rank-title-icon medal bronze" aria-hidden="true">3</span>';
+      return '';
+    }
+    box.innerHTML=cards.map((c,i)=>{
       const row=latest[c.key];
+      const prev=previousRankFor(c.key);
       return `<div class="rank-final-card ${c.cls}">
-        <span class="rank-final-card-label">${esc(c.label)}</span>
+        <div class="rank-card-topline">
+          <span class="rank-final-card-label">${esc(c.label)}</span>
+          ${titleIcon(i)}
+        </div>
         <div class="rank-final-card-rank">${rankLabel(row?.rank)}</div>
         <div class="rank-final-card-name">${esc(c.name)}</div>
-        <div class="rank-final-card-time">${row?.checkedAt ? '최근 '+prettyTime(row.checkedAt) : '아직 관측 데이터 없음'}</div>
+        <div class="rank-final-card-change"><span>전일 대비</span>${rankChangeHtml(row?.rank,prev)}</div>
       </div>`;
     }).join('');
     const t=latestTimeForKeyword(kw);
