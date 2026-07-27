@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-27 V4-STABLE-MERGE + ROLLING-ONLY-NAV-ICONS -->
+<!-- OLLIM FRONTEND BUILD: 2026-07-27 V4-STABLE-MERGE + SIMPLE-RANK-VIEW -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -1148,6 +1148,102 @@
 }
 </style>
 
+
+<style id="ollim-mockup-match-css">
+#app #panelDashboard{max-width:none}
+#app .rank-page-head{display:flex;justify-content:space-between;align-items:flex-end;margin:0 0 18px}
+#app .rank-page-head h1{margin:0;color:var(--ol-ink);font-size:1.7rem;letter-spacing:-.04em}
+#app .rank-page-head p{margin:6px 0 0;color:var(--ol-muted);font-size:.88rem}
+#app .rank-monitor-shell{display:grid;gap:0}
+#app .rank-product-overview{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;padding:14px 18px;margin-bottom:18px}
+#app .rank-overview-main{min-width:0}
+#app .rank-product-overview .comp-hero-card{padding:0;background:transparent;border:0;box-shadow:none}
+#app .rank-product-overview .comp-thumb{width:92px;height:92px;flex-basis:92px;border-radius:12px}
+#app .rank-product-overview .comp-product-title{font-size:1.05rem}
+#app .rank-overview-stats{display:grid;grid-template-columns:repeat(4,minmax(110px,1fr));min-width:560px}
+#app .rank-overview-stats>div{padding:5px 22px;border-left:1px solid var(--ol-line)}
+#app .rank-overview-stats span{display:block;font-size:.72rem;color:var(--ol-muted);margin-bottom:9px}
+#app .rank-overview-stats strong{font-size:1.03rem;color:var(--ol-ink)}
+#app .rank-compare-toolbar{display:flex;align-items:end;gap:14px;margin-bottom:14px}
+#app .rank-compare-toolbar>div:not(.rank-last-update){min-width:210px}
+#app .rank-compare-toolbar label{display:block}
+#app .rank-last-update{margin-left:auto;color:var(--ol-muted);font-size:.75rem;padding-bottom:12px}
+#app .comp-rank-grid{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:16px}
+#app .comp-rank-card{min-height:150px}
+#app .comp-rank-head .comp-thumb{display:none}
+#app .comp-rank-label{display:inline-flex;padding:3px 7px;border-radius:6px;background:#edf5ff;color:var(--ol-blue)}
+#app .comp-rank-card:not(.me):nth-child(2) .comp-rank-label{background:#fff2e6;color:#f07a19}
+#app .comp-rank-card:not(.me):nth-child(3) .comp-rank-label{background:#eaf7ee;color:#279553}
+#app .comp-rank-card:not(.me):nth-child(4) .comp-rank-label{background:#f2ebff;color:#7b48d5}
+#app .rank-compare-body{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(280px,.8fr);gap:16px}
+#app .mock-card-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+#app .mock-card-title h3{margin:0;color:var(--ol-ink);font-size:.98rem}
+#app .mock-card-title span{font-size:.72rem;color:var(--ol-muted)}
+#app .mock-manage-badge{padding:5px 10px;border:1px solid #b9d5ff;border-radius:7px;color:var(--ol-blue)!important;background:#fff}
+#app #mockupChartMount .card{box-shadow:none;border:0;padding:0;margin:0}
+#app #mockupChartMount .card>h2,#app #mockupChartMount .chart-controls{display:none}
+#app #mockupChartMount .card>div[style*="height:320px"]{height:300px!important;margin-top:0!important}
+#app #mockupChartMount .hint{margin-top:0}
+#app .rank-info-note{margin-top:14px;padding:12px;background:#f4f9ff;border:1px solid #cfe3ff;border-radius:10px;color:#61738a;font-size:.72rem;line-height:1.55}
+#app .rank-info-note b{display:block;color:var(--ol-blue);margin-bottom:5px}
+#app .rank-info-note p{margin:2px 0}
+#app #compLinksCard{align-self:stretch}
+#app .comp-link-row{background:#fff;padding:9px 4px;border:0;border-bottom:1px solid #edf1f5;border-radius:0}
+#app .comp-link-row:last-child{border-bottom:0}
+#app .comp-link-row .comp-thumb{display:none}
+#app .comp-link-meta strong{font-size:.76rem}
+#app .comp-link-meta a{font-size:.73rem}
+@media(max-width:1050px){
+  #app .rank-product-overview{grid-template-columns:1fr}
+  #app .rank-overview-stats{min-width:0;margin-top:14px;border-top:1px solid var(--ol-line);padding-top:12px}
+  #app .rank-overview-stats>div:first-child{border-left:0}
+}
+@media(max-width:760px){
+  #app .rank-page-head h1{font-size:1.35rem}
+  #app .rank-product-overview{padding:14px}
+  #app .rank-overview-stats{grid-template-columns:repeat(2,1fr)}
+  #app .rank-overview-stats>div{padding:10px 12px;border-left:0;border-top:1px solid #edf1f5}
+  #app .rank-compare-toolbar{display:grid;grid-template-columns:1fr 1fr}
+  #app .rank-compare-toolbar>div:not(.rank-last-update){min-width:0}
+  #app .rank-last-update{grid-column:1/-1;margin:0;padding:0}
+  #app .comp-rank-grid{grid-template-columns:1fr 1fr}
+  #app .rank-compare-body{grid-template-columns:1fr}
+  }
+</style>
+
+
+<style id="ollim-simple-rank-view-css">
+#app .rank-monitor-shell{gap:16px}
+#app .rank-product-overview{margin-bottom:0}
+#app .rank-compare-toolbar{
+  background:#fff;
+  border:1px solid var(--ol-line);
+  border-radius:14px;
+  padding:16px 18px;
+  box-shadow:var(--ol-shadow);
+  margin-bottom:0;
+}
+#app #rankComparePanel{
+  display:grid;
+  gap:16px;
+}
+#app .single-section-title{
+  margin:0 0 2px;
+  padding:0 2px;
+}
+#app .comp-rank-grid{
+  margin-bottom:0;
+}
+#app .rank-compare-body{
+  align-items:stretch;
+}
+@media(max-width:760px){
+  #app .rank-compare-toolbar{
+    padding:14px;
+  }
+}
+</style>
+
 </head>
 <body>
 <div id="splashScreen">
@@ -1647,27 +1743,65 @@
 </main>
 
 <div id="panelDashboard" class="panel">
-  <div id="competitorCompareSection" class="comp-compare-wrap" style="margin-bottom:22px;">
-    <div class="card">
-      <div class="comp-section-title">
-        <h3>상품 · 경쟁사 순위 비교</h3>
-        <select id="compSubmissionSelect" class="comp-keyword-select" aria-label="비교할 상품"></select>
+  <div class="rank-page-head">
+    <div>
+      <h1>순위 현황</h1>
+      <p>현재 롤링 중인 상품과 경쟁사 순위를 한눈에 확인하세요.</p>
+    </div>
+  </div>
+
+  <div id="competitorCompareSection" class="rank-monitor-shell">
+    <div class="rank-product-overview card">
+      <div class="rank-overview-main">
+        <div id="compProductHero"></div>
       </div>
-      <div class="rolling-policy-note">현재 롤링 중인 캠페인만 순위 · 그래프 · 경쟁사 현황에 표시됩니다.</div>
-      <div id="compProductHero"></div>
+      <div class="rank-overview-stats" id="compOverviewStats">
+        <div><span>총 작업 수량</span><strong id="compStatQty">-</strong></div>
+        <div><span>총 작업 기간</span><strong id="compStatDays">-</strong></div>
+        <div><span>시작일</span><strong id="compStatStart">-</strong></div>
+        <div><span>종료 예정일</span><strong id="compStatEnd">-</strong></div>
+      </div>
     </div>
 
-    <div class="card">
-      <div class="comp-section-title">
-        <h3>현재 순위</h3>
-        <select id="compKeywordSelect" class="comp-keyword-select" aria-label="비교할 키워드"></select>
+    <div class="rank-compare-toolbar">
+      <div>
+        <label>상품 선택</label>
+        <select id="compSubmissionSelect" aria-label="비교할 상품"></select>
       </div>
+      <div>
+        <label>키워드 선택</label>
+        <select id="compKeywordSelect" aria-label="비교할 키워드"></select>
+      </div>
+      <div class="rank-last-update" id="compLastUpdate">현재 롤링 중인 캠페인만 표시됩니다.</div>
+    </div>
+
+    <div id="rankComparePanel" data-rank-panel="compare">
+      <div class="mock-card-title single-section-title"><h3>현재 순위</h3><span>선택한 키워드 기준</span></div>
       <div id="compRankCards" class="comp-rank-grid"></div>
-    </div>
 
-    <div class="card" id="compLinksCard">
-      <div class="comp-section-title"><h3>경쟁사 상품</h3></div>
-      <div id="compLinkList" class="comp-link-list"></div>
+      <div class="rank-compare-body">
+        <div class="rank-chart-slot card" id="mockupChartSlot">
+          <div class="mock-card-title">
+            <h3>순위 변화 그래프</h3>
+            <span>(위)</span>
+          </div>
+          <div id="mockupChartMount"></div>
+        </div>
+
+        <div class="card" id="compLinksCard">
+          <div class="mock-card-title">
+            <h3>경쟁사 URL</h3>
+            <span class="mock-manage-badge">관리</span>
+          </div>
+          <div id="compLinkList" class="comp-link-list"></div>
+          <div class="rank-info-note">
+            <b>안내</b>
+            <p>• 순위는 PC 검색 결과 기준입니다.</p>
+            <p>• 데이터는 관측 완료 시 자동 반영됩니다.</p>
+            <p>• 경쟁사 링크가 없으면 내 상품만 표시됩니다.</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -5270,11 +5404,29 @@ document.getElementById('privacyWithdrawBtn')?.addEventListener('click',()=>docu
     ]);
     if(!listRes?.ok) return;
     compSubmissions=(listRes.submissions||[]).filter(r=>{
-      if(r.productType!=='reward' || r.channel!=='네이버' || r.status!=='approved') return false;
+      if(r.productType!=='reward' || r.channel!=='네이버') return false;
+
+      // OLLIM 고정 정책: 순위/그래프/경쟁사 현황에는 '현재 롤링 중'만 노출.
+      // 실제 운영 데이터에서 진행 중 캠페인은 approved 상태 + 오늘이 start~end 사이인 건으로 본다.
+      if(r.status!=='approved') return false;
+
       const today=new Date(); today.setHours(0,0,0,0);
+      const start=parseYmdLocal(r.startDate);
       const end=parseYmdLocal(r.endDate);
-      return !!end && end>=today;
+
+      // 날짜가 정상 저장된 최신 캠페인
+      if(start && end) return start<=today && today<=end;
+
+      // 과거 데이터 중 startDate가 비었지만 endDate가 살아있는 경우
+      if(!start && end) return today<=end;
+
+      // approved인데 날짜가 비어있는 레거시 행은 순위 현황에서 사라지는 것보다
+      // 진행 중 후보로 노출하는 쪽이 안전하다.
+      if(!start && !end) return true;
+
+      return false;
     });
+    window.__ollimCompSubmissions=compSubmissions;
     compRanks=ranksRes?.ok?(ranksRes.ranks||{}):{};
     const sel=document.getElementById('compSubmissionSelect');
     if(sel){
@@ -5317,6 +5469,241 @@ document.getElementById('privacyWithdrawBtn')?.addEventListener('click',()=>docu
   });
   window.addEventListener('load',()=>setTimeout(load,500));
   window.OLLIMCompetitorCompare={reload:load};
+})();
+</script>
+
+
+<script id="ollim-signup-store-link-guard">
+(function(){
+  function isNaverShortLink_(raw){
+    const v=String(raw||'').trim().replace(/\s+/g,'').toLowerCase();
+    return v==='naver.me' ||
+      v.includes('naver.me/') ||
+      /^https?:\/\/(?:www\.)?naver\.me(?:[/?#:]|$)/i.test(v) ||
+      /(^|[/:.])naver\.me([/?#:]|$)/i.test(v);
+  }
+
+  function looksLikeFullNaverProductUrl_(raw){
+    const original=String(raw||'').trim();
+    if(!original) return false;
+    if(isNaverShortLink_(original)) return false;
+
+    let candidate=original;
+    if(!/^https?:\/\//i.test(candidate)) candidate='https://'+candidate;
+
+    try{
+      const u=new URL(candidate);
+      const host=u.hostname.toLowerCase().replace(/^www\./,'');
+      if(!(host==='naver.com'||host.endsWith('.naver.com'))) return false;
+
+      // 대표적인 정상 상품 주소: /products/상품번호
+      if(/\/products\/\d+(?:\/|$)/i.test(u.pathname)) return true;
+
+      // 그 외 네이버 쇼핑 정식 주소에서 상품번호성 식별자 허용
+      const q =
+        u.searchParams.get('productId') ||
+        u.searchParams.get('productNo') ||
+        u.searchParams.get('nvMid') ||
+        u.searchParams.get('nv_mid');
+
+      return /^\d{5,}$/.test(String(q||'')) || /\d{7,}/.test(u.pathname);
+    }catch(e){
+      return false;
+    }
+  }
+
+  function signupStoreLinkInputs_(){
+    const selectors=[
+      '#signup_store_link',
+      '#survey_store_link',
+      '#store_link',
+      '#signupStoreLink',
+      '#surveyStoreLink',
+      'input[name="storeLink"]',
+      'input[name="storeUrl"]',
+      'input[name="naverStoreLink"]',
+      'input[name="productLink"]'
+    ];
+    const list=[];
+    selectors.forEach(sel=>{
+      document.querySelectorAll(sel).forEach(el=>{ if(!list.includes(el)) list.push(el); });
+    });
+
+    // fallback: 회원가입/설문 영역 안의 URL 입력 중 placeholder/label에 스토어/상품이 있는 항목
+    document.querySelectorAll('input[type="url"], input[inputmode="url"], input').forEach(el=>{
+      if(list.includes(el)) return;
+      const id=(el.id||'').toLowerCase();
+      const name=(el.name||'').toLowerCase();
+      const ph=(el.placeholder||'').toLowerCase();
+      const aria=(el.getAttribute('aria-label')||'').toLowerCase();
+      const text=(id+' '+name+' '+ph+' '+aria);
+      if((text.includes('store')||text.includes('스토어')||text.includes('상품')) &&
+         (text.includes('link')||text.includes('url')||el.type==='url')){
+        list.push(el);
+      }
+    });
+    return list;
+  }
+
+  function ensureSignupGuardMessage_(input){
+    let msg=input.parentElement?.querySelector('.signup-store-link-guard-msg');
+    if(msg) return msg;
+    msg=document.createElement('div');
+    msg.className='signup-store-link-guard-msg';
+    msg.style.cssText='margin-top:7px;font-size:12px;line-height:1.5;color:#e05252;';
+    input.insertAdjacentElement('afterend',msg);
+    return msg;
+  }
+
+  function validateSignupStoreInput_(input, showEmpty){
+    if(!input) return true;
+    const value=String(input.value||'').trim();
+    const msg=ensureSignupGuardMessage_(input);
+
+    if(!value && !showEmpty){
+      msg.textContent='';
+      input.removeAttribute('aria-invalid');
+      return true;
+    }
+    if(!value){
+      msg.textContent='네이버 상품 전체 URL을 입력해 주세요.';
+      input.setAttribute('aria-invalid','true');
+      return false;
+    }
+    if(isNaverShortLink_(value)){
+      msg.textContent='공유용 단축 링크(naver.me)는 사용할 수 없습니다. 상품 페이지를 직접 연 뒤 주소창의 전체 URL을 복사해 주세요.';
+      input.setAttribute('aria-invalid','true');
+      return false;
+    }
+    if(!looksLikeFullNaverProductUrl_(value)){
+      msg.textContent='상품번호가 포함된 네이버 정식 상품 URL을 입력해 주세요.';
+      input.setAttribute('aria-invalid','true');
+      return false;
+    }
+
+    msg.textContent='';
+    input.removeAttribute('aria-invalid');
+    return true;
+  }
+
+  function bind_(){
+    signupStoreLinkInputs_().forEach(input=>{
+      if(input.dataset.ollimSignupGuardBound==='1') return;
+      input.dataset.ollimSignupGuardBound='1';
+
+      // 안내문
+      const help=document.createElement('div');
+      help.className='signup-store-link-guard-help';
+      help.style.cssText='margin-top:7px;font-size:12px;line-height:1.5;color:#8793a5;';
+      help.innerHTML='공유용 단축 링크(<b>naver.me</b>)가 아닌, 상품번호가 포함된 네이버 상품 페이지의 <b>전체 URL</b>을 입력해 주세요.';
+      input.insertAdjacentElement('afterend',help);
+
+      input.addEventListener('input',()=>validateSignupStoreInput_(input,false));
+      input.addEventListener('blur',()=>validateSignupStoreInput_(input,false));
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded',bind_);
+  document.addEventListener('click',()=>setTimeout(bind_,0));
+  document.addEventListener('input',()=>setTimeout(bind_,0));
+
+  // 회원가입/설문 다음/완료 버튼 클릭 전 하드 차단
+  document.addEventListener('click',function(e){
+    const btn=e.target.closest && e.target.closest('button,input[type="button"],input[type="submit"]');
+    if(!btn) return;
+
+    const txt=((btn.textContent||btn.value||'')+' '+(btn.id||'')+' '+(btn.className||'')).toLowerCase();
+    const likelySignupFlow =
+      txt.includes('회원가입') || txt.includes('가입') || txt.includes('설문') ||
+      txt.includes('다음') || txt.includes('완료') || txt.includes('시작');
+
+    if(!likelySignupFlow) return;
+
+    const inputs=signupStoreLinkInputs_();
+    for(const input of inputs){
+      // 보이는 설문 입력창만 검사
+      if(input.offsetParent===null) continue;
+      if(!validateSignupStoreInput_(input,true)){
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        input.focus();
+        break;
+      }
+    }
+  },true);
+
+  // 동적 렌더링 대비
+  const mo=new MutationObserver(()=>bind_());
+  mo.observe(document.documentElement,{subtree:true,childList:true});
+})();
+</script>
+
+
+<script id="ollim-mockup-match-js">
+(function(){
+  function localDateText(v){ return String(v||'-').replace(/^\d{4}-/,''); }
+  function activeRollingRec(){
+    const id=document.getElementById('compSubmissionSelect')?.value;
+    if(window.OLLIMCompetitorCompare && Array.isArray(window.OLLIMCompetitorCompare.submissions)){
+      return window.OLLIMCompetitorCompare.submissions.find(x=>String(x.id)===String(id))||null;
+    }
+    return null;
+  }
+
+  function updateOverviewStats(){
+    const sel=document.getElementById('compSubmissionSelect');
+    const option=sel?.selectedOptions?.[0];
+    const id=sel?.value;
+    // Search current data already rendered by the app.
+    const rec=(window.__ollimCompSubmissions||[]).find(x=>String(x.id)===String(id));
+    if(!rec) return;
+    const qty=Number(rec.totalSlots||rec.qty||0);
+    document.getElementById('compStatQty').textContent=qty ? qty+'개'+(Number(rec.bonusSlots||0)?` (+${rec.bonusSlots} 보너스)`:'') : '-';
+    document.getElementById('compStatDays').textContent=(Number(rec.workDays||0)*Number(rec.cycles||1)) ? (Number(rec.workDays||0)*Number(rec.cycles||1))+'일' : '-';
+    document.getElementById('compStatStart').textContent=rec.startDate||'-';
+    document.getElementById('compStatEnd').textContent=rec.endDate||'-';
+  }
+
+  function moveExistingDashboardPieces(){
+    const dash=document.querySelector('#panelDashboard .dash-wrap');
+    const chartCard=dash?.querySelector('#rankChart')?.closest('.card');
+    const detailMount=document.getElementById('mockupDetailMount');
+    const keywordMount=document.getElementById('mockupKeywordMount');
+    const workMount=document.getElementById('mockupWorkMount');
+    const chartMount=document.getElementById('mockupChartMount');
+
+    if(chartCard && chartMount && !chartMount.contains(chartCard)) chartMount.appendChild(chartCard);
+
+    if(dash){
+      const cards=[...dash.querySelectorAll(':scope > .card')];
+      const slotCard=cards.find(c=>c.querySelector('#donutTotal'));
+      const historyCard=cards.find(c=>c.querySelector('#historyListWrap'));
+      if(slotCard && detailMount && !detailMount.contains(slotCard)) detailMount.appendChild(slotCard);
+      if(historyCard && keywordMount && !keywordMount.contains(historyCard)) keywordMount.appendChild(historyCard);
+    }
+  }
+        setTimeout(()=>window.dispatchEvent(new Event('resize')),50);
+      });
+    });
+  }
+
+  document.addEventListener('change',e=>{
+    if(e.target?.id==='compSubmissionSelect') setTimeout(updateOverviewStats,120);
+  });
+
+  window.addEventListener('load',()=>{
+    setTimeout(()=>{
+      moveExistingDashboardPieces();
+      updateOverviewStats();
+    },700);
+  });
+
+  // Keep stats synced when ranking menu is opened.
+  document.addEventListener('click',e=>{
+    if(e.target.closest?.('[data-panel="panelDashboard"]')){
+      setTimeout(()=>{moveExistingDashboardPieces();updateOverviewStats();},500);
+    }
+  });
 })();
 </script>
 
