@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-27 V4-STABLE-MERGE + COMPETITOR-COMPARE-THUMBNAIL -->
+<!-- OLLIM FRONTEND BUILD: 2026-07-27 V4-STABLE-MERGE + ROLLING-ONLY-NAV-ICONS -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -1109,6 +1109,45 @@
 }
 </style>
 
+
+<style id="ollim-nav-icon-polish">
+#app .nav-ico{
+  width:22px;height:22px;flex:0 0 22px;
+  display:inline-flex;align-items:center;justify-content:center;
+}
+#app .nav-ico svg{
+  width:19px;height:19px;
+  fill:none;stroke:currentColor;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+#app .sidebar-nav .navtab{
+  gap:13px;
+  letter-spacing:-.015em;
+}
+#app .sidebar-nav .navtab.active .nav-ico{
+  color:var(--ol-blue);
+}
+#app .sidebar-nav .navtab.active{
+  font-weight:850;
+}
+#app .dock-svg{
+  width:21px;height:21px;display:flex;align-items:center;justify-content:center;
+}
+#app .dock-svg svg{
+  width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+#app .rolling-policy-note{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 12px;margin-bottom:14px;
+  border:1px solid #d9e8ff;background:#f6faff;border-radius:10px;
+  color:#58708f;font-size:.76rem;font-weight:700;
+}
+#app .rolling-policy-note::before{
+  content:"●";font-size:.55rem;color:#22b573;
+}
+</style>
+
 </head>
 <body>
 <div id="splashScreen">
@@ -1359,11 +1398,11 @@
       <div class="sp-ref">내 추천코드 <span class="refcode" id="myRefCode">-</span></div>
     </div>
     <nav class="sidebar-nav">
-      <button class="navtab active client-only" data-panel="panelHome" data-label="대시보드"><span class="nav-ico">⌂</span><span>대시보드</span></button>
-      <button class="navtab client-only" data-panel="panelMain" data-label="접수 / 현황"><span class="nav-ico">◇</span><span>접수 / 현황</span></button>
-      <button class="navtab client-only" data-panel="panelDashboard" data-label="순위 현황"><span class="nav-ico">⌁</span><span>순위 현황</span></button>
-      <button class="navtab client-only" data-panel="panelCoupons" data-label="쿠폰 / 추천"><span class="nav-ico">▱</span><span>쿠폰 / 추천</span></button>
-      <button class="navtab client-only" data-panel="panelPrivacy" data-label="내 정보"><span class="nav-ico">○</span><span>내 정보</span></button>
+      <button class="navtab active client-only" data-panel="panelHome" data-label="대시보드"><span class="nav-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 10.5 12 3.8l8.5 6.7v9.2a.8.8 0 0 1-.8.8h-5.1v-6.1H9.4v6.1H4.3a.8.8 0 0 1-.8-.8z"/></svg></span><span>대시보드</span></button>
+      <button class="navtab client-only" data-panel="panelMain" data-label="접수 / 현황"><span class="nav-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3.5" width="16" height="17" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span><span>접수 / 현황</span></button>
+      <button class="navtab client-only" data-panel="panelDashboard" data-label="순위 현황"><span class="nav-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V10M10 19V5M16 19v-7M22 19V8"/><path d="m3 7 6-4 6 5 6-5"/></svg></span><span>순위 현황</span></button>
+      <button class="navtab client-only" data-panel="panelCoupons" data-label="쿠폰 / 추천"><span class="nav-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5h16v3a2.5 2.5 0 0 0 0 5v3H4v-3a2.5 2.5 0 0 0 0-5z"/><path d="M12 7.5v11" stroke-dasharray="2 2"/></svg></span><span>쿠폰 / 추천</span></button>
+      <button class="navtab client-only" data-panel="panelPrivacy" data-label="내 정보"><span class="nav-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-4 3.1-6 7-6s6.2 2 7 6"/></svg></span><span>내 정보</span></button>
       <button class="navtab admin-only" data-panel="panelAdmin" data-label="관리자 대시보드" style="display:none;">🛠 관리자 대시보드</button>
       <button class="navtab admin-only" data-panel="panelClients" data-label="업체목록" style="display:none;">🏢 업체목록</button>
       <button class="navtab admin-only" data-panel="panelLeads" data-label="진단 리드" style="display:none;">🔍 진단 리드</button>
@@ -1614,6 +1653,7 @@
         <h3>상품 · 경쟁사 순위 비교</h3>
         <select id="compSubmissionSelect" class="comp-keyword-select" aria-label="비교할 상품"></select>
       </div>
+      <div class="rolling-policy-note">현재 롤링 중인 캠페인만 순위 · 그래프 · 경쟁사 현황에 표시됩니다.</div>
       <div id="compProductHero"></div>
     </div>
 
@@ -1836,10 +1876,10 @@
 </div>
 
 <nav id="mobileBottomDock" class="mobile-bottom-dock" aria-label="모바일 빠른 메뉴">
-  <button type="button" data-dock-target="panelHome" class="active"><span>⌂</span><b>대시보드</b></button>
-  <button type="button" data-dock-target="panelMain"><span>◇</span><b>접수/현황</b></button>
-  <button type="button" data-dock-target="panelDashboard"><span>⌁</span><b>순위 현황</b></button>
-  <button type="button" data-dock-target="panelPrivacy"><span>○</span><b>내 정보</b></button>
+  <button type="button" data-dock-target="panelHome" class="active"><span class="dock-svg"><svg viewBox="0 0 24 24"><path d="M3.5 10.5 12 3.8l8.5 6.7v9.2a.8.8 0 0 1-.8.8h-5.1v-6.1H9.4v6.1H4.3a.8.8 0 0 1-.8-.8z"/></svg></span><b>대시보드</b></button>
+  <button type="button" data-dock-target="panelMain"><span class="dock-svg"><svg viewBox="0 0 24 24"><rect x="4" y="3.5" width="16" height="17" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span><b>접수/현황</b></button>
+  <button type="button" data-dock-target="panelDashboard"><span class="dock-svg"><svg viewBox="0 0 24 24"><path d="M4 19V10M10 19V5M16 19v-7M22 19V8"/><path d="m3 7 6-4 6 5 6-5"/></svg></span><b>순위 현황</b></button>
+  <button type="button" data-dock-target="panelPrivacy"><span class="dock-svg"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-4 3.1-6 7-6s6.2 2 7 6"/></svg></span><b>내 정보</b></button>
 </nav>
 <script>
 const OLLIM_FRONTEND_BUILD = '2026-07-24-V4-STABLE-MERGE';
@@ -3139,7 +3179,16 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
       else showMsg('submitMsg','키워드를 최소 1개 입력해 주세요.', 'warn');
       return;
     }
-    Object.assign(payload, { client, phone, link, productId, qty: Number(qty), cycles: Number(cycles), keywords, competitorLinks, couponId });
+    // 상품/경쟁사 메타정보는 접수 시 여기서 1회만 기다려서 가져온다.
+    // 이전 버전처럼 document click 뒤에서 실행하면 API 접수가 먼저 끝나 썸네일이 저장되지 않는 문제가 있었다.
+    const metaPayload = await resolveSubmissionMetaForPayload(link, competitorLinks);
+    Object.assign(payload, {
+      client, phone, link, productId,
+      qty: Number(qty), cycles: Number(cycles),
+      keywords, competitorLinks, couponId,
+      productImage: metaPayload.productImage || '',
+      competitorMeta: metaPayload.competitorMeta || []
+    });
   }
 
   const submitBtn = document.getElementById('submitBtn');
@@ -5109,6 +5158,31 @@ document.getElementById('privacyWithdrawBtn')?.addEventListener('click',()=>docu
     const id=document.getElementById('compSubmissionSelect')?.value;
     return compSubmissions.find(r=>String(r.id)===String(id)) || compSubmissions[0] || null;
   }
+  async function hydrateSelectedRec(rec){
+    if(!rec || typeof apiCall!=='function' || typeof getSession!=='function') return rec;
+
+    const compLinks = links(rec);
+    const meta = parseMeta(rec);
+    const needsMain = !String(rec.productImage||'').trim();
+    const needsComp = compLinks.some((_,i)=>!(meta[i] && meta[i].image));
+
+    if(!needsMain && !needsComp) return rec;
+
+    try{
+      const s=await getSession();
+      if(!s) return rec;
+      const res=await apiCall('hydrateSubmissionMeta',{token:s.token,submissionId:rec.id});
+      if(!res?.ok) return rec;
+
+      rec.productName = res.productName || rec.productName || '';
+      rec.productImage = res.productImage || rec.productImage || '';
+      rec.competitorMeta = Array.isArray(res.competitorMeta) ? res.competitorMeta : meta;
+      rec.competitorMetaJson = JSON.stringify(rec.competitorMeta || []);
+      return rec;
+    }catch(e){
+      return rec;
+    }
+  }
   function renderHero(rec){
     const box=document.getElementById('compProductHero');
     if(!box) return;
@@ -5178,8 +5252,9 @@ document.getElementById('privacyWithdrawBtn')?.addEventListener('click',()=>docu
       <div class="comp-rank-sub">${esc(kw||'키워드 미선택')}</div>
     </div>`).join('');
   }
-  function renderAll(){
-    const rec=currentRec();
+  async function renderAll(){
+    let rec=currentRec();
+    rec=await hydrateSelectedRec(rec);
     renderHero(rec);
     renderKeywords(rec);
     renderLinks(rec);
@@ -5194,7 +5269,12 @@ document.getElementById('privacyWithdrawBtn')?.addEventListener('click',()=>docu
       apiCall('ranks',{token:s.token})
     ]);
     if(!listRes?.ok) return;
-    compSubmissions=(listRes.submissions||[]).filter(r=>r.productType==='reward'&&r.channel==='네이버'&&r.status!=='cancelled');
+    compSubmissions=(listRes.submissions||[]).filter(r=>{
+      if(r.productType!=='reward' || r.channel!=='네이버' || r.status!=='approved') return false;
+      const today=new Date(); today.setHours(0,0,0,0);
+      const end=parseYmdLocal(r.endDate);
+      return !!end && end>=today;
+    });
     compRanks=ranksRes?.ok?(ranksRes.ranks||{}):{};
     const sel=document.getElementById('compSubmissionSelect');
     if(sel){
@@ -5202,25 +5282,29 @@ document.getElementById('privacyWithdrawBtn')?.addEventListener('click',()=>docu
     }
     renderAll();
   }
-  async function enrichMetaOnSubmit(){
-    const link=document.getElementById('f_link')?.value?.trim();
-    if(!link||typeof apiCall!=='function'||typeof getSession!=='function') return;
-    const s=await getSession(); if(!s) return;
+  async function resolveSubmissionMetaForPayload(mainLink, competitorLinks){
+    if(!mainLink || typeof apiCall!=='function' || typeof getSession!=='function'){
+      return {productImage:'', competitorMeta:[]};
+    }
+    const s=await getSession();
+    if(!s) return {productImage:'', competitorMeta:[]};
+
+    let productImage='';
+    const competitorMeta=[];
     try{
-      const main=await apiCall('resolveProductMeta',{token:s.token,url:link});
-      if(main?.ok){
-        const pn=document.getElementById('f_product_name');
-        if(pn && !pn.value && main.title) pn.value=main.title;
-        window.__ollimProductImage=main.image||'';
-      }
-      const comps=[...document.querySelectorAll('[id^="f_competitor"]')].map(x=>x.value.trim()).filter(Boolean).slice(0,3);
-      const meta=[];
-      for(const url of comps){
+      const main=await apiCall('resolveProductMeta',{token:s.token,url:mainLink});
+      productImage=main?.ok ? (main.image||'') : '';
+
+      for(const url of (competitorLinks||[]).slice(0,3)){
         const r=await apiCall('resolveProductMeta',{token:s.token,url});
-        meta.push({url,title:r?.title||'',image:r?.image||''});
+        competitorMeta.push({
+          url,
+          title:r?.ok?(r.title||''):'',
+          image:r?.ok?(r.image||''):''
+        });
       }
-      window.__ollimCompetitorMeta=meta;
     }catch(e){}
+    return {productImage, competitorMeta};
   }
 
   document.addEventListener('change',e=>{
@@ -5230,7 +5314,6 @@ document.getElementById('privacyWithdrawBtn')?.addEventListener('click',()=>docu
   document.addEventListener('click',e=>{
     const nav=e.target.closest&&e.target.closest('[data-panel="panelDashboard"]');
     if(nav) setTimeout(load,120);
-    if(e.target?.id==='submitBtn') enrichMetaOnSubmit();
   });
   window.addEventListener('load',()=>setTimeout(load,500));
   window.OLLIMCompetitorCompare={reload:load};
