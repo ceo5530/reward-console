@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-27 V4-STABLE-MERGE + NAVERME-HARD-BLOCK -->
+<!-- OLLIM FRONTEND BUILD: 2026-07-27 V4-STABLE-MERGE + ACCORDION-NAVERME-HARD-BLOCK -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -2412,9 +2412,6 @@ document.getElementById('saveDepositorBtn').addEventListener('click', async ()=>
   if(res.ok){ showMsg('depositorMsg','저장됐어요. 감사합니다!','ok'); invalidateSubmissionsCache(); }
   else showMsg('depositorMsg', res.error || '저장 실패', 'warn');
 });
-document.getElementById('submitBtn').addEventListener('click', async ()=>{
-  if(isSubmittingOrder) return;
-
 function validateNaverProductUrl(raw){
   const original = String(raw || '').trim();
   if(!original) return { ok:false, message:'네이버 상품 URL을 입력해 주세요.' };
@@ -2511,33 +2508,50 @@ function setProductLinkValidation(showEmpty){
 }
 
 
-// HARD GUARD: 어떤 접수 경로를 타더라도 공유링크/비정상 링크는 submit 전에 차단한다.
-document.addEventListener('submit', (e)=>{
-  const input = document.getElementById('f_link');
-  if(!input) return;
-
-  const result = validateNaverProductUrl(input.value);
-  if(result.ok){
-    // 정상 링크는 추적 파라미터를 제거한 핵심 상품 URL로 정리해서 이후 로직에 넘긴다.
-    input.value = result.normalized;
-    return;
-  }
-
-  e.preventDefault();
-  e.stopImmediatePropagation();
-  setProductLinkValidation(true);
-  if(typeof showMsg === 'function'){
-    try { showMsg('submitMsg', result.message, 'warn'); } catch(_e){}
-  }
-  input.focus();
-}, true);
-
 document.addEventListener('input', (e)=>{
   if(e.target && e.target.id === 'f_link') setProductLinkValidation(false);
 });
 document.addEventListener('blur', (e)=>{
   if(e.target && e.target.id === 'f_link') setProductLinkValidation(false);
 }, true);
+
+// 접수/현황 > 접수 아코디언 전용 HARD GUARD
+// 이 UI는 form submit이 아니라 submitBtn click으로 접수되므로 버튼 클릭 자체를 먼저 차단한다.
+document.getElementById('submitBtn').addEventListener('click', (e)=>{
+  const isYoutube = document.getElementById('pt_youtube').classList.contains('active');
+  if(isYoutube) return;
+
+  const input = document.getElementById('f_link');
+  const result = validateNaverProductUrl(input ? input.value : '');
+
+  if(result.ok){
+    if(input) input.value = result.normalized;
+    return;
+  }
+
+  e.preventDefault();
+  e.stopImmediatePropagation();
+  setProductLinkValidation(true);
+  showMsg('submitMsg', result.message, 'warn');
+  if(input) input.focus();
+}, true);
+
+document.getElementById('submitBtn').addEventListener('click', async ()=>{
+  if(isSubmittingOrder) return;
+
+  const isYoutubeAtClick = document.getElementById('pt_youtube').classList.contains('active');
+  if(!isYoutubeAtClick){
+    const linkInput = document.getElementById('f_link');
+    const productUrlCheckAtClick = validateNaverProductUrl(linkInput ? linkInput.value : '');
+    if(!productUrlCheckAtClick.ok){
+      setProductLinkValidation(true);
+      showMsg('submitMsg', productUrlCheckAtClick.message, 'warn');
+      if(linkInput) linkInput.focus();
+      return;
+    }
+    if(linkInput) linkInput.value = productUrlCheckAtClick.normalized;
+  }
+
 
   isSubmittingOrder = true;
   try {
