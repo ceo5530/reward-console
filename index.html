@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-27 V4-STABLE-MERGE + RANK-POLISH-TOP-CONTROLS -->
+<!-- OLLIM FRONTEND BUILD: 2026-07-27 V4-STABLE-MERGE + RANK-ICON-DATE-FIX -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -1415,6 +1415,67 @@
   #app .rank-final-rule{padding:0}
   #app .rank-title-icon.crown{font-size:22px}
   #app .rank-title-icon.medal{width:26px;height:26px}
+}
+</style>
+
+
+<style id="ollim-rank-icon-date-fix-css">
+#app .rank-title-icon.crown{
+  width:34px;height:34px;
+  display:inline-flex;align-items:center;justify-content:center;
+  color:#1677ff;
+  font-size:0;
+  transform:none;
+}
+#app .rank-title-icon.crown svg{
+  width:31px;height:31px;
+  fill:#1677ff;
+  stroke:#1677ff;
+  stroke-width:1.4;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+#app .rank-title-icon.rank-number-badge{
+  width:34px;height:34px;
+  flex:0 0 34px;
+  display:inline-flex;align-items:baseline;justify-content:center;
+  gap:1px;
+  border-radius:50%;
+  background:#f3f5f8;
+  border:2px solid #d6dce5;
+  color:#657184;
+  box-shadow:0 2px 7px rgba(30,45,70,.08);
+}
+#app .rank-title-icon.rank-number-badge b{
+  font-size:.82rem;
+  line-height:1;
+  font-weight:900;
+}
+#app .rank-title-icon.rank-number-badge small{
+  font-size:.52rem;
+  font-weight:850;
+}
+#app .rank-final-card.comp1 .rank-number-badge{
+  background:#fff2e8;border-color:#f4c9aa;color:#c86b2d;
+}
+#app .rank-final-card.comp2 .rank-number-badge{
+  background:#edf8f0;border-color:#bfe0c8;color:#26834a;
+}
+#app .rank-final-card.comp3 .rank-number-badge{
+  background:#f4efff;border-color:#d5c4f5;color:#7146bd;
+}
+#app .rank-final-card-time{
+  display:block;
+  margin-top:9px;
+  font-size:.68rem;
+  color:#98a3b3;
+}
+#app .rank-final-card-change{display:none!important}
+#app .rank-title-icon.medal{display:none!important}
+@media(max-width:760px){
+  #app .rank-title-icon.crown,
+  #app .rank-title-icon.rank-number-badge{width:30px;height:30px;flex-basis:30px}
+  #app .rank-title-icon.crown svg{width:28px;height:28px}
 }
 </style>
 
@@ -5712,37 +5773,26 @@ document.getElementById('privacyWithdrawBtn')?.addEventListener('click',()=>docu
       name:(meta[i]&&meta[i].title)||('경쟁사 '+String.fromCharCode(65+i)),
       cls:'comp'+(i+1)
     }));
-    function previousRankFor(subjectKey){
-      const rows=currentHistory
-        .filter(h=>h.keyword===kw && (h.subject||'me')===subjectKey && Number(h.rank)>0)
-        .sort((a,b)=>new Date(b.checkedAt)-new Date(a.checkedAt));
-      return rows.length>1 ? Number(rows[1].rank) : null;
-    }
-    function rankChangeHtml(curr, prev){
-      const c=Number(curr), p=Number(prev);
-      if(!Number.isFinite(c)||c<=0||!Number.isFinite(p)||p<=0) return '<span class="same">-</span>';
-      const diff=p-c; // rank number smaller = improvement
-      if(diff>0) return `<span class="up">↑ ${diff}</span>`;
-      if(diff<0) return `<span class="down">↓ ${Math.abs(diff)}</span>`;
-      return '<span class="same">-</span>';
-    }
-    function titleIcon(i){
-      if(i===0) return '<span class="rank-title-icon crown" aria-hidden="true">♛</span>';
-      if(i===1) return '<span class="rank-title-icon medal silver" aria-hidden="true">1</span>';
-      if(i===2) return '<span class="rank-title-icon medal bronze" aria-hidden="true">3</span>';
-      return '';
+    function rankBadge(subjectKey, rank){
+      const n=Number(rank);
+      if(subjectKey==='me'){
+        return `<span class="rank-title-icon crown" aria-hidden="true">
+          <svg viewBox="0 0 32 32"><path d="M4 10.5 10.2 16 16 6l5.8 10L28 10.5l-2.2 14H6.2z"/><path d="M7 27h18"/></svg>
+        </span>`;
+      }
+      if(!Number.isFinite(n) || n<=0 || n>100) return '';
+      return `<span class="rank-title-icon rank-number-badge" aria-label="${n}위"><b>${n}</b><small>위</small></span>`;
     }
     box.innerHTML=cards.map((c,i)=>{
       const row=latest[c.key];
-      const prev=previousRankFor(c.key);
       return `<div class="rank-final-card ${c.cls}">
         <div class="rank-card-topline">
           <span class="rank-final-card-label">${esc(c.label)}</span>
-          ${titleIcon(i)}
+          ${rankBadge(c.key,row?.rank)}
         </div>
         <div class="rank-final-card-rank">${rankLabel(row?.rank)}</div>
         <div class="rank-final-card-name">${esc(c.name)}</div>
-        <div class="rank-final-card-change"><span>전일 대비</span>${rankChangeHtml(row?.rank,prev)}</div>
+        <div class="rank-final-card-time">${row?.checkedAt ? '집계일 '+prettyTime(row.checkedAt) : '집계 전'}</div>
       </div>`;
     }).join('');
     const t=latestTimeForKeyword(kw);
