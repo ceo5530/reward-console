@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-27 V4-STABLE-MERGE + SIMPLE-RANK-VIEW -->
+<!-- OLLIM FRONTEND BUILD: 2026-07-27 V4-STABLE-MERGE + RANK-FINAL-ONEPAGE -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -1244,6 +1244,103 @@
 }
 </style>
 
+
+<style id="ollim-rank-final-css">
+#app #panelDashboard{max-width:none}
+#app .rank-final-head{margin-bottom:18px}
+#app .rank-final-head h1{margin:0;font-size:1.72rem;letter-spacing:-.045em;color:var(--ol-ink)}
+#app .rank-final-head p{margin:6px 0 0;color:var(--ol-muted);font-size:.88rem}
+#app .rank-final-stack{display:grid;gap:16px}
+#app .rank-final-overview{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center;padding:14px 18px}
+#app .rank-final-hero{min-width:0}
+#app .rank-final-hero-inner{display:flex;align-items:center;gap:16px;min-width:0}
+#app .rank-final-thumb{width:92px;height:92px;flex:0 0 92px;border-radius:12px;object-fit:cover;border:1px solid var(--ol-line);background:#f3f6fa}
+#app .rank-final-thumb-fallback{width:92px;height:92px;flex:0 0 92px;border-radius:12px;border:1px solid var(--ol-line);background:#f3f6fa;display:flex;align-items:center;justify-content:center;color:#9ca9b9;font-size:26px}
+#app .rank-final-product{min-width:0}
+#app .rank-final-product strong{display:block;font-size:1.02rem;color:var(--ol-ink);line-height:1.45;word-break:keep-all;overflow-wrap:anywhere}
+#app .rank-final-product a{display:block;margin-top:5px;color:#8794a8;font-size:.75rem;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#app .rank-final-product .tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+#app .rank-final-product .tag{font-size:.7rem;font-weight:800;padding:5px 8px;border-radius:7px;background:#edf5ff;color:var(--ol-blue)}
+#app .rank-final-product .tag.ok{background:#eaf8f1;color:#188b58}
+#app .rank-final-stats{display:grid;grid-template-columns:repeat(4,minmax(110px,1fr));min-width:560px}
+#app .rank-final-stats>div{padding:4px 21px;border-left:1px solid var(--ol-line)}
+#app .rank-final-stats span{display:block;color:var(--ol-muted);font-size:.7rem;margin-bottom:8px}
+#app .rank-final-stats strong{display:block;color:var(--ol-ink);font-size:1rem;white-space:nowrap}
+#app .rank-final-toolbar{display:grid;grid-template-columns:minmax(190px,260px) minmax(190px,260px) 1fr;gap:14px;align-items:end;padding:15px 18px}
+#app .rank-final-toolbar label{display:block}
+#app .rank-final-toolbar select{width:100%;min-width:0}
+#app .rank-final-rule{text-align:right;color:#718198;font-size:.76rem;padding-bottom:13px;white-space:nowrap}
+#app .rank-final-rule::first-letter{color:#20b875}
+#app .rank-final-title-row{display:flex;align-items:center;justify-content:space-between;padding:0 2px}
+#app .rank-final-title-row h2{margin:0;color:var(--ol-ink);font-size:1rem}
+#app .rank-final-title-row span{color:var(--ol-muted);font-size:.72rem}
+#app .rank-final-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:10px}
+#app .rank-final-card{min-width:0;min-height:148px;padding:15px 16px;background:#fff;border:1px solid var(--ol-line);border-radius:14px;box-shadow:var(--ol-shadow)}
+#app .rank-final-card.me{border-color:#b8d6ff;background:linear-gradient(135deg,#fff,#f6faff)}
+#app .rank-final-card-label{display:inline-flex;padding:4px 7px;border-radius:6px;background:#edf5ff;color:var(--ol-blue);font-size:.7rem;font-weight:850}
+#app .rank-final-card.comp1 .rank-final-card-label{background:#fff0e3;color:#ee7a1c}
+#app .rank-final-card.comp2 .rank-final-card-label{background:#eaf8ee;color:#279554}
+#app .rank-final-card.comp3 .rank-final-card-label{background:#f1eaff;color:#7d4bd6}
+#app .rank-final-card-rank{font-size:2rem;line-height:1;font-weight:900;letter-spacing:-.055em;color:#172033;margin-top:13px}
+#app .rank-final-card.me .rank-final-card-rank{color:var(--ol-blue)}
+#app .rank-final-card-name{margin-top:8px;font-size:.79rem;font-weight:750;color:#4a5669;line-height:1.4;word-break:keep-all;overflow-wrap:anywhere}
+#app .rank-final-card-time{margin-top:6px;font-size:.68rem;color:#99a3b2}
+#app .rank-final-grid{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(280px,.78fr);gap:16px}
+#app .rank-final-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+#app .rank-final-card-head h3{margin:0;color:var(--ol-ink);font-size:.96rem}
+#app .rank-final-card-head span{color:var(--ol-muted);font-size:.7rem}
+#app .rank-final-chart-card{min-width:0}
+#app .rank-final-chart-wrap{position:relative;height:320px;min-width:0}
+#app #rankCompareChart{width:100%!important;height:100%!important}
+#app .rank-final-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--ol-muted);font-size:.82rem}
+#app .rank-final-comp-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #edf1f5;min-width:0}
+#app .rank-final-comp-row:last-child{border-bottom:0}
+#app .rank-final-comp-label{flex:0 0 auto;font-size:.69rem;font-weight:850;padding:4px 7px;border-radius:6px}
+#app .rank-final-comp-row:nth-child(1) .rank-final-comp-label{background:#fff0e3;color:#ee7a1c}
+#app .rank-final-comp-row:nth-child(2) .rank-final-comp-label{background:#eaf8ee;color:#279554}
+#app .rank-final-comp-row:nth-child(3) .rank-final-comp-label{background:#f1eaff;color:#7d4bd6}
+#app .rank-final-comp-row a{min-width:0;flex:1;color:var(--ol-blue);font-size:.73rem;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#app .rank-final-note{margin-top:14px;padding:12px;border:1px solid #cfe2ff;background:#f5f9ff;border-radius:10px;color:#61738a;font-size:.71rem;line-height:1.55}
+#app .rank-final-note b{color:var(--ol-blue)}
+#app .rank-final-note p{margin:2px 0}
+#app .rank-final-summary{padding:18px}
+#app .rank-final-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+#app #rankFinalSummaryTable{min-width:680px}
+#app #rankFinalSummaryTable th,#app #rankFinalSummaryTable td{text-align:center}
+#app #rankFinalSummaryTable th:first-child,#app #rankFinalSummaryTable td:first-child{text-align:left}
+#app .rank-final-no-campaign{padding:28px;text-align:center;color:var(--ol-muted);font-size:.84rem}
+@media(max-width:1050px){
+  #app .rank-final-overview{grid-template-columns:1fr}
+  #app .rank-final-stats{min-width:0;border-top:1px solid var(--ol-line);padding-top:12px}
+  #app .rank-final-stats>div:first-child{border-left:0}
+}
+@media(max-width:760px){
+  #app .rank-final-head h1{font-size:1.38rem}
+  #app .rank-final-overview{padding:14px}
+  #app .rank-final-hero-inner{align-items:flex-start}
+  #app .rank-final-thumb,#app .rank-final-thumb-fallback{width:68px;height:68px;flex-basis:68px;border-radius:10px}
+  #app .rank-final-product strong{font-size:.9rem;line-height:1.42}
+  #app .rank-final-product a{font-size:.68rem;max-width:100%}
+  #app .rank-final-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:0}
+  #app .rank-final-stats>div{padding:10px 8px;border-left:0;border-top:1px solid #edf1f5}
+  #app .rank-final-stats span{font-size:.65rem}
+  #app .rank-final-stats strong{font-size:.86rem;white-space:normal}
+  #app .rank-final-toolbar{grid-template-columns:1fr;gap:10px;padding:14px}
+  #app .rank-final-rule{text-align:left;padding:0;white-space:normal}
+  #app .rank-final-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #app .rank-final-card{padding:13px;min-height:135px}
+  #app .rank-final-card-rank{font-size:1.7rem}
+  #app .rank-final-card-name{font-size:.72rem}
+  #app .rank-final-grid{grid-template-columns:1fr}
+  #app .rank-final-chart-wrap{height:270px}
+  #app .rank-final-summary{padding:14px}
+}
+@media(max-width:390px){
+  #app .rank-final-cards{grid-template-columns:1fr}
+  #app .rank-final-card{min-height:auto}
+}
+</style>
+
 </head>
 <body>
 <div id="splashScreen">
@@ -1743,128 +1840,93 @@
 </main>
 
 <div id="panelDashboard" class="panel">
-  <div class="rank-page-head">
+  <div class="rank-final-head">
     <div>
       <h1>순위 현황</h1>
-      <p>현재 롤링 중인 상품과 경쟁사 순위를 한눈에 확인하세요.</p>
+      <p>현재 롤링 중인 상품과 경쟁사의 순위를 한눈에 확인하세요.</p>
     </div>
   </div>
 
-  <div id="competitorCompareSection" class="rank-monitor-shell">
-    <div class="rank-product-overview card">
-      <div class="rank-overview-main">
-        <div id="compProductHero"></div>
+  <div class="rank-final-stack">
+    <section class="card rank-final-overview">
+      <div id="rankFinalHero" class="rank-final-hero"></div>
+      <div class="rank-final-stats">
+        <div><span>총 작업 수량</span><strong id="rankFinalQty">-</strong></div>
+        <div><span>총 작업 기간</span><strong id="rankFinalDays">-</strong></div>
+        <div><span>시작일</span><strong id="rankFinalStart">-</strong></div>
+        <div><span>종료 예정일</span><strong id="rankFinalEnd">-</strong></div>
       </div>
-      <div class="rank-overview-stats" id="compOverviewStats">
-        <div><span>총 작업 수량</span><strong id="compStatQty">-</strong></div>
-        <div><span>총 작업 기간</span><strong id="compStatDays">-</strong></div>
-        <div><span>시작일</span><strong id="compStatStart">-</strong></div>
-        <div><span>종료 예정일</span><strong id="compStatEnd">-</strong></div>
-      </div>
-    </div>
+    </section>
 
-    <div class="rank-compare-toolbar">
+    <section class="card rank-final-toolbar">
       <div>
         <label>상품 선택</label>
-        <select id="compSubmissionSelect" aria-label="비교할 상품"></select>
+        <select id="rankFinalSubmission"></select>
       </div>
       <div>
         <label>키워드 선택</label>
-        <select id="compKeywordSelect" aria-label="비교할 키워드"></select>
+        <select id="rankFinalKeyword"></select>
       </div>
-      <div class="rank-last-update" id="compLastUpdate">현재 롤링 중인 캠페인만 표시됩니다.</div>
-    </div>
+      <div class="rank-final-rule">● 현재 롤링 중인 캠페인만 표시됩니다.</div>
+    </section>
 
-    <div id="rankComparePanel" data-rank-panel="compare">
-      <div class="mock-card-title single-section-title"><h3>현재 순위</h3><span>선택한 키워드 기준</span></div>
-      <div id="compRankCards" class="comp-rank-grid"></div>
+    <section>
+      <div class="rank-final-title-row">
+        <h2>현재 순위</h2>
+        <span id="rankFinalUpdated">관측 데이터 기준</span>
+      </div>
+      <div id="rankFinalCards" class="rank-final-cards"></div>
+    </section>
 
-      <div class="rank-compare-body">
-        <div class="rank-chart-slot card" id="mockupChartSlot">
-          <div class="mock-card-title">
-            <h3>순위 변화 그래프</h3>
-            <span>(위)</span>
-          </div>
-          <div id="mockupChartMount"></div>
-        </div>
-
-        <div class="card" id="compLinksCard">
-          <div class="mock-card-title">
-            <h3>경쟁사 URL</h3>
-            <span class="mock-manage-badge">관리</span>
-          </div>
-          <div id="compLinkList" class="comp-link-list"></div>
-          <div class="rank-info-note">
-            <b>안내</b>
-            <p>• 순위는 PC 검색 결과 기준입니다.</p>
-            <p>• 데이터는 관측 완료 시 자동 반영됩니다.</p>
-            <p>• 경쟁사 링크가 없으면 내 상품만 표시됩니다.</p>
-          </div>
+    <section class="rank-final-grid">
+      <div class="card rank-final-chart-card">
+        <div class="rank-final-card-head"><h3>순위 변화 그래프</h3><span>(위)</span></div>
+        <div class="rank-final-chart-wrap">
+          <canvas id="rankCompareChart"></canvas>
+          <div id="rankCompareEmpty" class="rank-final-empty" style="display:none;">아직 그래프로 보여줄 관측 데이터가 없습니다.</div>
         </div>
       </div>
-    </div>
+
+      <div class="card rank-final-competitors" id="rankFinalCompetitorCard">
+        <div class="rank-final-card-head"><h3>경쟁사 URL</h3></div>
+        <div id="rankFinalCompetitorList"></div>
+        <div class="rank-final-note">
+          <b>안내</b>
+          <p>• 순위는 PC 검색 결과 기준입니다.</p>
+          <p>• 관측 완료 시 자동 반영됩니다.</p>
+          <p>• 경쟁사 링크가 없으면 내 상품만 표시됩니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card rank-final-summary">
+      <div class="rank-final-card-head">
+        <h3>키워드별 요약</h3>
+        <span>최근 관측 기준</span>
+      </div>
+      <div class="rank-final-table-wrap">
+        <table id="rankFinalSummaryTable">
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
   </div>
 
-  <div class="dash-wrap">
-    <div class="card">
-      <h2><span class="n">DASH</span> 오늘의 슬롯 현황이에요</h2>
-      <div class="donut-grid">
-        <div class="donut-card">
-          <div class="donut-card-title total">전체 슬롯 현황</div>
-          <div class="donut-wrap"><canvas id="donutTotal"></canvas><div class="donut-center" id="donutTotalCenter">-</div></div>
-          <div class="donut-legend" id="donutTotalLegend"></div>
-        </div>
-        <div class="donut-card">
-          <div class="donut-card-title tomorrow">내일 시작 예정</div>
-          <div class="donut-wrap"><canvas id="donutTomorrow"></canvas><div class="donut-center" id="donutTomorrowCenter">-</div></div>
-          <div class="donut-legend" id="donutTomorrowLegend"></div>
-        </div>
-        <div class="donut-card">
-          <div class="donut-card-title expiring">오늘 만료 예정</div>
-          <div class="donut-wrap"><canvas id="donutExpiring"></canvas><div class="donut-center" id="donutExpiringCenter">-</div></div>
-          <div class="donut-legend" id="donutExpiringLegend"></div>
-        </div>
-      </div>
+  <!-- 기존 공통 스크립트의 이벤트 바인딩 호환용. 실제 순위현황 UI에서는 사용하지 않음. -->
+  <div id="legacyRankCompat" style="display:none!important;">
+    <canvas id="donutTotal"></canvas><div id="donutTotalCenter"></div><div id="donutTotalLegend"></div>
+    <canvas id="donutTomorrow"></canvas><div id="donutTomorrowCenter"></div><div id="donutTomorrowLegend"></div>
+    <canvas id="donutExpiring"></canvas><div id="donutExpiringCenter"></div><div id="donutExpiringLegend"></div>
+    <div id="historyListWrap"></div>
+    <select id="chart_submission"></select>
+    <div id="chart_keywords"></div>
+    <div id="rangePresets">
+      <button data-days="7"></button><button data-days="30"></button><button data-days="90"></button><button data-days="0"></button>
     </div>
-
-    <div class="card">
-      <h2><span class="n">CHART</span> 순위는 어떻게 움직이고 있을까요?</h2>
-      <div class="chart-controls">
-        <div>
-          <label>상품 선택</label>
-          <select id="chart_submission"></select>
-        </div>
-        <div>
-          <label>표시할 키워드 (여러 개 선택 가능)</label>
-          <div class="kw-check-group" id="chart_keywords"></div>
-        </div>
-        <div>
-          <label>기간</label>
-          <div class="seg" id="rangePresets">
-            <button data-days="7">최근 7일</button>
-            <button data-days="30" class="active">최근 30일</button>
-            <button data-days="90">최근 90일</button>
-            <button data-days="0">전체</button>
-          </div>
-        </div>
-        <div class="row2">
-          <div><label>시작일</label><input type="date" id="chart_start" /></div>
-          <div><label>종료일</label><input type="date" id="chart_end" /></div>
-        </div>
-        <button class="btn secondary" id="chartSearchBtn" style="margin-top:4px;">🔍 그래프 조회하기</button>
-      </div>
-      <div style="position:relative; height:320px; margin-top:20px;">
-        <canvas id="rankChart"></canvas>
-      </div>
-      <div class="hint" id="chartEmptyHint" style="display:none; text-align:center; padding:20px 0;">
-        아직 그래프로 보여줄 데이터가 부족해요. 순위조회는 6시간마다 자동으로 진행되니, 시간이 지나면 점점 채워집니다.
-      </div>
-    </div>
-
-    <div class="card">
-      <h2><span class="n">LOG</span> 지금까지의 기록이에요</h2>
-      <div id="historyListWrap"><div class="empty"><div class="spinner"></div>로딩중...</div></div>
-    </div>
+    <input id="chart_start" type="date"><input id="chart_end" type="date">
+    <button id="chartSearchBtn"></button>
+    <canvas id="rankChart"></canvas><div id="chartEmptyHint"></div>
   </div>
 </div>
 
@@ -5252,225 +5314,6 @@ document.getElementById('privacyWithdrawBtn')?.addEventListener('click',()=>docu
 </script>
 
 
-<script id="ollim-competitor-compare-js">
-(function(){
-  let compSubmissions = [];
-  let compRanks = {};
-
-  function esc(s){
-    return String(s||'').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  }
-  function parseMeta(rec){
-    if(Array.isArray(rec.competitorMeta)) return rec.competitorMeta;
-    try{return JSON.parse(rec.competitorMetaJson||'[]')}catch(e){return []}
-  }
-  function links(rec){
-    return String(rec.competitorLinks||'').split(',').map(s=>s.trim()).filter(Boolean).slice(0,3);
-  }
-  function thumbHtml(src, label){
-    if(src) return `<img class="comp-thumb" src="${esc(src)}" alt="${esc(label||'상품 이미지')}" onerror="this.outerHTML='<div class=&quot;comp-thumb fallback&quot;>▧</div>'">`;
-    return '<div class="comp-thumb fallback">▧</div>';
-  }
-  function getRank(rec, keyword, whoIndex){
-    const row = compRanks && compRanks[rec.id] ? compRanks[rec.id] : {};
-    const v = row[keyword];
-    if(v == null) return null;
-    if(typeof v === 'number') return whoIndex===-1 ? v : null;
-    if(typeof v === 'object'){
-      if(whoIndex===-1) return v.rank ?? v.myRank ?? v.main ?? null;
-      if(Array.isArray(v.competitors)) return v.competitors[whoIndex] ?? null;
-      return v['competitor'+(whoIndex+1)] ?? v['comp'+(whoIndex+1)] ?? null;
-    }
-    return null;
-  }
-  function rankText(v){
-    const n=Number(v);
-    if(!isFinite(n) || n<=0) return '100위 밖';
-    return n+'위';
-  }
-  function currentRec(){
-    const id=document.getElementById('compSubmissionSelect')?.value;
-    return compSubmissions.find(r=>String(r.id)===String(id)) || compSubmissions[0] || null;
-  }
-  async function hydrateSelectedRec(rec){
-    if(!rec || typeof apiCall!=='function' || typeof getSession!=='function') return rec;
-
-    const compLinks = links(rec);
-    const meta = parseMeta(rec);
-    const needsMain = !String(rec.productImage||'').trim();
-    const needsComp = compLinks.some((_,i)=>!(meta[i] && meta[i].image));
-
-    if(!needsMain && !needsComp) return rec;
-
-    try{
-      const s=await getSession();
-      if(!s) return rec;
-      const res=await apiCall('hydrateSubmissionMeta',{token:s.token,submissionId:rec.id});
-      if(!res?.ok) return rec;
-
-      rec.productName = res.productName || rec.productName || '';
-      rec.productImage = res.productImage || rec.productImage || '';
-      rec.competitorMeta = Array.isArray(res.competitorMeta) ? res.competitorMeta : meta;
-      rec.competitorMetaJson = JSON.stringify(rec.competitorMeta || []);
-      return rec;
-    }catch(e){
-      return rec;
-    }
-  }
-  function renderHero(rec){
-    const box=document.getElementById('compProductHero');
-    if(!box) return;
-    if(!rec){box.innerHTML='<div class="comp-empty">진행 중인 네이버 캠페인이 없습니다.</div>';return;}
-    box.innerHTML=`<div class="comp-hero-card">
-      ${thumbHtml(rec.productImage,rec.productName)}
-      <div style="min-width:0">
-        <div class="comp-rank-label">내 상품</div>
-        <div class="comp-product-title">${esc(rec.productName||rec.link||'등록 상품')}</div>
-        <div class="comp-product-link">${esc(rec.link||'')}</div>
-      </div>
-    </div>`;
-  }
-  function renderKeywords(rec){
-    const sel=document.getElementById('compKeywordSelect');
-    if(!sel) return;
-    const kws=Array.isArray(rec?.keywords)?rec.keywords:String(rec?.keywords||'').split(',').map(s=>s.trim()).filter(Boolean);
-    sel.innerHTML=(kws.length?kws:['키워드 없음']).map(k=>`<option value="${esc(k)}">${esc(k)}</option>`).join('');
-  }
-  function renderLinks(rec){
-    const card=document.getElementById('compLinksCard');
-    const box=document.getElementById('compLinkList');
-    if(!card||!box) return;
-    const ls=links(rec);
-    const meta=parseMeta(rec);
-    if(!ls.length){card.style.display='none';box.innerHTML='';return;}
-    card.style.display='';
-    box.innerHTML=ls.map((url,i)=>{
-      const m=meta[i]||{};
-      return `<div class="comp-link-row">
-        ${thumbHtml(m.image,m.title||('경쟁사 '+(i+1)))}
-        <div class="comp-link-meta">
-          <strong>${esc(m.title||('경쟁사 '+(i+1)))}</strong>
-          <a href="${esc(url)}" target="_blank" rel="noopener">${esc(url)}</a>
-        </div>
-      </div>`;
-    }).join('');
-  }
-  function renderRanks(rec){
-    const box=document.getElementById('compRankCards');
-    const kw=document.getElementById('compKeywordSelect')?.value || '';
-    if(!box||!rec){if(box)box.innerHTML='';return;}
-    const meta=parseMeta(rec), ls=links(rec);
-    const cards=[{
-      cls:'me',
-      label:'내 상품',
-      title:rec.productName||'내 상품',
-      image:rec.productImage||'',
-      rank:getRank(rec,kw,-1)
-    }];
-    ls.forEach((url,i)=>cards.push({
-      cls:'',
-      label:'경쟁사 '+String.fromCharCode(65+i),
-      title:(meta[i]&&meta[i].title)||('경쟁사 '+(i+1)),
-      image:(meta[i]&&meta[i].image)||'',
-      rank:getRank(rec,kw,i)
-    }));
-    box.innerHTML=cards.map(c=>`<div class="comp-rank-card ${c.cls}">
-      <div class="comp-rank-head">
-        ${thumbHtml(c.image,c.title)}
-        <div style="min-width:0">
-          <div class="comp-rank-label">${esc(c.label)}</div>
-          <div class="comp-rank-name">${esc(c.title)}</div>
-        </div>
-      </div>
-      <div class="comp-rank-value">${rankText(c.rank)}</div>
-      <div class="comp-rank-sub">${esc(kw||'키워드 미선택')}</div>
-    </div>`).join('');
-  }
-  async function renderAll(){
-    let rec=currentRec();
-    rec=await hydrateSelectedRec(rec);
-    renderHero(rec);
-    renderKeywords(rec);
-    renderLinks(rec);
-    renderRanks(rec);
-  }
-  async function load(){
-    if(typeof getSession!=='function'||typeof apiCall!=='function') return;
-    const s=await getSession();
-    if(!s) return;
-    const [listRes,ranksRes]=await Promise.all([
-      apiCall('listSubmissions',{token:s.token}),
-      apiCall('ranks',{token:s.token})
-    ]);
-    if(!listRes?.ok) return;
-    compSubmissions=(listRes.submissions||[]).filter(r=>{
-      if(r.productType!=='reward' || r.channel!=='네이버') return false;
-
-      // OLLIM 고정 정책: 순위/그래프/경쟁사 현황에는 '현재 롤링 중'만 노출.
-      // 실제 운영 데이터에서 진행 중 캠페인은 approved 상태 + 오늘이 start~end 사이인 건으로 본다.
-      if(r.status!=='approved') return false;
-
-      const today=new Date(); today.setHours(0,0,0,0);
-      const start=parseYmdLocal(r.startDate);
-      const end=parseYmdLocal(r.endDate);
-
-      // 날짜가 정상 저장된 최신 캠페인
-      if(start && end) return start<=today && today<=end;
-
-      // 과거 데이터 중 startDate가 비었지만 endDate가 살아있는 경우
-      if(!start && end) return today<=end;
-
-      // approved인데 날짜가 비어있는 레거시 행은 순위 현황에서 사라지는 것보다
-      // 진행 중 후보로 노출하는 쪽이 안전하다.
-      if(!start && !end) return true;
-
-      return false;
-    });
-    window.__ollimCompSubmissions=compSubmissions;
-    compRanks=ranksRes?.ok?(ranksRes.ranks||{}):{};
-    const sel=document.getElementById('compSubmissionSelect');
-    if(sel){
-      sel.innerHTML=compSubmissions.map(r=>`<option value="${esc(r.id)}">${esc(r.productName||r.client||r.id)}</option>`).join('');
-    }
-    renderAll();
-  }
-  async function resolveSubmissionMetaForPayload(mainLink, competitorLinks){
-    if(!mainLink || typeof apiCall!=='function' || typeof getSession!=='function'){
-      return {productImage:'', competitorMeta:[]};
-    }
-    const s=await getSession();
-    if(!s) return {productImage:'', competitorMeta:[]};
-
-    let productImage='';
-    const competitorMeta=[];
-    try{
-      const main=await apiCall('resolveProductMeta',{token:s.token,url:mainLink});
-      productImage=main?.ok ? (main.image||'') : '';
-
-      for(const url of (competitorLinks||[]).slice(0,3)){
-        const r=await apiCall('resolveProductMeta',{token:s.token,url});
-        competitorMeta.push({
-          url,
-          title:r?.ok?(r.title||''):'',
-          image:r?.ok?(r.image||''):''
-        });
-      }
-    }catch(e){}
-    return {productImage, competitorMeta};
-  }
-
-  document.addEventListener('change',e=>{
-    if(e.target?.id==='compSubmissionSelect') renderAll();
-    if(e.target?.id==='compKeywordSelect') renderRanks(currentRec());
-  });
-  document.addEventListener('click',e=>{
-    const nav=e.target.closest&&e.target.closest('[data-panel="panelDashboard"]');
-    if(nav) setTimeout(load,120);
-  });
-  window.addEventListener('load',()=>setTimeout(load,500));
-  window.OLLIMCompetitorCompare={reload:load};
-})();
-</script>
 
 
 <script id="ollim-signup-store-link-guard">
@@ -5639,70 +5482,273 @@ document.getElementById('privacyWithdrawBtn')?.addEventListener('click',()=>docu
 </script>
 
 
-<script id="ollim-mockup-match-js">
+
+
+<script id="ollim-rank-final-js">
 (function(){
-  function localDateText(v){ return String(v||'-').replace(/^\d{4}-/,''); }
-  function activeRollingRec(){
-    const id=document.getElementById('compSubmissionSelect')?.value;
-    if(window.OLLIMCompetitorCompare && Array.isArray(window.OLLIMCompetitorCompare.submissions)){
-      return window.OLLIMCompetitorCompare.submissions.find(x=>String(x.id)===String(id))||null;
+  let records=[];
+  let currentHistory=[];
+  let chart=null;
+
+  const $=id=>document.getElementById(id);
+  const esc=s=>String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+  function dateOnly(v){
+    const s=String(v||'').trim();
+    const m=s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    return m ? `${m[1]}-${m[2]}-${m[3]}` : '';
+  }
+  function todayStr(){ return typeof fmt==='function' ? fmt(new Date()) : new Date().toISOString().slice(0,10); }
+
+  function isRolling(r){
+    if(!r || r.productType!=='reward' || r.channel!=='네이버' || r.status!=='approved') return false;
+    const today=todayStr();
+    const start=dateOnly(r.startDate);
+    const end=dateOnly(r.endDate);
+    // 운영 고정 규칙: 승인 완료 + 시작일 도래 + 종료일 미도래
+    if(start && start>today) return false;
+    if(end && end<today) return false;
+    return true;
+  }
+
+  function keywords(rec){
+    return Array.isArray(rec?.keywords)
+      ? rec.keywords.filter(Boolean)
+      : String(rec?.keywords||'').split(',').map(x=>x.trim()).filter(Boolean);
+  }
+  function compLinks(rec){
+    return String(rec?.competitorLinks||'').split(',').map(x=>x.trim()).filter(Boolean).slice(0,3);
+  }
+  function compMeta(rec){
+    if(Array.isArray(rec?.competitorMeta)) return rec.competitorMeta;
+    try{return JSON.parse(rec?.competitorMetaJson||'[]')}catch(e){return []}
+  }
+  function currentRec(){
+    const id=$('rankFinalSubmission')?.value;
+    return records.find(r=>String(r.id)===String(id)) || records[0] || null;
+  }
+  function rankLabel(rank){
+    const n=Number(rank);
+    return Number.isFinite(n)&&n>0 ? `${n}위` : '100위 밖';
+  }
+  function latestRowsForKeyword(kw){
+    const by={};
+    currentHistory.filter(h=>h.keyword===kw).forEach(h=>{
+      const key=h.subject||'me';
+      if(!by[key] || new Date(h.checkedAt)>new Date(by[key].checkedAt)) by[key]=h;
+    });
+    return by;
+  }
+  function latestTimeForKeyword(kw){
+    const rows=currentHistory.filter(h=>h.keyword===kw);
+    if(!rows.length) return '';
+    return rows.reduce((a,b)=>new Date(a.checkedAt)>new Date(b.checkedAt)?a:b).checkedAt||'';
+  }
+  function prettyTime(v){
+    if(!v) return '-';
+    try{
+      const d=new Date(v);
+      if(isNaN(d)) return String(v);
+      return `${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    }catch(e){return String(v)}
+  }
+  function imgOrFallback(src,label){
+    if(src) return `<img class="rank-final-thumb" src="${esc(src)}" alt="${esc(label||'상품 이미지')}" onerror="this.outerHTML='<div class=&quot;rank-final-thumb-fallback&quot;>▧</div>'">`;
+    return '<div class="rank-final-thumb-fallback">▧</div>';
+  }
+
+  async function hydrate(rec){
+    if(!rec) return rec;
+    const meta=compMeta(rec), links=compLinks(rec);
+    const need=!rec.productImage || links.some((_,i)=>!(meta[i]&&meta[i].image));
+    if(!need || typeof apiCall!=='function') return rec;
+    try{
+      const s=await getSession(); if(!s) return rec;
+      const res=await apiCall('hydrateSubmissionMeta',{token:s.token,submissionId:rec.id});
+      if(res?.ok){
+        rec.productImage=res.productImage||rec.productImage||'';
+        rec.productName=res.productName||rec.productName||'';
+        rec.competitorMeta=Array.isArray(res.competitorMeta)?res.competitorMeta:meta;
+        rec.competitorMetaJson=JSON.stringify(rec.competitorMeta||[]);
+      }
+    }catch(e){}
+    return rec;
+  }
+
+  function renderSelects(){
+    const sel=$('rankFinalSubmission');
+    sel.innerHTML=records.length
+      ? records.map(r=>`<option value="${esc(r.id)}">${esc(r.productName||r.client||r.id)}</option>`).join('')
+      : '<option value="">현재 롤링 중인 캠페인이 없습니다.</option>';
+  }
+
+  function renderOverview(rec){
+    if(!rec){
+      $('rankFinalHero').innerHTML='<div class="rank-final-no-campaign">현재 롤링 중인 네이버 캠페인이 없습니다.</div>';
+      ['rankFinalQty','rankFinalDays','rankFinalStart','rankFinalEnd'].forEach(id=>$(id).textContent='-');
+      return;
     }
-    return null;
+    const total=Number(rec.totalSlots||0) || (Number(rec.qty||0)+Number(rec.bonusSlots||0));
+    const base=Number(rec.qty||0), bonus=Number(rec.bonusSlots||0);
+    const totalDays=(Number(rec.workDays||0)*Number(rec.cycles||1)) || '';
+    $('rankFinalHero').innerHTML=`<div class="rank-final-hero-inner">
+      ${imgOrFallback(rec.productImage,rec.productName)}
+      <div class="rank-final-product">
+        <strong>${esc(rec.productName||rec.client||'등록 상품')}</strong>
+        <a href="${esc(rec.link||'#')}" target="_blank" rel="noopener">${esc(rec.link||'')}</a>
+        <div class="tags"><span class="tag">${Number(rec.cycles||1)}회차 진행중</span><span class="tag ok">진행중</span></div>
+      </div>
+    </div>`;
+    $('rankFinalQty').textContent=total ? `${total}개${bonus?` (+${bonus} 보너스)`:''}` : '-';
+    $('rankFinalDays').textContent=totalDays ? `${totalDays}일` : '-';
+    $('rankFinalStart').textContent=dateOnly(rec.startDate)||'-';
+    $('rankFinalEnd').textContent=dateOnly(rec.endDate)||'-';
   }
 
-  function updateOverviewStats(){
-    const sel=document.getElementById('compSubmissionSelect');
-    const option=sel?.selectedOptions?.[0];
-    const id=sel?.value;
-    // Search current data already rendered by the app.
-    const rec=(window.__ollimCompSubmissions||[]).find(x=>String(x.id)===String(id));
-    if(!rec) return;
-    const qty=Number(rec.totalSlots||rec.qty||0);
-    document.getElementById('compStatQty').textContent=qty ? qty+'개'+(Number(rec.bonusSlots||0)?` (+${rec.bonusSlots} 보너스)`:'') : '-';
-    document.getElementById('compStatDays').textContent=(Number(rec.workDays||0)*Number(rec.cycles||1)) ? (Number(rec.workDays||0)*Number(rec.cycles||1))+'일' : '-';
-    document.getElementById('compStatStart').textContent=rec.startDate||'-';
-    document.getElementById('compStatEnd').textContent=rec.endDate||'-';
+  function renderKeywordSelect(rec){
+    const kws=keywords(rec);
+    $('rankFinalKeyword').innerHTML=kws.length
+      ? kws.map(k=>`<option value="${esc(k)}">${esc(k)}</option>`).join('')
+      : '<option value="">등록 키워드 없음</option>';
   }
 
-  function moveExistingDashboardPieces(){
-    const dash=document.querySelector('#panelDashboard .dash-wrap');
-    const chartCard=dash?.querySelector('#rankChart')?.closest('.card');
-    const detailMount=document.getElementById('mockupDetailMount');
-    const keywordMount=document.getElementById('mockupKeywordMount');
-    const workMount=document.getElementById('mockupWorkMount');
-    const chartMount=document.getElementById('mockupChartMount');
-
-    if(chartCard && chartMount && !chartMount.contains(chartCard)) chartMount.appendChild(chartCard);
-
-    if(dash){
-      const cards=[...dash.querySelectorAll(':scope > .card')];
-      const slotCard=cards.find(c=>c.querySelector('#donutTotal'));
-      const historyCard=cards.find(c=>c.querySelector('#historyListWrap'));
-      if(slotCard && detailMount && !detailMount.contains(slotCard)) detailMount.appendChild(slotCard);
-      if(historyCard && keywordMount && !keywordMount.contains(historyCard)) keywordMount.appendChild(historyCard);
-    }
+  function renderCards(rec){
+    const box=$('rankFinalCards');
+    const kw=$('rankFinalKeyword').value;
+    if(!rec||!kw){box.innerHTML='';return;}
+    const latest=latestRowsForKeyword(kw);
+    const meta=compMeta(rec), links=compLinks(rec);
+    const cards=[{key:'me',label:'내 상품',name:rec.productName||'내 상품',cls:'me'}];
+    links.forEach((u,i)=>cards.push({
+      key:'comp'+(i+1),
+      label:'경쟁사 '+String.fromCharCode(65+i),
+      name:(meta[i]&&meta[i].title)||('경쟁사 '+String.fromCharCode(65+i)),
+      cls:'comp'+(i+1)
+    }));
+    box.innerHTML=cards.map(c=>{
+      const row=latest[c.key];
+      return `<div class="rank-final-card ${c.cls}">
+        <span class="rank-final-card-label">${esc(c.label)}</span>
+        <div class="rank-final-card-rank">${rankLabel(row?.rank)}</div>
+        <div class="rank-final-card-name">${esc(c.name)}</div>
+        <div class="rank-final-card-time">${row?.checkedAt ? '최근 '+prettyTime(row.checkedAt) : '아직 관측 데이터 없음'}</div>
+      </div>`;
+    }).join('');
+    const t=latestTimeForKeyword(kw);
+    $('rankFinalUpdated').textContent=t ? `마지막 업데이트: ${prettyTime(t)}` : '아직 관측 데이터 없음';
   }
-        setTimeout(()=>window.dispatchEvent(new Event('resize')),50);
-      });
+
+  function renderCompetitors(rec){
+    const card=$('rankFinalCompetitorCard'), box=$('rankFinalCompetitorList');
+    const links=compLinks(rec), meta=compMeta(rec);
+    if(!links.length){card.style.display='none';box.innerHTML='';return;}
+    card.style.display='';
+    box.innerHTML=links.map((url,i)=>`<div class="rank-final-comp-row">
+      <span class="rank-final-comp-label">경쟁사 ${String.fromCharCode(65+i)}</span>
+      <a href="${esc(url)}" target="_blank" rel="noopener" title="${esc((meta[i]&&meta[i].title)||url)}">${esc((meta[i]&&meta[i].title)||url)}</a>
+    </div>`).join('');
+  }
+
+  function renderChart(rec){
+    const kw=$('rankFinalKeyword').value;
+    const canvas=$('rankCompareChart'), empty=$('rankCompareEmpty');
+    const meta=compMeta(rec), links=compLinks(rec);
+    const subjects=[
+      {key:'me',label:'내 상품',color:'#1677ff'},
+      {key:'comp1',label:'경쟁사 A',color:'#ff8a22'},
+      {key:'comp2',label:'경쟁사 B',color:'#35a65a'},
+      {key:'comp3',label:'경쟁사 C',color:'#8458e8'}
+    ].slice(0,1+links.length);
+
+    const datasets=subjects.map(s=>({
+      label:s.label,
+      data:currentHistory
+        .filter(h=>h.keyword===kw && (h.subject||'me')===s.key && Number(h.rank)>0)
+        .map(h=>({x:h.checkedAt,y:Number(h.rank)})),
+      borderColor:s.color,backgroundColor:s.color,borderWidth:2,
+      tension:.28,pointRadius:2.7,pointHoverRadius:4,spanGaps:true
+    })).filter(d=>d.data.length);
+
+    if(chart){chart.destroy();chart=null;}
+    if(!datasets.length){empty.style.display='flex';return;}
+    empty.style.display='none';
+    chart=new Chart(canvas.getContext('2d'),{
+      type:'line',
+      data:{datasets},
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        interaction:{mode:'nearest',intersect:false},
+        plugins:{legend:{display:true,position:'top',align:'start',labels:{usePointStyle:true,boxWidth:8}}},
+        scales:{
+          x:{type:'time',time:{unit:'day',tooltipFormat:'MM/dd HH:mm'},grid:{color:'#eef1f5'},ticks:{color:'#8995a7',maxRotation:0}},
+          y:{reverse:true,min:1,suggestedMax:20,ticks:{precision:0,color:'#8995a7'},grid:{color:'#eef1f5'},title:{display:false}}
+        }
+      }
     });
   }
 
-  document.addEventListener('change',e=>{
-    if(e.target?.id==='compSubmissionSelect') setTimeout(updateOverviewStats,120);
+  function renderSummary(rec){
+    const table=$('rankFinalSummaryTable'), head=table.querySelector('thead'), body=table.querySelector('tbody');
+    const links=compLinks(rec), kws=keywords(rec);
+    const competitorHeaders=links.map((_,i)=>`<th>경쟁사 ${String.fromCharCode(65+i)}</th>`).join('');
+    head.innerHTML=`<tr><th>키워드</th><th>내 상품</th>${competitorHeaders}<th>최근 업데이트</th></tr>`;
+    if(!kws.length){body.innerHTML='<tr><td colspan="6">등록 키워드가 없습니다.</td></tr>';return;}
+    body.innerHTML=kws.map(kw=>{
+      const latest=latestRowsForKeyword(kw);
+      const comps=links.map((_,i)=>`<td>${rankLabel(latest['comp'+(i+1)]?.rank)}</td>`).join('');
+      return `<tr><td>${esc(kw)}</td><td><b>${rankLabel(latest.me?.rank)}</b></td>${comps}<td>${prettyTime(latestTimeForKeyword(kw))}</td></tr>`;
+    }).join('');
+  }
+
+  async function loadHistory(rec){
+    currentHistory=[];
+    if(!rec) return;
+    try{
+      const s=await getSession(); if(!s) return;
+      const res=await apiCall('getRankHistory',{
+        token:s.token,
+        submissionId:rec.id,
+        startDate:dateOnly(rec.startDate)||'',
+        endDate:todayStr()
+      });
+      if(res?.ok && Array.isArray(res.history)) currentHistory=res.history;
+    }catch(e){}
+  }
+
+  async function renderSelected(){
+    let rec=currentRec();
+    rec=await hydrate(rec);
+    renderOverview(rec);
+    renderKeywordSelect(rec);
+    await loadHistory(rec);
+    renderCards(rec);
+    renderCompetitors(rec);
+    renderChart(rec);
+    renderSummary(rec);
+  }
+
+  async function finalLoadDashboard(){
+    const session=await getSession();
+    if(!session) return;
+    const res=await fetchSubmissionsCached(session);
+    const all=(res?.ok?res.submissions:[])||[];
+    records=all.filter(isRolling);
+    renderSelects();
+    await renderSelected();
+  }
+
+  $('rankFinalSubmission')?.addEventListener('change',renderSelected);
+  $('rankFinalKeyword')?.addEventListener('change',()=>{
+    const rec=currentRec();
+    renderCards(rec);renderChart(rec);
   });
 
-  window.addEventListener('load',()=>{
-    setTimeout(()=>{
-      moveExistingDashboardPieces();
-      updateOverviewStats();
-    },700);
-  });
+  // 기존 switchPanelDOM이 호출하는 전역 함수를 최종 순위현황 전용 로더로 교체한다.
+  window.loadDashboard=finalLoadDashboard;
+  try{ loadDashboard=finalLoadDashboard; }catch(e){}
 
-  // Keep stats synced when ranking menu is opened.
   document.addEventListener('click',e=>{
-    if(e.target.closest?.('[data-panel="panelDashboard"]')){
-      setTimeout(()=>{moveExistingDashboardPieces();updateOverviewStats();},500);
-    }
+    if(e.target.closest?.('[data-panel="panelDashboard"]')) setTimeout(finalLoadDashboard,80);
   });
 })();
 </script>
