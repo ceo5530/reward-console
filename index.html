@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-27 V4-STABLE-MERGE + BLUE-DASHBOARD-REDESIGN -->
+<!-- OLLIM FRONTEND BUILD: 2026-07-27 V4-STABLE-MERGE + COMPETITOR-COMPARE-THUMBNAIL -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -1067,6 +1067,48 @@
 }
 </style>
 
+
+<style id="ollim-competitor-compare-css">
+#app .comp-compare-wrap{display:grid;gap:18px}
+#app .comp-hero-card{display:flex;gap:18px;align-items:center}
+#app .comp-thumb{
+  width:76px;height:76px;border-radius:14px;object-fit:cover;background:#f1f5f9;border:1px solid var(--ol-line);flex:0 0 76px
+}
+#app .comp-thumb.fallback{display:flex;align-items:center;justify-content:center;font-size:28px;color:#9aa6b5}
+#app .comp-product-title{font-size:1.02rem;font-weight:850;color:var(--ol-ink);line-height:1.45}
+#app .comp-product-link{font-size:.76rem;color:var(--ol-muted);margin-top:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#app .comp-rank-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+#app .comp-rank-card{background:#fff;border:1px solid var(--ol-line);border-radius:14px;padding:16px;box-shadow:var(--ol-shadow)}
+#app .comp-rank-card.me{border-color:#bad7ff;background:linear-gradient(135deg,#fff,#f6faff)}
+#app .comp-rank-head{display:flex;gap:10px;align-items:center}
+#app .comp-rank-head .comp-thumb{width:46px;height:46px;flex-basis:46px;border-radius:10px}
+#app .comp-rank-label{font-size:.74rem;color:var(--ol-muted);font-weight:800}
+#app .comp-rank-name{font-size:.84rem;color:var(--ol-ink);font-weight:800;line-height:1.35}
+#app .comp-rank-value{font-size:2rem;font-weight:900;letter-spacing:-.04em;color:var(--ol-blue);margin-top:14px}
+#app .comp-rank-card:not(.me) .comp-rank-value{color:#4d5d73}
+#app .comp-rank-sub{font-size:.72rem;color:var(--ol-muted);margin-top:2px}
+#app .comp-link-list{display:grid;gap:8px}
+#app .comp-link-row{display:flex;gap:12px;align-items:center;padding:11px 12px;background:#f8fafc;border:1px solid var(--ol-line);border-radius:10px}
+#app .comp-link-row .comp-thumb{width:42px;height:42px;flex-basis:42px;border-radius:9px}
+#app .comp-link-meta{min-width:0;flex:1}
+#app .comp-link-meta strong{display:block;font-size:.82rem;color:var(--ol-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#app .comp-link-meta a{display:block;font-size:.72rem;color:var(--ol-blue);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-decoration:none}
+#app .comp-empty{padding:20px;border:1px dashed #cfd8e5;border-radius:12px;color:var(--ol-muted);font-size:.82rem;text-align:center;background:#fbfcfe}
+#app .comp-keyword-select{max-width:240px}
+#app .comp-section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+#app .comp-section-title h3{margin:0;color:var(--ol-ink);font-size:1rem}
+@media(max-width:700px){
+  #app .comp-hero-card{align-items:flex-start}
+  #app .comp-thumb{width:64px;height:64px;flex-basis:64px}
+  #app .comp-rank-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:430px){
+  #app .comp-rank-grid{grid-template-columns:1fr 1fr}
+  #app .comp-rank-value{font-size:1.65rem}
+  #app .comp-rank-card{padding:13px}
+}
+</style>
+
 </head>
 <body>
 <div id="splashScreen">
@@ -1566,6 +1608,29 @@
 </main>
 
 <div id="panelDashboard" class="panel">
+  <div id="competitorCompareSection" class="comp-compare-wrap" style="margin-bottom:22px;">
+    <div class="card">
+      <div class="comp-section-title">
+        <h3>상품 · 경쟁사 순위 비교</h3>
+        <select id="compSubmissionSelect" class="comp-keyword-select" aria-label="비교할 상품"></select>
+      </div>
+      <div id="compProductHero"></div>
+    </div>
+
+    <div class="card">
+      <div class="comp-section-title">
+        <h3>현재 순위</h3>
+        <select id="compKeywordSelect" class="comp-keyword-select" aria-label="비교할 키워드"></select>
+      </div>
+      <div id="compRankCards" class="comp-rank-grid"></div>
+    </div>
+
+    <div class="card" id="compLinksCard">
+      <div class="comp-section-title"><h3>경쟁사 상품</h3></div>
+      <div id="compLinkList" class="comp-link-list"></div>
+    </div>
+  </div>
+
   <div class="dash-wrap">
     <div class="card">
       <h2><span class="n">DASH</span> 오늘의 슬롯 현황이에요</h2>
@@ -5000,6 +5065,175 @@ document.getElementById('privacyWithdrawBtn')?.addEventListener('click',()=>docu
     if(nav) syncDock(nav.getAttribute('data-panel'));
   });
   document.addEventListener('DOMContentLoaded', function(){ syncDock('panelHome'); });
+})();
+</script>
+
+
+<script id="ollim-competitor-compare-js">
+(function(){
+  let compSubmissions = [];
+  let compRanks = {};
+
+  function esc(s){
+    return String(s||'').replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+  function parseMeta(rec){
+    if(Array.isArray(rec.competitorMeta)) return rec.competitorMeta;
+    try{return JSON.parse(rec.competitorMetaJson||'[]')}catch(e){return []}
+  }
+  function links(rec){
+    return String(rec.competitorLinks||'').split(',').map(s=>s.trim()).filter(Boolean).slice(0,3);
+  }
+  function thumbHtml(src, label){
+    if(src) return `<img class="comp-thumb" src="${esc(src)}" alt="${esc(label||'상품 이미지')}" onerror="this.outerHTML='<div class=&quot;comp-thumb fallback&quot;>▧</div>'">`;
+    return '<div class="comp-thumb fallback">▧</div>';
+  }
+  function getRank(rec, keyword, whoIndex){
+    const row = compRanks && compRanks[rec.id] ? compRanks[rec.id] : {};
+    const v = row[keyword];
+    if(v == null) return null;
+    if(typeof v === 'number') return whoIndex===-1 ? v : null;
+    if(typeof v === 'object'){
+      if(whoIndex===-1) return v.rank ?? v.myRank ?? v.main ?? null;
+      if(Array.isArray(v.competitors)) return v.competitors[whoIndex] ?? null;
+      return v['competitor'+(whoIndex+1)] ?? v['comp'+(whoIndex+1)] ?? null;
+    }
+    return null;
+  }
+  function rankText(v){
+    const n=Number(v);
+    if(!isFinite(n) || n<=0) return '100위 밖';
+    return n+'위';
+  }
+  function currentRec(){
+    const id=document.getElementById('compSubmissionSelect')?.value;
+    return compSubmissions.find(r=>String(r.id)===String(id)) || compSubmissions[0] || null;
+  }
+  function renderHero(rec){
+    const box=document.getElementById('compProductHero');
+    if(!box) return;
+    if(!rec){box.innerHTML='<div class="comp-empty">진행 중인 네이버 캠페인이 없습니다.</div>';return;}
+    box.innerHTML=`<div class="comp-hero-card">
+      ${thumbHtml(rec.productImage,rec.productName)}
+      <div style="min-width:0">
+        <div class="comp-rank-label">내 상품</div>
+        <div class="comp-product-title">${esc(rec.productName||rec.link||'등록 상품')}</div>
+        <div class="comp-product-link">${esc(rec.link||'')}</div>
+      </div>
+    </div>`;
+  }
+  function renderKeywords(rec){
+    const sel=document.getElementById('compKeywordSelect');
+    if(!sel) return;
+    const kws=Array.isArray(rec?.keywords)?rec.keywords:String(rec?.keywords||'').split(',').map(s=>s.trim()).filter(Boolean);
+    sel.innerHTML=(kws.length?kws:['키워드 없음']).map(k=>`<option value="${esc(k)}">${esc(k)}</option>`).join('');
+  }
+  function renderLinks(rec){
+    const card=document.getElementById('compLinksCard');
+    const box=document.getElementById('compLinkList');
+    if(!card||!box) return;
+    const ls=links(rec);
+    const meta=parseMeta(rec);
+    if(!ls.length){card.style.display='none';box.innerHTML='';return;}
+    card.style.display='';
+    box.innerHTML=ls.map((url,i)=>{
+      const m=meta[i]||{};
+      return `<div class="comp-link-row">
+        ${thumbHtml(m.image,m.title||('경쟁사 '+(i+1)))}
+        <div class="comp-link-meta">
+          <strong>${esc(m.title||('경쟁사 '+(i+1)))}</strong>
+          <a href="${esc(url)}" target="_blank" rel="noopener">${esc(url)}</a>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  function renderRanks(rec){
+    const box=document.getElementById('compRankCards');
+    const kw=document.getElementById('compKeywordSelect')?.value || '';
+    if(!box||!rec){if(box)box.innerHTML='';return;}
+    const meta=parseMeta(rec), ls=links(rec);
+    const cards=[{
+      cls:'me',
+      label:'내 상품',
+      title:rec.productName||'내 상품',
+      image:rec.productImage||'',
+      rank:getRank(rec,kw,-1)
+    }];
+    ls.forEach((url,i)=>cards.push({
+      cls:'',
+      label:'경쟁사 '+String.fromCharCode(65+i),
+      title:(meta[i]&&meta[i].title)||('경쟁사 '+(i+1)),
+      image:(meta[i]&&meta[i].image)||'',
+      rank:getRank(rec,kw,i)
+    }));
+    box.innerHTML=cards.map(c=>`<div class="comp-rank-card ${c.cls}">
+      <div class="comp-rank-head">
+        ${thumbHtml(c.image,c.title)}
+        <div style="min-width:0">
+          <div class="comp-rank-label">${esc(c.label)}</div>
+          <div class="comp-rank-name">${esc(c.title)}</div>
+        </div>
+      </div>
+      <div class="comp-rank-value">${rankText(c.rank)}</div>
+      <div class="comp-rank-sub">${esc(kw||'키워드 미선택')}</div>
+    </div>`).join('');
+  }
+  function renderAll(){
+    const rec=currentRec();
+    renderHero(rec);
+    renderKeywords(rec);
+    renderLinks(rec);
+    renderRanks(rec);
+  }
+  async function load(){
+    if(typeof getSession!=='function'||typeof apiCall!=='function') return;
+    const s=await getSession();
+    if(!s) return;
+    const [listRes,ranksRes]=await Promise.all([
+      apiCall('listSubmissions',{token:s.token}),
+      apiCall('ranks',{token:s.token})
+    ]);
+    if(!listRes?.ok) return;
+    compSubmissions=(listRes.submissions||[]).filter(r=>r.productType==='reward'&&r.channel==='네이버'&&r.status!=='cancelled');
+    compRanks=ranksRes?.ok?(ranksRes.ranks||{}):{};
+    const sel=document.getElementById('compSubmissionSelect');
+    if(sel){
+      sel.innerHTML=compSubmissions.map(r=>`<option value="${esc(r.id)}">${esc(r.productName||r.client||r.id)}</option>`).join('');
+    }
+    renderAll();
+  }
+  async function enrichMetaOnSubmit(){
+    const link=document.getElementById('f_link')?.value?.trim();
+    if(!link||typeof apiCall!=='function'||typeof getSession!=='function') return;
+    const s=await getSession(); if(!s) return;
+    try{
+      const main=await apiCall('resolveProductMeta',{token:s.token,url:link});
+      if(main?.ok){
+        const pn=document.getElementById('f_product_name');
+        if(pn && !pn.value && main.title) pn.value=main.title;
+        window.__ollimProductImage=main.image||'';
+      }
+      const comps=[...document.querySelectorAll('[id^="f_competitor"]')].map(x=>x.value.trim()).filter(Boolean).slice(0,3);
+      const meta=[];
+      for(const url of comps){
+        const r=await apiCall('resolveProductMeta',{token:s.token,url});
+        meta.push({url,title:r?.title||'',image:r?.image||''});
+      }
+      window.__ollimCompetitorMeta=meta;
+    }catch(e){}
+  }
+
+  document.addEventListener('change',e=>{
+    if(e.target?.id==='compSubmissionSelect') renderAll();
+    if(e.target?.id==='compKeywordSelect') renderRanks(currentRec());
+  });
+  document.addEventListener('click',e=>{
+    const nav=e.target.closest&&e.target.closest('[data-panel="panelDashboard"]');
+    if(nav) setTimeout(load,120);
+    if(e.target?.id==='submitBtn') enrichMetaOnSubmit();
+  });
+  window.addEventListener('load',()=>setTimeout(load,500));
+  window.OLLIMCompetitorCompare={reload:load};
 })();
 </script>
 
