@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-27 V4-STABLE-MERGE + OBSERVER-CONTROL -->
+<!-- OLLIM FRONTEND BUILD: 2026-07-27 V4-STABLE-MERGE + BLUE-DASHBOARD-REDESIGN -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -683,6 +683,390 @@
 
 
 </style>
+
+<style id="ollim-postlogin-redesign">
+/* ==========================================================
+   OLLIM 2026 BLUE DASHBOARD REDESIGN
+   IMPORTANT: scoped to #app — pre-login/auth screens untouched
+   ========================================================== */
+#app{
+  --ol-blue:#1677ff;
+  --ol-blue-2:#0f6fff;
+  --ol-blue-soft:#edf5ff;
+  --ol-blue-soft-2:#f6faff;
+  --ol-ink:#172033;
+  --ol-text:#30394b;
+  --ol-muted:#8390a4;
+  --ol-line:#e6ebf2;
+  --ol-panel:#ffffff;
+  --ol-bg:#f7f9fc;
+  --ol-green:#1dbf73;
+  --ol-orange:#ff8a22;
+  --ol-purple:#8458e8;
+  --ol-red:#ef4444;
+  --ol-shadow:0 8px 30px rgba(21,35,62,.055);
+  --ol-shadow-hover:0 12px 36px rgba(21,35,62,.09);
+  background:var(--ol-bg);
+  color:var(--ol-text);
+  min-height:100vh;
+  font-family:Pretendard,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans KR",sans-serif;
+}
+#app .app-shell{background:var(--ol-bg); min-height:100vh;}
+#app .sidebar{
+  width:260px;
+  background:#fff;
+  border-right:1px solid var(--ol-line);
+  box-shadow:none;
+}
+#app .sidebar-brand{
+  padding:25px 28px 22px;
+  border-bottom:0;
+  gap:8px;
+}
+#app .sidebar-brand .mark{display:none;}
+#app .ollim-wordmark{
+  margin:0;
+  font-size:1.72rem !important;
+  line-height:1;
+  letter-spacing:-.045em;
+  font-weight:900 !important;
+  color:var(--ol-blue) !important;
+}
+#app .sidebar-brand p{
+  color:#8a94a6;
+  font-size:.78rem;
+  margin-top:4px;
+  font-weight:600;
+}
+#app .sidebar-profile{
+  margin:0 18px 12px;
+  padding:14px 14px;
+  border:1px solid var(--ol-line);
+  border-radius:14px;
+  background:#fbfcfe;
+}
+#app .sidebar-profile .sp-name{color:var(--ol-ink);font-weight:800;}
+#app .sidebar-profile .sp-ref{color:var(--ol-muted);}
+#app .sidebar-nav{padding:8px 14px 18px;}
+#app .sidebar-nav .navtab{
+  min-height:46px;
+  padding:11px 14px;
+  border-radius:10px;
+  color:#596579;
+  font-size:.94rem;
+  font-weight:700;
+  gap:12px;
+  transition:.18s ease;
+}
+#app .sidebar-nav .navtab:hover{background:#f5f8fc;color:var(--ol-ink);}
+#app .sidebar-nav .navtab.active{
+  background:#eaf3ff;
+  color:var(--ol-blue);
+  box-shadow:none;
+}
+#app .nav-ico{
+  width:20px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1.05rem;
+  color:inherit;
+}
+#app .sidebar-foot{border-top:1px solid var(--ol-line);padding:16px 18px 20px;}
+#app .sidebar-foot button{
+  background:#f6f8fb;
+  color:#657186;
+  border:1px solid var(--ol-line);
+}
+#app .sidebar-foot button:hover{background:#eef3f9;color:var(--ol-ink);}
+
+#app .content-area{background:var(--ol-bg);min-width:0;}
+#app .content-header{
+  height:72px;
+  padding:0 36px;
+  background:rgba(247,249,252,.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(230,235,242,.9);
+}
+#app .breadcrumb{
+  color:var(--ol-ink);
+  font-size:1.05rem;
+  font-weight:800;
+}
+#app .ticker{
+  gap:18px;
+  background:#fff;
+  border:1px solid var(--ol-line);
+  border-radius:12px;
+  padding:8px 12px 8px 14px;
+  box-shadow:0 3px 10px rgba(25,39,67,.03);
+}
+#app .ticker .lbl{color:var(--ol-muted);font-size:.68rem;}
+#app .ticker .val{color:var(--ol-ink);font-size:1rem;}
+#app .ticker .status{border-radius:8px;background:#ecf8f2;color:#15965c;border:0;}
+#app .content-body{
+  width:min(1240px, calc(100% - 64px));
+  margin:0 auto;
+  padding:30px 0 64px;
+}
+#app .panel{animation:ollimFade .18s ease;}
+@keyframes ollimFade{from{opacity:.45;transform:translateY(3px)}to{opacity:1;transform:none}}
+
+#app .card,
+#app .home-card,
+#app .main-accordion-card,
+#app .security-note,
+#app .auto-kw-card,
+#app .price-box,
+#app .result-card,
+#app .profile-card{
+  background:var(--ol-panel);
+  border:1px solid var(--ol-line);
+  border-radius:16px;
+  box-shadow:var(--ol-shadow);
+}
+#app .card:hover,
+#app .home-card:hover{box-shadow:var(--ol-shadow-hover);}
+#app .card{padding:24px;}
+#app .card h2,
+#app .home-graph-title{
+  color:var(--ol-ink);
+  letter-spacing:-.025em;
+}
+#app .card h2 .n,
+#app .main-accordion-title .n{
+  background:#f3f6f9;
+  color:#8d99aa;
+  border-radius:6px;
+  padding:3px 7px;
+  font-size:.67rem;
+  margin-right:8px;
+}
+
+#app label{
+  color:#465267;
+  font-size:.82rem;
+  font-weight:700;
+  margin-bottom:7px;
+}
+#app input,
+#app select,
+#app textarea{
+  border:1px solid #dce3ec;
+  background:#fff;
+  border-radius:10px;
+  min-height:45px;
+  color:var(--ol-ink);
+  box-shadow:none;
+}
+#app input::placeholder,#app textarea::placeholder{color:#a8b1bf;}
+#app input:focus,#app select:focus,#app textarea:focus{
+  border-color:var(--ol-blue);
+  box-shadow:0 0 0 3px rgba(22,119,255,.10);
+}
+#app .toss-input{border-bottom-color:#dce3ec!important;}
+#app .hint{color:#8a96a8;line-height:1.65;}
+#app .btn{
+  background:var(--ol-blue);
+  border:1px solid var(--ol-blue);
+  color:#fff;
+  border-radius:10px;
+  box-shadow:none;
+  font-weight:800;
+}
+#app .btn:hover{background:#086cea;border-color:#086cea;transform:none;}
+#app .btn.secondary{
+  background:#fff;
+  color:var(--ol-blue);
+  border-color:#bed7ff;
+}
+#app .btn.secondary:hover{background:var(--ol-blue-soft);}
+#app .seg{background:#f2f5f8;border-radius:10px;padding:3px;}
+#app .seg button{border-radius:8px;color:#6b778b;}
+#app .seg button.active{background:#fff;color:var(--ol-blue);box-shadow:0 2px 8px rgba(20,43,77,.08);}
+
+#app .main-accordion{display:grid;gap:18px;}
+#app .main-accordion-card{overflow:hidden;padding:0;}
+#app .main-accordion-head{
+  min-height:68px;
+  padding:0 24px;
+  background:#fff;
+  border:0;
+  color:var(--ol-ink);
+}
+#app .main-accordion-title{font-size:1.04rem;font-weight:850;}
+#app .main-accordion-chevron{color:#8e99aa;font-size:1.5rem;}
+#app .main-accordion-body{border-top:1px solid var(--ol-line);padding:26px;}
+
+#app .home-wrap{max-width:none;}
+#app .home-header{margin-bottom:22px;}
+#app .home-greeting{color:var(--ol-ink);font-size:1.72rem;font-weight:900;letter-spacing:-.035em;}
+#app .home-sub{color:var(--ol-muted);font-size:.94rem;margin-top:6px;}
+#app .home-card{padding:22px;}
+#app .home-hero-card{
+  background:linear-gradient(135deg,#fff 0%,#f6faff 100%);
+  border-color:#d8e7fb;
+}
+#app .home-hero-rank{color:var(--ol-blue)!important;font-size:3rem!important;letter-spacing:-.05em;}
+#app .home-action-grid{gap:14px;}
+#app .home-action-card{
+  background:#fff;
+  border:1px solid var(--ol-line);
+  border-radius:14px;
+  box-shadow:none;
+}
+#app .home-action-card:hover{border-color:#c8ddfb;background:#fafdff;transform:none;}
+#app .home-action-icon{background:#edf5ff;color:var(--ol-blue);}
+
+#app table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  background:#fff;
+  border:1px solid var(--ol-line);
+  border-radius:14px;
+  overflow:hidden;
+}
+#app th{
+  background:#f8fafc;
+  color:#69768a;
+  font-size:.76rem;
+  font-weight:800;
+  border-bottom:1px solid var(--ol-line);
+}
+#app td{
+  color:#394459;
+  border-bottom:1px solid #edf0f4;
+}
+#app tr:last-child td{border-bottom:0;}
+#app tbody tr:hover td{background:#fbfdff;}
+
+#app .badge,
+#app .role,
+#app .status,
+#app .admin-status-tab{
+  border-radius:8px;
+}
+#app .role.client{background:#edf5ff;color:var(--ol-blue);}
+#app .role.admin{background:#fff2e7;color:#d86c08;}
+#app .admin-status-tab.active{
+  background:var(--ol-blue);
+  border-color:var(--ol-blue);
+}
+
+#app .price-box .row.total span:last-child,
+#app .result-amount,
+#app .rank-found,
+#app .verify-rank-box .rank,
+#app .auto-kw-picked{
+  color:var(--ol-blue)!important;
+}
+#app .slot-pip.base{background:var(--ol-blue);}
+#app .home-progress-note{color:#7a8799;}
+#app .home-status-card{border-color:#dce8f8;background:#f7fbff;}
+#app .home-status-dot div{background:var(--ol-blue);}
+
+/* rank/chart areas */
+#app canvas{max-width:100%;}
+#app .chart-controls{
+  background:#f8fafc;
+  border:1px solid var(--ol-line);
+  border-radius:13px;
+  padding:16px;
+}
+#app .kw-check-group{gap:7px;}
+#app .kw-check-group label{
+  border:1px solid #dce3ec;
+  background:#fff;
+  border-radius:8px;
+  padding:7px 10px;
+}
+
+/* Admin observer status */
+#app #adminObserverState{
+  background:#f6faff;
+  border:1px solid #d5e6ff;
+  color:#45617f;
+}
+
+/* Mobile bottom navigation, post-login only */
+#app .mobile-bottom-dock{display:none;}
+
+@media(max-width:900px){
+  #app .content-header{
+    height:62px;
+    padding:0 16px;
+    background:#fff;
+  }
+  #app .content-body{
+    width:100%;
+    padding:18px 14px 94px;
+  }
+  #app .ticker{display:none;}
+  #app .breadcrumb{font-size:1rem;}
+  #app .hamburger{
+    width:38px;height:38px;
+    border:1px solid var(--ol-line);
+    border-radius:10px;
+    background:#fff;
+    color:#5e6a7d;
+  }
+  #app .sidebar{
+    width:min(300px,86vw);
+    box-shadow:15px 0 40px rgba(26,38,62,.15);
+  }
+  #app .card,#app .home-card{border-radius:14px;padding:18px;}
+  #app .main-accordion-card{border-radius:14px;}
+  #app .main-accordion-head{min-height:62px;padding:0 18px;}
+  #app .main-accordion-body{padding:19px 16px 22px;}
+  #app .home-greeting{font-size:1.38rem;}
+  #app .home-action-grid{grid-template-columns:1fr 1fr;}
+  #app .row2{grid-template-columns:1fr;}
+  #app .kw-grid{grid-template-columns:1fr!important;}
+  #app table{font-size:.8rem;}
+  #app .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+
+  #app .mobile-bottom-dock{
+    position:fixed;
+    left:10px;right:10px;bottom:10px;
+    height:64px;
+    display:flex;
+    align-items:stretch;
+    justify-content:space-around;
+    z-index:35;
+    background:rgba(255,255,255,.96);
+    backdrop-filter:blur(18px);
+    border:1px solid var(--ol-line);
+    border-radius:18px;
+    box-shadow:0 10px 35px rgba(24,40,68,.16);
+    overflow:hidden;
+    padding:5px;
+  }
+  #app .mobile-bottom-dock button{
+    flex:1;
+    border:0;
+    background:transparent;
+    color:#8792a4;
+    border-radius:13px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:2px;
+    font-size:1rem;
+    cursor:pointer;
+  }
+  #app .mobile-bottom-dock button b{font-size:.66rem;font-weight:800;}
+  #app .mobile-bottom-dock button.active{
+    background:#eef6ff;
+    color:var(--ol-blue);
+  }
+}
+@media(min-width:901px){
+  #app .mobile-bottom-dock{display:none!important;}
+}
+</style>
+
 </head>
 <body>
 <div id="splashScreen">
@@ -925,7 +1309,7 @@
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
       <div class="mark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 18L12 5L20 18" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 18L12 9.5L20 18" stroke="#B7B0E8" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/></svg></div>
-      <div><h1>접수 콘솔</h1><p>올림컴퍼니</p></div>
+      <div><h1 class="ollim-wordmark">OLLIM</h1><p>순위 모니터링</p></div>
     </div>
     <div class="sidebar-profile">
       <div class="sp-name" id="userCompany">-</div>
@@ -933,11 +1317,11 @@
       <div class="sp-ref">내 추천코드 <span class="refcode" id="myRefCode">-</span></div>
     </div>
     <nav class="sidebar-nav">
-      <button class="navtab active client-only" data-panel="panelHome" data-label="홈">🏠 홈</button>
-      <button class="navtab client-only" data-panel="panelMain" data-label="접수 / 현황">📝 접수 / 현황</button>
-      <button class="navtab client-only" data-panel="panelDashboard" data-label="내 현황판">📊 내 현황판</button>
-      <button class="navtab client-only" data-panel="panelCoupons" data-label="보유 쿠폰함">🎟 보유 쿠폰함</button>
-      <button class="navtab client-only" data-panel="panelPrivacy" data-label="내 정보 / 개인정보">🔐 내 정보 / 개인정보</button>
+      <button class="navtab active client-only" data-panel="panelHome" data-label="대시보드"><span class="nav-ico">⌂</span><span>대시보드</span></button>
+      <button class="navtab client-only" data-panel="panelMain" data-label="접수 / 현황"><span class="nav-ico">◇</span><span>접수 / 현황</span></button>
+      <button class="navtab client-only" data-panel="panelDashboard" data-label="순위 현황"><span class="nav-ico">⌁</span><span>순위 현황</span></button>
+      <button class="navtab client-only" data-panel="panelCoupons" data-label="쿠폰 / 추천"><span class="nav-ico">▱</span><span>쿠폰 / 추천</span></button>
+      <button class="navtab client-only" data-panel="panelPrivacy" data-label="내 정보"><span class="nav-ico">○</span><span>내 정보</span></button>
       <button class="navtab admin-only" data-panel="panelAdmin" data-label="관리자 대시보드" style="display:none;">🛠 관리자 대시보드</button>
       <button class="navtab admin-only" data-panel="panelClients" data-label="업체목록" style="display:none;">🏢 업체목록</button>
       <button class="navtab admin-only" data-panel="panelLeads" data-label="진단 리드" style="display:none;">🔍 진단 리드</button>
@@ -1385,6 +1769,13 @@
   </div>
 </div>
 </div>
+
+<nav id="mobileBottomDock" class="mobile-bottom-dock" aria-label="모바일 빠른 메뉴">
+  <button type="button" data-dock-target="panelHome" class="active"><span>⌂</span><b>대시보드</b></button>
+  <button type="button" data-dock-target="panelMain"><span>◇</span><b>접수/현황</b></button>
+  <button type="button" data-dock-target="panelDashboard"><span>⌁</span><b>순위 현황</b></button>
+  <button type="button" data-dock-target="panelPrivacy"><span>○</span><b>내 정보</b></button>
+</nav>
 <script>
 const OLLIM_FRONTEND_BUILD = '2026-07-24-V4-STABLE-MERGE';
 const CUTOFF_HOUR = 16;
@@ -4588,5 +4979,29 @@ document.getElementById('privacyWithdrawBtn')?.addEventListener('click',()=>docu
 
 </script>
 <div id="buildBadge" style="display:none;position:fixed;right:10px;bottom:8px;z-index:99999;font:10px/1.2 monospace;color:#8B95A1;background:rgba(255,255,255,.85);padding:3px 6px;border-radius:6px;">V4-STABLE-MERGE</div>
+
+<script id="ollim-mobile-dock-js">
+(function(){
+  function syncDock(panelId){
+    document.querySelectorAll('#mobileBottomDock [data-dock-target]').forEach(function(btn){
+      btn.classList.toggle('active', btn.getAttribute('data-dock-target') === panelId);
+    });
+  }
+  document.addEventListener('click', function(e){
+    var dockBtn = e.target.closest && e.target.closest('#mobileBottomDock [data-dock-target]');
+    if(dockBtn){
+      var target = dockBtn.getAttribute('data-dock-target');
+      var original = document.querySelector('#app .sidebar-nav .navtab[data-panel="'+target+'"]');
+      if(original) original.click();
+      syncDock(target);
+      return;
+    }
+    var nav = e.target.closest && e.target.closest('#app .sidebar-nav .navtab[data-panel]');
+    if(nav) syncDock(nav.getAttribute('data-panel'));
+  });
+  document.addEventListener('DOMContentLoaded', function(){ syncDock('panelHome'); });
+})();
+</script>
+
 </body>
 </html>
