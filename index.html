@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-28 PRODUCT-CONFIRM-V5.2 + HUB-ONLY + FINAL-NO-BOTTOM-NAV -->
+<!-- OLLIM FRONTEND BUILD: 2026-07-28 PRODUCT-CONFIRM-V5.3 + TOKEN+ALIGN+ERROR-STATE -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -840,6 +840,57 @@
     }
     .product-url-row .product-confirm-btn{
       width:100%;
+    }
+  }
+
+  /* ===== 상품확인 V5.3 정렬/상태 FIX ===== */
+  #app .product-url-row{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) 164px !important;
+    gap:10px !important;
+    align-items:stretch !important;
+    margin:0 !important;
+  }
+  #app .product-url-row #f_link{
+    margin:0 !important;
+    min-height:50px !important;
+    height:50px !important;
+    box-sizing:border-box !important;
+  }
+  #app .product-url-row #productConfirmBtn{
+    margin:0 !important;
+    width:164px !important;
+    min-width:164px !important;
+    height:50px !important;
+    min-height:50px !important;
+    padding:0 16px !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    box-sizing:border-box !important;
+    align-self:stretch !important;
+  }
+
+  .product-confirm-card.error{
+    border-color:#F1D5D5;
+    background:#FFF9F9;
+  }
+  .product-confirm-card.error .product-confirm-badge{
+    background:rgba(250,82,82,.10);
+    color:var(--bad);
+  }
+  .product-confirm-card.error .product-confirm-ok{
+    background:#F2DADA;
+    color:var(--bad);
+  }
+
+  @media(max-width:700px){
+    #app .product-url-row{
+      grid-template-columns:minmax(0,1fr) !important;
+    }
+    #app .product-url-row #productConfirmBtn{
+      width:100% !important;
+      min-width:0 !important;
     }
   }
 </style>
@@ -2038,11 +2089,11 @@
             <img id="productConfirmThumb" class="product-confirm-thumb" alt="상품 썸네일" />
           </div>
           <div class="product-confirm-info">
-            <div class="product-confirm-badge">확인된 상품</div>
+            <div id="productConfirmBadge" class="product-confirm-badge">확인된 상품</div>
             <div id="productConfirmName" class="product-confirm-name">상품명을 불러오는 중...</div>
             <div id="productConfirmUrl" class="product-confirm-url"></div>
           </div>
-          <div class="product-confirm-ok">✓</div>
+          <div id="productConfirmOk" class="product-confirm-ok">✓</div>
         </div>
 
       <div id="f_link_help" class="hint">
@@ -3187,10 +3238,15 @@ document.getElementById('productConfirmBtn').addEventListener('click', async ()=
   const thumb = document.getElementById('productConfirmThumb');
   const nameEl = document.getElementById('productConfirmName');
   const urlEl = document.getElementById('productConfirmUrl');
+  const badgeEl = document.getElementById('productConfirmBadge');
+  const okEl = document.getElementById('productConfirmOk');
 
   setBusy(btn, '상품 확인 중...');
   card.style.display = 'grid';
+  card.classList.remove('error');
   card.classList.add('loading');
+  badgeEl.textContent = '상품 확인 중';
+  okEl.textContent = '…';
   nameEl.textContent = '네이버에서 상품 정보를 확인하고 있어요...';
   urlEl.textContent = url;
   thumb.removeAttribute('src');
@@ -3203,14 +3259,29 @@ document.getElementById('productConfirmBtn').addEventListener('click', async ()=
     }), 12000);
   });
 
+  const session = await getSession();
+  if(!session?.token){
+    clearBusy(btn);
+    card.classList.remove('loading');
+    card.classList.add('error');
+    badgeEl.textContent = '확인 실패';
+    okEl.textContent = '!';
+    nameEl.textContent = '로그인 정보를 확인하지 못했어요';
+    urlEl.textContent = '다시 로그인한 뒤 상품 확인을 눌러주세요.';
+    return;
+  }
+
   const res = await Promise.race([
-    apiCall('resolveProductMeta', { url }),
+    apiCall('resolveProductMeta', { url, token: session.token }),
     timeoutPromise
   ]);
   clearBusy(btn);
 
   if(!res.ok || !res.title){
     card.classList.remove('loading');
+    card.classList.add('error');
+    badgeEl.textContent = '확인 실패';
+    okEl.textContent = '!';
     nameEl.textContent = '상품 정보를 확인하지 못했어요';
     urlEl.textContent = res.error || '네이버 상품 전체 URL인지 확인해 주세요.';
     thumb.style.display = 'none';
@@ -3224,6 +3295,9 @@ document.getElementById('productConfirmBtn').addEventListener('click', async ()=
     image:String(res.image || '').trim()
   };
 
+  card.classList.remove('error');
+  badgeEl.textContent = '확인된 상품';
+  okEl.textContent = '✓';
   nameEl.textContent = window.__ollimConfirmedProductMeta.title;
   urlEl.textContent = url;
   if(window.__ollimConfirmedProductMeta.image){
