@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-28 V6.0.1 ANALYZE-BUTTON-FIX -->
+<!-- OLLIM FRONTEND BUILD: 2026-07-28 V6.0.3 METRIC-GUIDE-RESPONSIVE -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -1990,6 +1990,108 @@
     to{ transform:scale(1.05); opacity:1; }
   }
 
+
+  
+  /* ===== V6.0.3 지표 안내 — 결과영역당 1개 / PC hover + Mobile tap ===== */
+  .keyword-metric-guide-wrap{
+    position:relative;
+    display:flex;
+    justify-content:flex-end;
+    width:100%;
+    margin:0 0 7px;
+    z-index:4;
+  }
+  .keyword-metric-guide-btn{
+    appearance:none;
+    border:0;
+    background:transparent;
+    padding:3px 2px;
+    color:#7D8CA1;
+    font-size:.69rem;
+    font-weight:700;
+    line-height:1.3;
+    cursor:help;
+  }
+  .keyword-metric-guide-btn:hover,
+  .keyword-metric-guide-btn:focus-visible{
+    color:#4E6480;
+  }
+  .keyword-metric-guide-panel{
+    position:absolute;
+    right:0;
+    top:calc(100% + 5px);
+    width:min(390px, calc(100vw - 48px));
+    padding:12px 13px;
+    border:1px solid #E3E9F1;
+    border-radius:11px;
+    background:#fff;
+    box-shadow:0 10px 30px rgba(24,39,75,.12);
+    color:#66768C;
+    font-size:.7rem;
+    line-height:1.55;
+    text-align:left;
+    opacity:0;
+    visibility:hidden;
+    transform:translateY(-3px);
+    pointer-events:none;
+    transition:opacity .14s ease, transform .14s ease, visibility .14s ease;
+  }
+  .keyword-metric-guide-panel > div + div{ margin-top:5px; }
+  .keyword-metric-guide-panel b{ color:#42536A; }
+  .keyword-metric-guide-note{
+    padding-top:6px;
+    border-top:1px solid #EEF2F6;
+    color:#8794A7;
+  }
+
+  /* 데스크톱: hover/focus로 바로 확인 */
+  @media (hover:hover) and (pointer:fine){
+    .keyword-metric-guide-wrap:hover .keyword-metric-guide-panel,
+    .keyword-metric-guide-wrap:focus-within .keyword-metric-guide-panel,
+    .keyword-metric-guide-wrap.is-open .keyword-metric-guide-panel{
+      opacity:1;
+      visibility:visible;
+      transform:translateY(0);
+      pointer-events:auto;
+    }
+  }
+
+  /* 모바일/터치: 버튼 터치 시 결과 위에서 아래로 펼쳐짐 */
+  @media (hover:none), (pointer:coarse), (max-width:700px){
+    .keyword-metric-guide-wrap{
+      display:block;
+      text-align:right;
+    }
+    .keyword-metric-guide-btn{
+      cursor:pointer;
+      min-height:30px;
+    }
+    .keyword-metric-guide-panel{
+      position:static;
+      width:100%;
+      box-sizing:border-box;
+      margin-top:5px;
+      max-height:0;
+      padding:0 12px;
+      border-width:0;
+      box-shadow:none;
+      overflow:hidden;
+      opacity:0;
+      visibility:hidden;
+      transform:none;
+      pointer-events:none;
+      transition:max-height .2s ease, opacity .15s ease, padding .2s ease, border-width .2s ease;
+    }
+    .keyword-metric-guide-wrap.is-open .keyword-metric-guide-panel{
+      max-height:240px;
+      padding:11px 12px;
+      border-width:1px;
+      opacity:1;
+      visibility:visible;
+      pointer-events:auto;
+    }
+  }
+
 </style>
 
 </head>
@@ -3623,6 +3725,7 @@ document.getElementById('f_product').addEventListener('change', updateCyclesOpti
 window.__ollimRankOnAutoKeywords = [];
 
 
+
 function keywordMetaText_(c){
   if(!c) return '';
 
@@ -3636,14 +3739,47 @@ function keywordMetaText_(c){
     else if(demand >= 20) bits.push('검색 수요 확인');
     else bits.push('검색 수요 낮음');
 
-    bits.push(`수요지수 ${Math.round(demand)}`);
+    bits.push(`검색수요 ${Math.round(demand)}`);
   }
 
   if(Number.isFinite(shop) && shop > 0){
-    bits.push(`쇼핑클릭 ${Math.round(shop)}`);
+    bits.push(`쇼핑관심 ${Math.round(shop)}`);
   }
 
   return bits.join(' · ') || 'NAVER 검색 데이터 분석';
+}
+
+
+function keywordDemandGuideHtml_(){
+  return `
+    <div class="keyword-metric-guide-wrap">
+      <button type="button"
+              class="keyword-metric-guide-btn"
+              aria-expanded="false"
+              aria-label="검색수요와 쇼핑관심 지표 설명 보기">
+        <span aria-hidden="true">ⓘ</span> 지표 안내
+      </button>
+      <div class="keyword-metric-guide-panel" role="note">
+        <div><b>검색수요</b> — 네이버에서 해당 키워드가 얼마나 많이 검색되는지를 후보 키워드끼리 비교한 상대지수입니다.</div>
+        <div><b>쇼핑관심</b> — 네이버 쇼핑에서 해당 키워드의 검색·클릭 관심도를 후보 키워드끼리 비교한 상대지수입니다.</div>
+        <div class="keyword-metric-guide-note">※ 두 지표 모두 실제 검색 횟수·클릭 횟수나 백분율이 아닙니다. 값이 높을수록 상대적인 검색·쇼핑 관심이 큽니다.</div>
+      </div>
+    </div>
+  `;
+}
+
+function bindKeywordMetricGuide_(wrap){
+  if(!wrap) return;
+  const guide = wrap.querySelector('.keyword-metric-guide-wrap');
+  const btn = guide && guide.querySelector('.keyword-metric-guide-btn');
+  if(!guide || !btn) return;
+
+  btn.addEventListener('click', (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    const open = guide.classList.toggle('is-open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
 }
 
 function setKeywordAnalyzing_(btn){
@@ -3671,12 +3807,13 @@ function renderReadonlyKeywordCandidates_(candidates, message){
     return;
   }
 
-  wrap.innerHTML = list.map((c, i)=>`
+  wrap.innerHTML = keywordDemandGuideHtml_() + list.map((c, i)=>`
     <div class="auto-kw-cand-row">
       <span><b style="font-family:var(--mono);font-size:.66rem;opacity:.55;margin-right:7px;">TOP ${i+1}</b>${escapeHtml(c.keyword)}</span>
       <span class="keyword-score">${escapeHtml(keywordMetaText_(c))}</span>
     </div>
   `).join('');
+  bindKeywordMetricGuide_(wrap);
 }
 
 function renderSelectableKeywordCandidates_(candidates, message){
@@ -3695,13 +3832,14 @@ function renderSelectableKeywordCandidates_(candidates, message){
     return;
   }
 
-  wrap.innerHTML = list.map((c, i)=>`
+  wrap.innerHTML = keywordDemandGuideHtml_() + list.map((c, i)=>`
     <div class="auto-kw-cand-row select-cand-row${selected.has(c.keyword)?' selected':''}"
          data-kw="${escapeHtml(c.keyword)}" role="button" tabindex="0">
       <span><b style="font-family:var(--mono);font-size:.66rem;opacity:.55;margin-right:7px;">TOP ${i+1}</b>${escapeHtml(c.keyword)}</span>
       <span class="keyword-score">${escapeHtml(keywordMetaText_(c))}</span>
     </div>
   `).join('');
+  bindKeywordMetricGuide_(wrap);
   wrap.style.display = 'flex';
 
   wrap.querySelectorAll('.select-cand-row').forEach(row=>{
@@ -4317,6 +4455,55 @@ document.getElementById('submitBtn').addEventListener('click', (e)=>{
   if(input) input.focus();
 }, true);
 
+
+async function resolveSubmissionMetaForPayload(link, competitorLinks){
+  const session = await getSession();
+  const token = String(session && session.token || '').trim();
+
+  const confirmed = window.__ollimConfirmedProductMeta || {};
+  let productTitle = '';
+  let productImage = '';
+
+  if(String(confirmed.url || '').trim() === String(link || '').trim()){
+    productTitle = String(confirmed.title || '').trim();
+    productImage = String(confirmed.image || '').trim();
+  }
+
+  // 상품 확인 버튼을 생략했거나 확인 카드가 초기화된 경우에도 접수 자체가 깨지지 않도록 보강.
+  if(token && (!productTitle || !productImage)){
+    try{
+      const res = await apiCall('resolveProductMeta', { token, url:link });
+      if(res && res.ok){
+        productTitle = productTitle || String(res.title || '').trim();
+        productImage = productImage || String(res.image || '').trim();
+      }
+    }catch(e){}
+  }
+
+  const links = (Array.isArray(competitorLinks) ? competitorLinks : [])
+    .map(v=>String(v||'').trim())
+    .filter(Boolean)
+    .slice(0,3);
+
+  const competitorMeta = [];
+  if(token){
+    for(const url of links){
+      try{
+        const res = await apiCall('resolveProductMeta', { token, url });
+        competitorMeta.push({
+          url,
+          title:res && res.ok ? String(res.title || '').trim() : '',
+          image:res && res.ok ? String(res.image || '').trim() : ''
+        });
+      }catch(e){
+        competitorMeta.push({ url, title:'', image:'' });
+      }
+    }
+  }
+
+  return { productTitle, productImage, competitorMeta };
+}
+
 document.getElementById('submitBtn').addEventListener('click', async ()=>{
   if(isSubmittingOrder) return;
 
@@ -4401,6 +4588,7 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
       keywords, seedKeyword,
       keywordMode: isRankOn ? 'AUTO' : 'SELECT',
       competitorLinks, couponId,
+      productName: metaPayload.productTitle || String((window.__ollimConfirmedProductMeta||{}).title || '').trim(),
       productImage: metaPayload.productImage || '',
       competitorMeta: metaPayload.competitorMeta || []
     });
