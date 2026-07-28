@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-28 HUB-KEYWORD-V2 + FINAL-NO-BOTTOM-NAV -->
+<!-- OLLIM FRONTEND BUILD: 2026-07-28 PRODUCT-CONFIRM-V5.2 + HUB-ONLY + FINAL-NO-BOTTOM-NAV -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -794,6 +794,53 @@
     }
     .product-confirm-thumb-wrap{width:60px;height:60px;border-radius:12px;}
     .product-confirm-ok{display:none;}
+  }
+
+  /* ===== 상품 확인 V5 + 키워드 포커스 FIX ===== */
+  .product-url-row{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:8px;
+    align-items:stretch;
+  }
+  .product-url-row #f_link{
+    min-width:0;
+  }
+  .product-url-row .product-confirm-btn{
+    min-width:150px;
+    height:auto;
+    white-space:nowrap;
+    margin:0;
+  }
+
+  /* 기존 toss-input의 '하단선 전용' 스타일을 키워드 입력칸에서는 사용하지 않는다.
+     포커스 시 네 면 전체가 동일하게 파란색으로 표시되도록 강제. */
+  #autoKeywordProductName,
+  #selectKeywordProductName{
+    width:100%;
+    background:var(--surface-2) !important;
+    border:1.5px solid transparent !important;
+    border-radius:12px !important;
+    padding:13px 15px !important;
+    font-size:1.02rem !important;
+    font-weight:600 !important;
+    box-shadow:none !important;
+    outline:none !important;
+  }
+  #autoKeywordProductName:focus,
+  #selectKeywordProductName:focus{
+    border:1.5px solid var(--navy-2) !important;
+    box-shadow:0 0 0 3px rgba(58,49,160,0.12) !important;
+    outline:none !important;
+  }
+
+  @media(max-width:700px){
+    .product-url-row{
+      grid-template-columns:minmax(0,1fr);
+    }
+    .product-url-row .product-confirm-btn{
+      width:100%;
+    }
   }
 </style>
 
@@ -1977,16 +2024,16 @@
       <label>연락처</label>
       <input id="f_phone" type="text" placeholder="010-0000-0000" />
       <label>어떤 상품인가요? 네이버 상품 전체 URL을 붙여주세요</label>
-      <input id="f_link" type="url" inputmode="url" autocomplete="url"
-             placeholder="예: https://smartstore.naver.com/스토어명/products/상품번호"
-             aria-describedby="f_link_help f_link_error" />
-        <div class="product-confirm-actions">
-          <button class="btn secondary product-confirm-btn" id="productConfirmBtn" type="button">
-            🔎 상품 확인하기
-          </button>
-        </div>
+      <div class="product-url-row">
+        <input id="f_link" type="url" inputmode="url" autocomplete="url"
+               placeholder="예: https://smartstore.naver.com/스토어명/products/상품번호"
+               aria-describedby="f_link_help f_link_error" />
+        <button class="btn secondary product-confirm-btn" id="productConfirmBtn" type="button">
+          🔎 상품 확인하기
+        </button>
+      </div>
 
-        <div id="productConfirmCard" class="product-confirm-card" style="display:none;">
+      <div id="productConfirmCard" class="product-confirm-card" style="display:none;">
           <div class="product-confirm-thumb-wrap">
             <img id="productConfirmThumb" class="product-confirm-thumb" alt="상품 썸네일" />
           </div>
@@ -3144,16 +3191,29 @@ document.getElementById('productConfirmBtn').addEventListener('click', async ()=
   setBusy(btn, '상품 확인 중...');
   card.style.display = 'grid';
   card.classList.add('loading');
-  nameEl.textContent = '상품 정보를 확인하고 있어요...';
+  nameEl.textContent = '네이버에서 상품 정보를 확인하고 있어요...';
   urlEl.textContent = url;
   thumb.removeAttribute('src');
+  thumb.style.display = 'none';
 
-  const res = await apiCall('resolveProductMeta', { url });
+  const timeoutPromise = new Promise(resolve => {
+    setTimeout(() => resolve({
+      ok:false,
+      error:'상품 확인에 시간이 오래 걸리고 있어요. 잠시 후 다시 시도해 주세요.'
+    }), 12000);
+  });
+
+  const res = await Promise.race([
+    apiCall('resolveProductMeta', { url }),
+    timeoutPromise
+  ]);
   clearBusy(btn);
 
   if(!res.ok || !res.title){
-    card.style.display = 'none';
-    resetConfirmedProductMeta_();
+    card.classList.remove('loading');
+    nameEl.textContent = '상품 정보를 확인하지 못했어요';
+    urlEl.textContent = res.error || '네이버 상품 전체 URL인지 확인해 주세요.';
+    thumb.style.display = 'none';
     showMsg('submitMsg', res.error || '상품 정보를 확인하지 못했어요. 네이버 상품 전체 URL인지 확인해 주세요.', 'warn');
     return;
   }
