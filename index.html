@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-28 V5.5 KEYWORD-ENGINE-V2 + UI-POLISH
+<!-- OLLIM FRONTEND BUILD: 2026-07-28 V5.5R SAFE-REBUILD + KEYWORD-V2-CONTEXT -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -3581,8 +3581,8 @@ document.getElementById('autoKeywordBtn').addEventListener('click', async ()=>{
   const productName = confirmedMeta.url === productUrl ? (confirmedMeta.title || '') : '';
 
   const res = await apiCall('suggestKeyword', {
-      productUrl:String(document.getElementById('f_link')?.value || '').trim(),
-      confirmedProductTitle:String(window.__ollimConfirmedProductMeta?.title || '').trim(),
+    productUrl: String(document.getElementById('f_link')?.value || '').trim(),
+    confirmedProductTitle: String((window.__ollimConfirmedProductMeta || {}).title || '').trim(),
     seedKeyword,
     link: productUrl,
     productName,
@@ -3620,6 +3620,8 @@ document.getElementById('selectKeywordBtn').addEventListener('click', async ()=>
   const productName = confirmedMeta.url === productUrl ? (confirmedMeta.title || '') : '';
 
   const res = await apiCall('suggestKeyword', {
+    productUrl: String(document.getElementById('f_link')?.value || '').trim(),
+    confirmedProductTitle: String((window.__ollimConfirmedProductMeta || {}).title || '').trim(),
     seedKeyword,
     link: productUrl,
     productName,
@@ -6526,16 +6528,5 @@ document.getElementById('privacyWithdrawBtn')?.addEventListener('click',()=>docu
 })();
 </script>
 
-
-<script id="ollim-keyword-v2-ui-patch">
-(function(){
-  window.ollimKeywordV2Label = function(item){
-    if(!item) return '';
-    const grade = item.grade || (Number(item.score)>=45 ? '추천' : '관련 추천');
-    const reason = item.reason || '상품 특성과 검색 데이터를 함께 분석';
-    return grade + ' · ' + reason;
-  };
-})();
-</script>
 </body>
 </html>
