@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-28 V5.7 KEYWORD-AUTH-HARDENED
+<!-- OLLIM FRONTEND BUILD: 2026-07-28 V5.8 CLEAN-AUTH-FIX -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -1890,20 +1890,6 @@
 }
 </style>
 
-
-<style id="ollim-keyword-inline-error">
-.keyword-inline-error{
-  width:100%;
-  padding:12px 14px;
-  border:1px solid #ffd8a8;
-  background:#fff8e8;
-  color:#b86b00;
-  border-radius:10px;
-  font-size:.78rem;
-  line-height:1.45;
-}
-</style>
-
 </head>
 <body>
 <div id="splashScreen">
@@ -3634,31 +3620,13 @@ function updateKeywordCount_(){
 });
 
 
-
-function showKeywordInlineError_(message){
-  const rankonVisible = document.getElementById('autoKeywordBlock').style.display !== 'none';
-  const selectVisible = document.getElementById('selectKeywordBlock').style.display !== 'none';
-  if(rankonVisible){
-    const result = document.getElementById('autoKeywordResult');
-    const wrap = document.getElementById('autoKeywordCandidates');
-    result.style.display = 'block';
-    wrap.innerHTML = `<div class="keyword-inline-error">⚠️ ${escapeHtml(message || '오류가 발생했습니다.')}</div>`;
-  }else if(selectVisible){
-    const wrap = document.getElementById('selectKeywordCandidates');
-    wrap.style.display = 'flex';
-    wrap.innerHTML = `<div class="keyword-inline-error">⚠️ ${escapeHtml(message || '오류가 발생했습니다.')}</div>`;
-  }else{
-    showMsg('submitMsg', message || '오류가 발생했습니다.', 'warn');
-  }
-}
-
 async function getKeywordApiToken_(){
   try{
     const sess = await getSession();
     const token = String(sess && sess.token || '').trim();
     if(token) return token;
   }catch(e){}
-  // fallback: some builds cache session/token separately
+
   const candidates = [
     window.__ollimSession && window.__ollimSession.token,
     window.__OLLIM_SESSION__ && window.__OLLIM_SESSION__.token,
@@ -3669,6 +3637,7 @@ async function getKeywordApiToken_(){
     localStorage.getItem('sessionToken'),
     sessionStorage.getItem('sessionToken')
   ];
+
   for(const c of candidates){
     const t = String(c || '').trim();
     if(t) return t;
@@ -3685,8 +3654,11 @@ document.getElementById('autoKeywordBtn').addEventListener('click', async ()=>{
 
   const btn = document.getElementById('autoKeywordBtn');
   const token = await getKeywordApiToken_();
+
   if(!token){
-    showKeywordInlineError_('로그인 세션을 확인하지 못했어요. 페이지를 새로고침한 뒤 다시 시도해 주세요.');
+    const wrap = document.getElementById('autoKeywordCandidates');
+    document.getElementById('autoKeywordResult').style.display = 'block';
+    wrap.innerHTML = '<div style="padding:12px 14px;border:1px solid #ffd8a8;background:#fff8e8;color:#b86b00;border-radius:10px;font-size:.78rem;">⚠️ 로그인 세션을 확인하지 못했어요. 페이지를 새로고침한 뒤 다시 시도해 주세요.</div>';
     return;
   }
 
@@ -3708,10 +3680,13 @@ document.getElementById('autoKeywordBtn').addEventListener('click', async ()=>{
     mode: 'auto',
     limit: 10
   });
+
   clearBusy(btn);
 
   if(!res.ok){
-    showKeywordInlineError_(res.error || '키워드 추천에 실패했어요.');
+    const wrap = document.getElementById('autoKeywordCandidates');
+    document.getElementById('autoKeywordResult').style.display = 'block';
+    wrap.innerHTML = `<div style="padding:12px 14px;border:1px solid #ffd8a8;background:#fff8e8;color:#b86b00;border-radius:10px;font-size:.78rem;">⚠️ ${escapeHtml(res.error || '키워드 추천에 실패했어요.')}</div>`;
     return;
   }
 
@@ -3736,7 +3711,9 @@ document.getElementById('selectKeywordBtn').addEventListener('click', async ()=>
 
   const token = await getKeywordApiToken_();
   if(!token){
-    showKeywordInlineError_('로그인 세션을 확인하지 못했어요. 페이지를 새로고침한 뒤 다시 시도해 주세요.');
+    const wrap = document.getElementById('selectKeywordCandidates');
+    wrap.style.display = 'flex';
+    wrap.innerHTML = '<div style="padding:12px 14px;border:1px solid #ffd8a8;background:#fff8e8;color:#b86b00;border-radius:10px;font-size:.78rem;width:100%;">⚠️ 로그인 세션을 확인하지 못했어요. 페이지를 새로고침한 뒤 다시 시도해 주세요.</div>';
     return;
   }
 
@@ -3761,16 +3738,20 @@ document.getElementById('selectKeywordBtn').addEventListener('click', async ()=>
     mode: 'select',
     limit: 10
   });
+
   clearBusy(btn);
 
   if(!res.ok){
-    showKeywordInlineError_(res.error || '키워드 추천에 실패했어요.');
+    const wrap = document.getElementById('selectKeywordCandidates');
+    wrap.style.display = 'flex';
+    wrap.innerHTML = `<div style="padding:12px 14px;border:1px solid #ffd8a8;background:#fff8e8;color:#b86b00;border-radius:10px;font-size:.78rem;width:100%;">⚠️ ${escapeHtml(res.error || '키워드 추천에 실패했어요.')}</div>`;
     return;
   }
 
   const candidates = Array.isArray(res.candidates)
     ? res.candidates
     : (Array.isArray(res.items) ? res.items : []);
+
   renderSelectableKeywordCandidates_(candidates, res.message || '');
   updateKeywordCount_();
 });
