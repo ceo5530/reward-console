@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-28 PRODUCT-CONFIRM-V5.3 + TOKEN+ALIGN+ERROR-STATE -->
+<!-- OLLIM FRONTEND BUILD: 2026-07-28 V5.5 KEYWORD-ENGINE-V2 + UI-POLISH
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -1693,6 +1693,180 @@
 <style id="ollim-bottom-nav-permanent-off">
 #app .mobile-bottom-dock,#mobileBottomDock{display:none!important;visibility:hidden!important;pointer-events:none!important;}
 </style>
+
+<style id="ollim-final-ui-polish-v54">
+/* =========================================================
+   OLLIM FINAL UI POLISH V5.4
+   ========================================================= */
+
+/* 상품 URL: 입력창과 버튼을 데스크톱에서 한 줄에 강제 고정 */
+#app .product-url-row{
+  position:relative !important;
+  display:block !important;
+  width:100% !important;
+  min-height:50px !important;
+  margin:0 !important;
+  padding:0 174px 0 0 !important;
+  box-sizing:border-box !important;
+}
+#app .product-url-row #f_link{
+  display:block !important;
+  width:100% !important;
+  height:50px !important;
+  min-height:50px !important;
+  margin:0 !important;
+  padding:0 16px !important;
+  box-sizing:border-box !important;
+  border-radius:10px !important;
+}
+#app .product-url-row #productConfirmBtn{
+  position:absolute !important;
+  top:0 !important;
+  right:0 !important;
+  width:164px !important;
+  min-width:164px !important;
+  height:50px !important;
+  min-height:50px !important;
+  margin:0 !important;
+  padding:0 14px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  box-sizing:border-box !important;
+  border-radius:10px !important;
+  white-space:nowrap !important;
+}
+
+/* 링크 안내: 두 줄짜리 경고문 대신 한 개의 정돈된 안내줄 */
+#app .product-link-help{
+  display:flex;
+  align-items:flex-start;
+  gap:7px;
+  margin:8px 0 0 !important;
+  padding:0 2px;
+  color:#8a96a8;
+  font-size:.74rem;
+  line-height:1.5;
+}
+#app .product-link-help b{
+  color:#66758a;
+  font-weight:700;
+}
+#app .product-link-help-icon{
+  flex:0 0 auto;
+  color:#91a0b4;
+  font-size:.72rem;
+  transform:translateY(1px);
+}
+
+/* 확인된 상품 카드: 전후 레이아웃이 과하게 변하지 않도록 컴팩트화 */
+#app .product-confirm-card{
+  margin-top:10px !important;
+  padding:11px 14px !important;
+  min-height:76px !important;
+  grid-template-columns:58px minmax(0,1fr) 30px !important;
+  gap:12px !important;
+  border-radius:14px !important;
+  box-shadow:0 6px 20px rgba(21,35,62,.05) !important;
+}
+#app .product-confirm-thumb-wrap{
+  width:58px !important;
+  height:58px !important;
+  border-radius:11px !important;
+}
+#app .product-confirm-badge{
+  margin-bottom:4px !important;
+  font-size:.65rem !important;
+}
+#app .product-confirm-name{
+  font-size:.88rem !important;
+  line-height:1.35 !important;
+}
+#app .product-confirm-url{
+  margin-top:4px !important;
+  font-size:.66rem !important;
+}
+
+/* 대표 키워드 입력창:
+   뒤쪽 redesign CSS의 border-bottom !important까지 ID 선택자로 완전 덮어쓴다. */
+#app #autoKeywordProductName.toss-input,
+#app #selectKeywordProductName.toss-input{
+  width:100% !important;
+  height:50px !important;
+  min-height:50px !important;
+  margin:0 !important;
+  padding:0 15px !important;
+  background:#fff !important;
+  border:1px solid #dce3ec !important;
+  border-top-color:#dce3ec !important;
+  border-right-color:#dce3ec !important;
+  border-bottom-color:#dce3ec !important;
+  border-left-color:#dce3ec !important;
+  border-radius:10px !important;
+  box-shadow:none !important;
+  outline:none !important;
+  box-sizing:border-box !important;
+}
+#app #autoKeywordProductName.toss-input:focus,
+#app #selectKeywordProductName.toss-input:focus{
+  border:1px solid var(--ol-blue,#1677ff) !important;
+  border-top-color:var(--ol-blue,#1677ff) !important;
+  border-right-color:var(--ol-blue,#1677ff) !important;
+  border-bottom-color:var(--ol-blue,#1677ff) !important;
+  border-left-color:var(--ol-blue,#1677ff) !important;
+  box-shadow:
+    inset 0 0 0 1px var(--ol-blue,#1677ff),
+    0 0 0 3px rgba(22,119,255,.10) !important;
+  outline:none !important;
+}
+
+/* 추천 버튼도 키워드 입력창과 높이 통일 */
+#app .keyword-seed-row{
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) auto !important;
+  gap:8px !important;
+  align-items:stretch !important;
+}
+#app .keyword-seed-row .btn{
+  height:50px !important;
+  min-height:50px !important;
+  margin:0 !important;
+  padding:0 16px !important;
+}
+
+/* 모바일 */
+@media(max-width:700px){
+  #app .product-url-row{
+    min-height:0 !important;
+    padding-right:0 !important;
+  }
+  #app .product-url-row #productConfirmBtn{
+    position:static !important;
+    width:100% !important;
+    min-width:0 !important;
+    margin-top:8px !important;
+  }
+  #app .product-link-help{
+    margin-top:9px !important;
+  }
+  #app .keyword-seed-row{
+    grid-template-columns:minmax(0,1fr) !important;
+  }
+  #app .keyword-seed-row .btn{
+    width:100% !important;
+  }
+  #app .product-confirm-card{
+    grid-template-columns:54px minmax(0,1fr) !important;
+  }
+  #app .product-confirm-thumb-wrap{
+    width:54px !important;
+    height:54px !important;
+  }
+  #app .product-confirm-ok{
+    display:none !important;
+  }
+}
+</style>
 </head>
 <body>
 <div id="splashScreen">
@@ -2096,9 +2270,9 @@
           <div id="productConfirmOk" class="product-confirm-ok">✓</div>
         </div>
 
-      <div id="f_link_help" class="hint">
-        네이버 <b>공유용 단축 링크(naver.me)</b>는 사용할 수 없습니다.<br>
-        상품 페이지를 브라우저에서 연 뒤, 주소창의 <b>상품번호가 포함된 전체 URL</b>을 복사해 주세요.
+      <div id="f_link_help" class="product-link-help">
+        <span class="product-link-help-icon">ⓘ</span>
+        <span><b>상품번호(/products/...)</b>가 포함된 네이버 상품 전체 URL을 입력해 주세요. <b>naver.me 단축주소는 지원하지 않습니다.</b></span>
       </div>
       <div id="f_link_error" class="msg warn" role="alert" aria-live="polite"></div>
 
@@ -3407,6 +3581,8 @@ document.getElementById('autoKeywordBtn').addEventListener('click', async ()=>{
   const productName = confirmedMeta.url === productUrl ? (confirmedMeta.title || '') : '';
 
   const res = await apiCall('suggestKeyword', {
+      productUrl:String(document.getElementById('f_link')?.value || '').trim(),
+      confirmedProductTitle:String(window.__ollimConfirmedProductMeta?.title || '').trim(),
     seedKeyword,
     link: productUrl,
     productName,
@@ -6350,5 +6526,16 @@ document.getElementById('privacyWithdrawBtn')?.addEventListener('click',()=>docu
 })();
 </script>
 
+
+<script id="ollim-keyword-v2-ui-patch">
+(function(){
+  window.ollimKeywordV2Label = function(item){
+    if(!item) return '';
+    const grade = item.grade || (Number(item.score)>=45 ? '추천' : '관련 추천');
+    const reason = item.reason || '상품 특성과 검색 데이터를 함께 분석';
+    return grade + ' · ' + reason;
+  };
+})();
+</script>
 </body>
 </html>
