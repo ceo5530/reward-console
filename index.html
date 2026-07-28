@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-28 V5.9 RANKON-READONLY-HOVER-FIX -->
+<!-- OLLIM FRONTEND BUILD: 2026-07-28 V6.0 FINAL-DEMAND-ANALYSIS -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -1927,6 +1927,69 @@
 
   /* 선택 가능한 점프/베스트 후보는 기존 select-cand-row 동작을 그대로 유지 */
 
+
+  /* ===== V6.0 추천 키워드 검색 애니메이션 ===== */
+  #autoKeywordBtn.is-loading,
+  #selectKeywordBtn.is-loading{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:8px !important;
+    white-space:nowrap !important;
+  }
+
+  .keyword-search-loader{
+    position:relative;
+    width:18px;
+    height:18px;
+    display:inline-block;
+    flex:0 0 18px;
+  }
+
+  .keyword-search-lens{
+    position:absolute;
+    left:2px;
+    top:2px;
+    width:10px;
+    height:10px;
+    border:2px solid currentColor;
+    border-radius:50%;
+    box-sizing:border-box;
+    animation:ollimSearchPulse .85s ease-in-out infinite alternate;
+  }
+
+  .keyword-search-lens::after{
+    content:'';
+    position:absolute;
+    width:6px;
+    height:2px;
+    border-radius:2px;
+    background:currentColor;
+    right:-5px;
+    bottom:-3px;
+    transform:rotate(45deg);
+    transform-origin:left center;
+  }
+
+  .keyword-search-loader::after{
+    content:'';
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    border:1.5px dashed currentColor;
+    opacity:.35;
+    animation:ollimSearchSpin 1.4s linear infinite;
+  }
+
+  @keyframes ollimSearchSpin{
+    to{ transform:rotate(360deg); }
+  }
+
+  @keyframes ollimSearchPulse{
+    from{ transform:scale(.86); opacity:.55; }
+    to{ transform:scale(1.05); opacity:1; }
+  }
+
 </style>
 
 </head>
@@ -3559,18 +3622,39 @@ document.getElementById('f_product').addEventListener('change', updateCyclesOpti
 
 window.__ollimRankOnAutoKeywords = [];
 
+
 function keywordMetaText_(c){
-  if(c && (c.grade || c.reason)){
-    const bits = [];
-    if(c.grade) bits.push(String(c.grade));
-    if(c.reason) bits.push(String(c.reason));
-    return bits.join(' · ');
-  }
+  if(!c) return '';
+
+  const demand = Number(c.searchDemand ?? c.interest ?? c.trendIndex);
+  const shop = Number(c.shoppingClick || 0);
   const bits = [];
-  if(Number.isFinite(Number(c.interest))) bits.push(`검색 관심 ${Math.round(Number(c.interest))}`);
-  else if(Number.isFinite(Number(c.trendIndex))) bits.push(`검색 관심 ${Math.round(Number(c.trendIndex))}`);
-  if(Number.isFinite(Number(c.score))) bits.push(`추천점수 ${Math.round(Number(c.score))}`);
-  return bits.length ? bits.join(' · ') : '상품 관련 후보';
+
+  if(Number.isFinite(demand)){
+    if(demand >= 80) bits.push('검색 수요 매우 높음');
+    else if(demand >= 50) bits.push('검색 수요 높음');
+    else if(demand >= 20) bits.push('검색 수요 확인');
+    else bits.push('검색 수요 낮음');
+
+    bits.push(`수요지수 ${Math.round(demand)}`);
+  }
+
+  if(Number.isFinite(shop) && shop > 0){
+    bits.push(`쇼핑클릭 ${Math.round(shop)}`);
+  }
+
+  return bits.join(' · ') || 'NAVER 검색 데이터 분석';
+}
+
+function setKeywordAnalyzing_(btn){
+  if(!btn) return;
+  setKeywordAnalyzing_(btn);
+  btn.innerHTML = `
+    <span class="keyword-search-loader" aria-hidden="true">
+      <span class="keyword-search-lens"></span>
+    </span>
+    <span>검색 수요 분석 중</span>
+  `;
 }
 
 function renderReadonlyKeywordCandidates_(candidates, message){
@@ -3701,7 +3785,7 @@ document.getElementById('autoKeywordBtn').addEventListener('click', async ()=>{
     return;
   }
 
-  setBusy(btn, '분석 중...');
+  setKeywordAnalyzing_(btn);
   const confirmedMeta = window.__ollimConfirmedProductMeta || {};
   const productName = confirmedMeta.url === productUrl ? (confirmedMeta.title || '') : '';
 
