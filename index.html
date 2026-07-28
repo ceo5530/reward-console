@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-28 V5.8 CLEAN-AUTH-FIX -->
+<!-- OLLIM FRONTEND BUILD: 2026-07-28 V5.9 RANKON-READONLY-HOVER-FIX -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -1888,6 +1888,45 @@
   line-height:1.45;
   color:var(--muted);
 }
+
+  /* ===== V5.9 랭크온 추천결과 읽기전용 Hover FIX ===== */
+  #autoKeywordCandidates .auto-kw-cand-row{
+    cursor:default !important;
+    user-select:text !important;
+    background:transparent !important;
+    color:var(--page-text) !important;
+    border-color:transparent !important;
+    transform:none !important;
+    box-shadow:none !important;
+    transition:background-color .15s ease, border-color .15s ease !important;
+  }
+
+  #autoKeywordCandidates .auto-kw-cand-row:hover{
+    background:#F7F9FC !important;
+    color:var(--page-text) !important;
+    border-color:#E8EDF4 !important;
+    transform:none !important;
+    box-shadow:none !important;
+  }
+
+  #autoKeywordCandidates .auto-kw-cand-row:hover > span,
+  #autoKeywordCandidates .auto-kw-cand-row:hover b,
+  #autoKeywordCandidates .auto-kw-cand-row:hover .keyword-score{
+    color:inherit !important;
+    opacity:1 !important;
+    visibility:visible !important;
+  }
+
+  #autoKeywordCandidates .auto-kw-cand-row .keyword-score{
+    color:var(--muted) !important;
+  }
+
+  #autoKeywordCandidates .auto-kw-cand-row:hover .keyword-score{
+    color:var(--muted) !important;
+  }
+
+  /* 선택 가능한 점프/베스트 후보는 기존 select-cand-row 동작을 그대로 유지 */
+
 </style>
 
 </head>
