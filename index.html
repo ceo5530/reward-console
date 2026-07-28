@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-27 V4-STABLE-MERGE + FINAL-NO-BOTTOM-NAV -->
+<!-- OLLIM FRONTEND BUILD: 2026-07-28 HUB-KEYWORD-V2 + FINAL-NO-BOTTOM-NAV -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -682,6 +682,27 @@
   #app.role-client .sidebar-nav .client-only{display:flex !important;}
 
 
+
+  /* ===== HUB KEYWORD V2 ===== */
+  .keyword-seed-row{display:flex;gap:8px;align-items:stretch;margin-top:12px;}
+  .keyword-seed-row .toss-input{flex:1;min-width:0;margin-top:0;}
+  .keyword-seed-row .btn{flex:0 0 auto;margin-top:0;white-space:nowrap;}
+  .keyword-section-label{font-size:.78rem;font-weight:800;color:var(--page-text);margin-bottom:8px;}
+  .keyword-manual-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px;}
+  .keyword-count-badge{font-family:var(--mono);font-size:.75rem;font-weight:800;padding:4px 9px;border-radius:999px;background:#F2F4F6;color:var(--muted);white-space:nowrap;}
+  .keyword-count-badge.complete{background:rgba(18,184,134,.12);color:var(--ok);}
+  .keyword-required-hint.complete{color:var(--ok);font-weight:700;}
+  .keyword-readonly-list .auto-kw-cand-row{cursor:default;}
+  .keyword-readonly-list .auto-kw-cand-row:hover{background:#fff;color:inherit;}
+  .keyword-readonly-list .auto-kw-cand-row:hover span:last-child{color:var(--muted);}
+  .keyword-score{font-size:.7rem;color:var(--muted);white-space:nowrap;}
+  .select-cand-row.selected{background:var(--navy-2)!important;color:#fff!important;}
+  .select-cand-row.selected span{color:#fff!important;}
+  @media(max-width:600px){
+    .keyword-seed-row{flex-direction:column;}
+    .keyword-seed-row .btn{width:100%;}
+    .auto-kw-cand-row{align-items:flex-start;}
+  }
 </style>
 
 <style id="ollim-postlogin-redesign">
@@ -1882,31 +1903,53 @@
       </div>
 
       <div id="autoKeywordBlock" class="auto-kw-card" style="display:none;">
-        <div class="auto-kw-title">🎯 상품명을 입력하면 AI가 검색량 가장 높은 키워드를 찾아드려요</div>
-        <input id="autoKeywordProductName" class="toss-input" type="text" placeholder="예: 인조잔디" style="margin-top:10px;" />
-        <div id="autoKeywordResult" style="display:none;">
-          <div class="auto-kw-picked" id="autoKeywordPicked">-</div>
-          <div class="auto-kw-meta" id="autoKeywordMeta">-</div>
-          <a href="#" id="autoKeywordShowMore" class="auto-kw-more">다른 후보도 보기</a>
-          <div id="autoKeywordCandidates" class="auto-kw-candidates" style="display:none;"></div>
+        <div class="auto-kw-title">🤖 랭크온 · OLLIM 자동 키워드 운용</div>
+        <div class="hint" style="margin-top:6px;">
+          대표 키워드 1개를 입력하면 OLLIM이 관련 검색어를 분석합니다.
+          실제 진행 키워드는 시스템이 자동 결정하며 사용자가 지정하거나 변경할 수 없습니다.
         </div>
-        <button class="btn small secondary" id="autoKeywordBtn" style="margin-top:10px;">관련 키워드 찾기</button>
+        <div class="keyword-seed-row">
+          <input id="autoKeywordProductName" class="toss-input" type="text"
+                 placeholder="대표 키워드 예: 인조잔디" autocomplete="off" />
+          <button class="btn small secondary" id="autoKeywordBtn" type="button">추천 키워드 분석</button>
+        </div>
+        <div id="autoKeywordResult" style="display:none; margin-top:14px;">
+          <div class="keyword-section-label">OLLIM 분석 결과</div>
+          <div id="autoKeywordCandidates" class="auto-kw-candidates keyword-readonly-list"></div>
+          <div class="hint">위 결과는 참고용입니다. 랭크온은 시스템이 실제 운용 키워드를 자동 결정합니다.</div>
+        </div>
       </div>
 
       <div id="selectKeywordBlock" class="auto-kw-card" style="display:none;">
-        <div class="auto-kw-title">🔍 상품명을 입력하면 추천 키워드가 떠요, 최대 5개까지 골라 담으세요</div>
-        <input id="selectKeywordProductName" class="toss-input" type="text" placeholder="예: 인조잔디" style="margin-top:10px;" />
-        <button class="btn small secondary" id="selectKeywordBtn" style="margin-top:10px;">추천 키워드 찾기</button>
+        <div class="auto-kw-title">✨ OLLIM 추천 키워드</div>
+        <div class="hint" style="margin-top:6px;">
+          대표 키워드 1개를 입력하면 관련 후보를 분석해 추천합니다.
+          추천에서 고르거나 아래에 직접 입력해 <b>최종 5개</b>를 완성해주세요.
+        </div>
+        <div class="keyword-seed-row">
+          <input id="selectKeywordProductName" class="toss-input" type="text"
+                 placeholder="대표 키워드 예: 인조잔디" autocomplete="off" />
+          <button class="btn small secondary" id="selectKeywordBtn" type="button">추천 키워드 분석</button>
+        </div>
         <div id="selectKeywordCandidates" class="auto-kw-candidates" style="display:none; margin-top:12px;"></div>
       </div>
 
-      <div id="manualKeywordBlock">
-        <label>어떤 키워드로 순위를 올려드릴까요? (직접 입력, 또는 위에서 추천받아 선택)</label>
-        <div class="kw-grid">
-          <input id="f_kw1" type="text" placeholder="키워드 1" /><input id="f_kw2" type="text" placeholder="키워드 2" />
-          <input id="f_kw3" type="text" placeholder="키워드 3" /><input id="f_kw4" type="text" placeholder="키워드 4" />
+      <div id="manualKeywordBlock" style="display:none;">
+        <div class="keyword-manual-head">
+          <label style="margin:0;">최종 진행 키워드</label>
+          <span id="keywordCountBadge" class="keyword-count-badge">0 / 5</span>
+        </div>
+        <div class="hint" style="margin-top:4px;">
+          추천 키워드를 눌러 담거나 원하는 키워드를 직접 입력할 수 있습니다. 정확히 5개가 필요합니다.
+        </div>
+        <div class="kw-grid" style="margin-top:10px;">
+          <input id="f_kw1" type="text" placeholder="키워드 1" />
+          <input id="f_kw2" type="text" placeholder="키워드 2" />
+          <input id="f_kw3" type="text" placeholder="키워드 3" />
+          <input id="f_kw4" type="text" placeholder="키워드 4" />
           <input id="f_kw5" type="text" placeholder="키워드 5" />
         </div>
+        <div id="keywordRequiredHint" class="hint keyword-required-hint">키워드 5개를 모두 채우면 접수할 수 있어요.</div>
       </div>
 
       <label>경쟁사 상품도 같이 추적할까요? (선택, 최대 3개)</label>
@@ -2960,81 +3003,173 @@ function updateCyclesOptions(){
   toggleKeywordMode(product);
 }
 function toggleKeywordMode(product){
-  const isAuto = product && product.id === 'naver_rankon';
+  const isRankOn = product && product.id === 'naver_rankon';
   const isSelectable = product && (product.id === 'naver_jump' || product.id === 'coupang_best');
-  document.getElementById('autoKeywordBlock').style.display = isAuto ? 'block' : 'none';
+
+  document.getElementById('autoKeywordBlock').style.display = isRankOn ? 'block' : 'none';
   document.getElementById('selectKeywordBlock').style.display = isSelectable ? 'block' : 'none';
-  document.getElementById('manualKeywordBlock').style.display = isAuto ? 'none' : 'block';
+  document.getElementById('manualKeywordBlock').style.display = isSelectable ? 'block' : 'none';
+  updateKeywordCount_();
 }
 document.getElementById('f_product').addEventListener('change', updateCyclesOptions);
 ['f_qty','f_cycles'].forEach(id=>document.getElementById(id).addEventListener('input', ()=>{ refreshPriceBox(); refreshCouponOptions(); }));
 
-document.getElementById('autoKeywordBtn').addEventListener('click', async ()=>{
-  const productName = document.getElementById('autoKeywordProductName').value.trim();
-  if(!productName){ showMsg('submitMsg', '상품명을 먼저 입력해 주세요.', 'warn'); return; }
-  const btn = document.getElementById('autoKeywordBtn');
-  setBusy(btn, '키워드 찾는 중...');
-  const res = await apiCall('suggestKeyword', { productName });
-  clearBusy(btn);
-  if(!res.ok){ showMsg('submitMsg', res.error || '키워드 추천에 실패했어요.', 'warn'); return; }
-  applyAutoKeyword(res.best);
-  document.getElementById('autoKeywordResult').style.display = 'block';
-  const candWrap = document.getElementById('autoKeywordCandidates');
-  candWrap.innerHTML = res.candidates.map(c =>
-    `<div class="auto-kw-cand-row" data-kw="${escapeHtml(c.keyword)}" data-vol="${c.volume}" data-comp="${escapeHtml(c.compIdx)}">
-      <span>${escapeHtml(c.keyword)}</span><span>월 ${c.volume.toLocaleString('ko-KR')}회 · 경쟁 ${escapeHtml(c.compIdx)}</span>
-    </div>`).join('');
-  document.querySelectorAll('.auto-kw-cand-row').forEach(row=>{
-    row.addEventListener('click', ()=>{
-      applyAutoKeyword({ keyword: row.dataset.kw, volume: Number(row.dataset.vol), compIdx: row.dataset.comp });
-    });
-  });
-});
-document.getElementById('autoKeywordShowMore').addEventListener('click', (e)=>{
-  e.preventDefault();
-  const el = document.getElementById('autoKeywordCandidates');
-  el.style.display = el.style.display === 'none' ? 'flex' : 'none';
-});
-function applyAutoKeyword(best){
-  document.getElementById('autoKeywordPicked').textContent = best.keyword;
-  document.getElementById('autoKeywordMeta').textContent = `월 검색량 ${best.volume.toLocaleString('ko-KR')}회 · 경쟁정도 ${best.compIdx}`;
-  document.getElementById('f_kw1').value = best.keyword;
-  ['f_kw2','f_kw3','f_kw4','f_kw5'].forEach(id=>document.getElementById(id).value='');
+window.__ollimRankOnAutoKeywords = [];
+
+function keywordMetaText_(c){
+  const bits = [];
+  if(Number.isFinite(Number(c.trendIndex))) bits.push(`관심도 ${Math.round(Number(c.trendIndex))}`);
+  if(Number.isFinite(Number(c.score))) bits.push(`추천점수 ${Math.round(Number(c.score))}`);
+  if(Number(c.sourceCount) > 0) bits.push(`연관 ${Number(c.sourceCount)}건`);
+  return bits.length ? bits.join(' · ') : '연관 키워드';
 }
 
-document.getElementById('selectKeywordBtn').addEventListener('click', async ()=>{
-  const productName = document.getElementById('selectKeywordProductName').value.trim();
-  if(!productName){ showMsg('submitMsg', '상품명을 먼저 입력해 주세요.', 'warn'); return; }
-  const btn = document.getElementById('selectKeywordBtn');
-  setBusy(btn, '키워드 찾는 중...');
-  const res = await apiCall('suggestKeyword', { productName });
-  clearBusy(btn);
-  if(!res.ok){ showMsg('submitMsg', res.error || '키워드 추천에 실패했어요.', 'warn'); return; }
+function renderReadonlyKeywordCandidates_(candidates){
+  const wrap = document.getElementById('autoKeywordCandidates');
+  const list = (Array.isArray(candidates) ? candidates : []).slice(0,10);
+  wrap.innerHTML = list.map((c, i)=>`
+    <div class="auto-kw-cand-row">
+      <span><b style="font-family:var(--mono);font-size:.66rem;opacity:.55;margin-right:7px;">TOP ${i+1}</b>${escapeHtml(c.keyword)}</span>
+      <span class="keyword-score">${escapeHtml(keywordMetaText_(c))}</span>
+    </div>
+  `).join('');
+}
+
+function renderSelectableKeywordCandidates_(candidates){
   const wrap = document.getElementById('selectKeywordCandidates');
-  wrap.style.display = 'flex';
-  const currentSelected = new Set([1,2,3,4,5].map(n=>document.getElementById('f_kw'+n).value.trim()).filter(Boolean));
-  wrap.innerHTML = res.candidates.map(c => `
-    <div class="auto-kw-cand-row select-cand-row${currentSelected.has(c.keyword)?' selected':''}" data-kw="${escapeHtml(c.keyword)}">
-      <span>${escapeHtml(c.keyword)}</span><span>월 ${c.volume.toLocaleString('ko-KR')}회 · 경쟁 ${escapeHtml(c.compIdx)}</span>
-    </div>`).join('');
-  document.querySelectorAll('.select-cand-row').forEach(row=>{
-    row.addEventListener('click', ()=> toggleCandidateSelection(row));
+  const list = (Array.isArray(candidates) ? candidates : []).slice(0,10);
+  const selected = new Set(getKeywordInputs_());
+
+  wrap.innerHTML = list.map((c, i)=>`
+    <div class="auto-kw-cand-row select-cand-row${selected.has(c.keyword)?' selected':''}"
+         data-kw="${escapeHtml(c.keyword)}" role="button" tabindex="0">
+      <span><b style="font-family:var(--mono);font-size:.66rem;opacity:.55;margin-right:7px;">TOP ${i+1}</b>${escapeHtml(c.keyword)}</span>
+      <span class="keyword-score">${escapeHtml(keywordMetaText_(c))}</span>
+    </div>
+  `).join('');
+  wrap.style.display = list.length ? 'flex' : 'none';
+
+  wrap.querySelectorAll('.select-cand-row').forEach(row=>{
+    const activate = ()=>toggleCandidateSelection(row);
+    row.addEventListener('click', activate);
+    row.addEventListener('keydown', e=>{
+      if(e.key==='Enter' || e.key===' '){ e.preventDefault(); activate(); }
+    });
   });
+}
+
+function getKeywordInputs_(){
+  return [1,2,3,4,5]
+    .map(n=>document.getElementById('f_kw'+n).value.trim())
+    .filter(Boolean);
+}
+function updateKeywordCount_(){
+  const count = getKeywordInputs_().length;
+  const badge = document.getElementById('keywordCountBadge');
+  const hint = document.getElementById('keywordRequiredHint');
+
+  if(badge){
+    badge.textContent = `${count} / 5`;
+    badge.classList.toggle('complete', count === 5);
+  }
+  if(hint){
+    hint.textContent = count === 5 ? '키워드 5개가 모두 준비됐어요.' : `키워드 ${5-count}개를 더 입력해주세요.`;
+    hint.classList.toggle('complete', count === 5);
+  }
+
+  const selected = new Set(getKeywordInputs_());
+  document.querySelectorAll('#selectKeywordCandidates .select-cand-row').forEach(row=>{
+    row.classList.toggle('selected', selected.has(row.dataset.kw || ''));
+  });
+}
+
+[1,2,3,4,5].forEach(n=>{
+  document.getElementById('f_kw'+n).addEventListener('input', updateKeywordCount_);
+});
+
+document.getElementById('autoKeywordBtn').addEventListener('click', async ()=>{
+  const seedKeyword = document.getElementById('autoKeywordProductName').value.trim();
+  if(!seedKeyword){ showMsg('submitMsg', '대표 키워드를 먼저 입력해 주세요.', 'warn'); return; }
+
+  const btn = document.getElementById('autoKeywordBtn');
+  setBusy(btn, '분석 중...');
+  const res = await apiCall('suggestKeyword', {
+    seedKeyword,
+    productName: seedKeyword,
+    productId: 'naver_rankon',
+    mode: 'auto',
+    limit: 10
+  });
+  clearBusy(btn);
+
+  if(!res.ok){
+    showMsg('submitMsg', res.error || '키워드 추천에 실패했어요.', 'warn');
+    return;
+  }
+
+  const candidates = Array.isArray(res.candidates) ? res.candidates : [];
+  window.__ollimRankOnAutoKeywords = Array.isArray(res.autoKeywords) && res.autoKeywords.length
+    ? res.autoKeywords.slice(0,5)
+    : candidates.slice(0,5).map(c=>c.keyword).filter(Boolean);
+
+  renderReadonlyKeywordCandidates_(candidates);
+  document.getElementById('autoKeywordResult').style.display = 'block';
+});
+
+document.getElementById('selectKeywordBtn').addEventListener('click', async ()=>{
+  const seedKeyword = document.getElementById('selectKeywordProductName').value.trim();
+  if(!seedKeyword){ showMsg('submitMsg', '대표 키워드를 먼저 입력해 주세요.', 'warn'); return; }
+
+  const productId = document.getElementById('f_product').value;
+  const btn = document.getElementById('selectKeywordBtn');
+  setBusy(btn, '분석 중...');
+  const res = await apiCall('suggestKeyword', {
+    seedKeyword,
+    productName: seedKeyword,
+    productId,
+    mode: 'select',
+    limit: 10
+  });
+  clearBusy(btn);
+
+  if(!res.ok){
+    showMsg('submitMsg', res.error || '키워드 추천에 실패했어요.', 'warn');
+    return;
+  }
+  renderSelectableKeywordCandidates_(res.candidates || []);
+  updateKeywordCount_();
+});
+
+document.getElementById('autoKeywordProductName').addEventListener('keydown', e=>{
+  if(e.key==='Enter'){ e.preventDefault(); document.getElementById('autoKeywordBtn').click(); }
+});
+document.getElementById('selectKeywordProductName').addEventListener('keydown', e=>{
+  if(e.key==='Enter'){ e.preventDefault(); document.getElementById('selectKeywordBtn').click(); }
 });
 
 function toggleCandidateSelection(row){
-  const kw = row.dataset.kw;
+  const kw = String(row.dataset.kw || '').trim();
+  if(!kw) return;
+
   const slots = [1,2,3,4,5].map(n=>document.getElementById('f_kw'+n));
   const already = slots.find(inp => inp.value.trim() === kw);
+
   if(already){
     already.value = '';
     row.classList.remove('selected');
+    updateKeywordCount_();
     return;
   }
+
   const empty = slots.find(inp => !inp.value.trim());
-  if(!empty){ showMsg('submitMsg', '키워드는 최대 5개까지만 선택할 수 있어요. 다른 키워드를 해제한 후 다시 선택해주세요.', 'warn'); return; }
+  if(!empty){
+    showMsg('submitMsg', '키워드는 정확히 5개까지 등록할 수 있어요. 기존 키워드 하나를 지운 뒤 다시 선택해주세요.', 'warn');
+    return;
+  }
+
   empty.value = kw;
   row.classList.add('selected');
+  updateKeywordCount_();
 }
 
 function refreshPriceBox(){
@@ -3492,10 +3627,16 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
     const productId = document.getElementById('f_product').value;
     const qty = document.getElementById('f_qty').value;
     const cycles = document.getElementById('f_cycles').value;
-    const keywords = [1,2,3,4,5].map(n=>document.getElementById('f_kw'+n).value.trim()).filter(Boolean);
+    const isRankOn = productId === 'naver_rankon';
+    const isSelectableKeywordProduct = productId === 'naver_jump' || productId === 'coupang_best';
+    const keywords = isRankOn
+      ? (Array.isArray(window.__ollimRankOnAutoKeywords) ? window.__ollimRankOnAutoKeywords.slice(0,5) : [])
+      : [1,2,3,4,5].map(n=>document.getElementById('f_kw'+n).value.trim()).filter(Boolean);
+    const seedKeyword = isRankOn
+      ? document.getElementById('autoKeywordProductName').value.trim()
+      : document.getElementById('selectKeywordProductName').value.trim();
     const competitorLinks = [1,2,3].map(n=>document.getElementById('f_comp'+n).value.trim()).filter(Boolean);
     const couponId = document.getElementById('f_coupon').value;
-    const isAutoKeywordMode = document.getElementById('autoKeywordBlock').style.display !== 'none';
     if(!client || !link || !qty){
       const missing = [];
       if(!client) missing.push('업체명');
@@ -3504,9 +3645,12 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
       showMsg('submitMsg', `다음 항목이 비어있어요: ${missing.join(', ')}`, 'warn');
       return;
     }
-    if(keywords.length < 1){
-      if(isAutoKeywordMode) showMsg('submitMsg','먼저 상품명을 입력하고 "관련 키워드 찾기"를 눌러주세요.', 'warn');
-      else showMsg('submitMsg','키워드를 최소 1개 입력해 주세요.', 'warn');
+    if(isRankOn && (!seedKeyword || keywords.length < 1)){
+      showMsg('submitMsg','랭크온은 대표 키워드를 입력한 뒤 "추천 키워드 분석"을 먼저 실행해주세요.', 'warn');
+      return;
+    }
+    if(isSelectableKeywordProduct && keywords.length !== 5){
+      showMsg('submitMsg',`점프/쿠팡 베스트는 진행 키워드가 정확히 5개 필요합니다. 현재 ${keywords.length}개입니다.`, 'warn');
       return;
     }
     // 상품/경쟁사 메타정보는 접수 시 여기서 1회만 기다려서 가져온다.
@@ -3515,7 +3659,9 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
     Object.assign(payload, {
       client, phone, link, productId,
       qty: Number(qty), cycles: Number(cycles),
-      keywords, competitorLinks, couponId,
+      keywords, seedKeyword,
+      keywordMode: isRankOn ? 'AUTO' : 'SELECT',
+      competitorLinks, couponId,
       productImage: metaPayload.productImage || '',
       competitorMeta: metaPayload.competitorMeta || []
     });
