@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-28 V5.5R SAFE-REBUILD + KEYWORD-V2-CONTEXT -->
+<!-- OLLIM FRONTEND BUILD: 2026-07-28 V5.7 KEYWORD-AUTH-HARDENED
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -1867,6 +1867,43 @@
   }
 }
 </style>
+
+<style id="ollim-keyword-empty-result-fix">
+.keyword-empty-result{
+  width:100%;
+  padding:14px 15px;
+  border:1px dashed #d9e2ec;
+  border-radius:12px;
+  background:#fafbfd;
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+.keyword-empty-result b{
+  font-size:.82rem;
+  color:var(--page-text);
+}
+.keyword-empty-result span{
+  font-size:.73rem;
+  line-height:1.45;
+  color:var(--muted);
+}
+</style>
+
+
+<style id="ollim-keyword-inline-error">
+.keyword-inline-error{
+  width:100%;
+  padding:12px 14px;
+  border:1px solid #ffd8a8;
+  background:#fff8e8;
+  color:#b86b00;
+  border-radius:10px;
+  font-size:.78rem;
+  line-height:1.45;
+}
+</style>
+
 </head>
 <body>
 <div id="splashScreen">
@@ -3498,16 +3535,33 @@ document.getElementById('f_product').addEventListener('change', updateCyclesOpti
 window.__ollimRankOnAutoKeywords = [];
 
 function keywordMetaText_(c){
+  if(c && (c.grade || c.reason)){
+    const bits = [];
+    if(c.grade) bits.push(String(c.grade));
+    if(c.reason) bits.push(String(c.reason));
+    return bits.join(' · ');
+  }
   const bits = [];
-  if(Number.isFinite(Number(c.trendIndex))) bits.push(`관심도 ${Math.round(Number(c.trendIndex))}`);
+  if(Number.isFinite(Number(c.interest))) bits.push(`검색 관심 ${Math.round(Number(c.interest))}`);
+  else if(Number.isFinite(Number(c.trendIndex))) bits.push(`검색 관심 ${Math.round(Number(c.trendIndex))}`);
   if(Number.isFinite(Number(c.score))) bits.push(`추천점수 ${Math.round(Number(c.score))}`);
-  if(Number(c.sourceCount) > 0) bits.push(`연관 ${Number(c.sourceCount)}건`);
-  return bits.length ? bits.join(' · ') : '연관 키워드';
+  return bits.length ? bits.join(' · ') : '상품 관련 후보';
 }
 
-function renderReadonlyKeywordCandidates_(candidates){
+function renderReadonlyKeywordCandidates_(candidates, message){
   const wrap = document.getElementById('autoKeywordCandidates');
   const list = (Array.isArray(candidates) ? candidates : []).slice(0,10);
+
+  if(!list.length){
+    wrap.innerHTML = `
+      <div class="keyword-empty-result">
+        <b>추천 기준을 통과한 키워드가 아직 없어요.</b>
+        <span>${escapeHtml(message || '상품 특성과 검색 데이터를 더 확인한 뒤 자동 운용 키워드를 결정합니다.')}</span>
+      </div>
+    `;
+    return;
+  }
+
   wrap.innerHTML = list.map((c, i)=>`
     <div class="auto-kw-cand-row">
       <span><b style="font-family:var(--mono);font-size:.66rem;opacity:.55;margin-right:7px;">TOP ${i+1}</b>${escapeHtml(c.keyword)}</span>
@@ -3516,10 +3570,21 @@ function renderReadonlyKeywordCandidates_(candidates){
   `).join('');
 }
 
-function renderSelectableKeywordCandidates_(candidates){
+function renderSelectableKeywordCandidates_(candidates, message){
   const wrap = document.getElementById('selectKeywordCandidates');
   const list = (Array.isArray(candidates) ? candidates : []).slice(0,10);
   const selected = new Set(getKeywordInputs_());
+
+  if(!list.length){
+    wrap.innerHTML = `
+      <div class="keyword-empty-result">
+        <b>추천 기준을 통과한 키워드가 아직 없어요.</b>
+        <span>${escapeHtml(message || '아래 최종 진행 키워드에 원하는 키워드를 직접 입력해 주세요.')}</span>
+      </div>
+    `;
+    wrap.style.display = 'flex';
+    return;
+  }
 
   wrap.innerHTML = list.map((c, i)=>`
     <div class="auto-kw-cand-row select-cand-row${selected.has(c.keyword)?' selected':''}"
@@ -3528,7 +3593,7 @@ function renderSelectableKeywordCandidates_(candidates){
       <span class="keyword-score">${escapeHtml(keywordMetaText_(c))}</span>
     </div>
   `).join('');
-  wrap.style.display = list.length ? 'flex' : 'none';
+  wrap.style.display = 'flex';
 
   wrap.querySelectorAll('.select-cand-row').forEach(row=>{
     const activate = ()=>toggleCandidateSelection(row);
@@ -3568,24 +3633,77 @@ function updateKeywordCount_(){
   document.getElementById('f_kw'+n).addEventListener('input', updateKeywordCount_);
 });
 
+
+
+function showKeywordInlineError_(message){
+  const rankonVisible = document.getElementById('autoKeywordBlock').style.display !== 'none';
+  const selectVisible = document.getElementById('selectKeywordBlock').style.display !== 'none';
+  if(rankonVisible){
+    const result = document.getElementById('autoKeywordResult');
+    const wrap = document.getElementById('autoKeywordCandidates');
+    result.style.display = 'block';
+    wrap.innerHTML = `<div class="keyword-inline-error">⚠️ ${escapeHtml(message || '오류가 발생했습니다.')}</div>`;
+  }else if(selectVisible){
+    const wrap = document.getElementById('selectKeywordCandidates');
+    wrap.style.display = 'flex';
+    wrap.innerHTML = `<div class="keyword-inline-error">⚠️ ${escapeHtml(message || '오류가 발생했습니다.')}</div>`;
+  }else{
+    showMsg('submitMsg', message || '오류가 발생했습니다.', 'warn');
+  }
+}
+
+async function getKeywordApiToken_(){
+  try{
+    const sess = await getSession();
+    const token = String(sess && sess.token || '').trim();
+    if(token) return token;
+  }catch(e){}
+  // fallback: some builds cache session/token separately
+  const candidates = [
+    window.__ollimSession && window.__ollimSession.token,
+    window.__OLLIM_SESSION__ && window.__OLLIM_SESSION__.token,
+    window.sessionToken,
+    window.authToken,
+    localStorage.getItem('ollimToken'),
+    sessionStorage.getItem('ollimToken'),
+    localStorage.getItem('sessionToken'),
+    sessionStorage.getItem('sessionToken')
+  ];
+  for(const c of candidates){
+    const t = String(c || '').trim();
+    if(t) return t;
+  }
+  return '';
+}
+
 document.getElementById('autoKeywordBtn').addEventListener('click', async ()=>{
   const seedKeyword = document.getElementById('autoKeywordProductName').value.trim();
   if(!seedKeyword){ showMsg('submitMsg', '대표 키워드를 먼저 입력해 주세요.', 'warn'); return; }
 
-  const btn = document.getElementById('autoKeywordBtn');
-  setBusy(btn, '분석 중...');
   const productUrl = document.getElementById('f_link').value.trim();
-  if(!productUrl){ showMsg('submitMsg', '상품 URL을 먼저 입력해 주세요.', 'warn'); clearBusy(btn); return; }
+  if(!productUrl){ showMsg('submitMsg', '상품 URL을 먼저 입력해 주세요.', 'warn'); return; }
 
+  const btn = document.getElementById('autoKeywordBtn');
+  const token = await getKeywordApiToken_();
+  if(!token){
+    showKeywordInlineError_('로그인 세션을 확인하지 못했어요. 페이지를 새로고침한 뒤 다시 시도해 주세요.');
+    return;
+  }
+
+  setBusy(btn, '분석 중...');
   const confirmedMeta = window.__ollimConfirmedProductMeta || {};
   const productName = confirmedMeta.url === productUrl ? (confirmedMeta.title || '') : '';
 
   const res = await apiCall('suggestKeyword', {
-    productUrl: String(document.getElementById('f_link')?.value || '').trim(),
-    confirmedProductTitle: String((window.__ollimConfirmedProductMeta || {}).title || '').trim(),
+    token,
     seedKeyword,
-    link: productUrl,
+    keyword: seedKeyword,
     productName,
+    productTitle: productName,
+    confirmedProductTitle: productName,
+    productUrl,
+    url: productUrl,
+    link: productUrl,
     productId: 'naver_rankon',
     mode: 'auto',
     limit: 10
@@ -3593,16 +3711,19 @@ document.getElementById('autoKeywordBtn').addEventListener('click', async ()=>{
   clearBusy(btn);
 
   if(!res.ok){
-    showMsg('submitMsg', res.error || '키워드 추천에 실패했어요.', 'warn');
+    showKeywordInlineError_(res.error || '키워드 추천에 실패했어요.');
     return;
   }
 
-  const candidates = Array.isArray(res.candidates) ? res.candidates : [];
+  const candidates = Array.isArray(res.candidates)
+    ? res.candidates
+    : (Array.isArray(res.items) ? res.items : []);
+
   window.__ollimRankOnAutoKeywords = Array.isArray(res.autoKeywords) && res.autoKeywords.length
     ? res.autoKeywords.slice(0,5)
     : candidates.slice(0,5).map(c=>c.keyword).filter(Boolean);
 
-  renderReadonlyKeywordCandidates_(candidates);
+  renderReadonlyKeywordCandidates_(candidates, res.message || '');
   document.getElementById('autoKeywordResult').style.display = 'block';
 });
 
@@ -3610,21 +3731,32 @@ document.getElementById('selectKeywordBtn').addEventListener('click', async ()=>
   const seedKeyword = document.getElementById('selectKeywordProductName').value.trim();
   if(!seedKeyword){ showMsg('submitMsg', '대표 키워드를 먼저 입력해 주세요.', 'warn'); return; }
 
+  const productUrl = document.getElementById('f_link').value.trim();
+  if(!productUrl){ showMsg('submitMsg', '상품 URL을 먼저 입력해 주세요.', 'warn'); return; }
+
+  const token = await getKeywordApiToken_();
+  if(!token){
+    showKeywordInlineError_('로그인 세션을 확인하지 못했어요. 페이지를 새로고침한 뒤 다시 시도해 주세요.');
+    return;
+  }
+
   const productId = document.getElementById('f_product').value;
   const btn = document.getElementById('selectKeywordBtn');
   setBusy(btn, '분석 중...');
-  const productUrl = document.getElementById('f_link').value.trim();
-  if(!productUrl){ showMsg('submitMsg', '상품 URL을 먼저 입력해 주세요.', 'warn'); clearBusy(btn); return; }
 
   const confirmedMeta = window.__ollimConfirmedProductMeta || {};
   const productName = confirmedMeta.url === productUrl ? (confirmedMeta.title || '') : '';
 
   const res = await apiCall('suggestKeyword', {
-    productUrl: String(document.getElementById('f_link')?.value || '').trim(),
-    confirmedProductTitle: String((window.__ollimConfirmedProductMeta || {}).title || '').trim(),
+    token,
     seedKeyword,
-    link: productUrl,
+    keyword: seedKeyword,
     productName,
+    productTitle: productName,
+    confirmedProductTitle: productName,
+    productUrl,
+    url: productUrl,
+    link: productUrl,
     productId,
     mode: 'select',
     limit: 10
@@ -3632,10 +3764,14 @@ document.getElementById('selectKeywordBtn').addEventListener('click', async ()=>
   clearBusy(btn);
 
   if(!res.ok){
-    showMsg('submitMsg', res.error || '키워드 추천에 실패했어요.', 'warn');
+    showKeywordInlineError_(res.error || '키워드 추천에 실패했어요.');
     return;
   }
-  renderSelectableKeywordCandidates_(res.candidates || []);
+
+  const candidates = Array.isArray(res.candidates)
+    ? res.candidates
+    : (Array.isArray(res.items) ? res.items : []);
+  renderSelectableKeywordCandidates_(candidates, res.message || '');
   updateKeywordCount_();
 });
 
