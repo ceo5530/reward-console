@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-28 V6.0 FINAL-DEMAND-ANALYSIS -->
+<!-- OLLIM FRONTEND BUILD: 2026-07-28 V6.0.1 ANALYZE-BUTTON-FIX -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -3648,7 +3648,7 @@ function keywordMetaText_(c){
 
 function setKeywordAnalyzing_(btn){
   if(!btn) return;
-  setKeywordAnalyzing_(btn);
+  setBusy(btn, '검색 수요 분석 중');
   btn.innerHTML = `
     <span class="keyword-search-loader" aria-hidden="true">
       <span class="keyword-search-lens"></span>
@@ -3842,7 +3842,7 @@ document.getElementById('selectKeywordBtn').addEventListener('click', async ()=>
 
   const productId = document.getElementById('f_product').value;
   const btn = document.getElementById('selectKeywordBtn');
-  setBusy(btn, '분석 중...');
+  setKeywordAnalyzing_(btn);
 
   const confirmedMeta = window.__ollimConfirmedProductMeta || {};
   const productName = confirmedMeta.url === productUrl ? (confirmedMeta.title || '') : '';
