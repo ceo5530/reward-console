@@ -703,6 +703,98 @@
     .keyword-seed-row .btn{width:100%;}
     .auto-kw-cand-row{align-items:flex-start;}
   }
+
+  /* ===== 상품 확인 카드 V4 ===== */
+  .product-confirm-actions{
+    display:flex;
+    justify-content:flex-end;
+    margin-top:8px;
+  }
+  .product-confirm-btn{
+    min-width:150px;
+    font-weight:800;
+  }
+  .product-confirm-card{
+    margin-top:12px;
+    padding:14px;
+    border:1px solid #E3E8EF;
+    border-radius:16px;
+    background:linear-gradient(180deg,#FFFFFF 0%,#FAFBFC 100%);
+    display:grid;
+    grid-template-columns:72px minmax(0,1fr) auto;
+    gap:14px;
+    align-items:center;
+    box-shadow:0 8px 24px rgba(15,23,42,.06);
+  }
+  .product-confirm-thumb-wrap{
+    width:72px;
+    height:72px;
+    border-radius:14px;
+    overflow:hidden;
+    background:#F2F4F6;
+    border:1px solid #EDF0F3;
+  }
+  .product-confirm-thumb{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .product-confirm-info{min-width:0;}
+  .product-confirm-badge{
+    display:inline-flex;
+    align-items:center;
+    padding:3px 8px;
+    border-radius:999px;
+    background:rgba(18,184,134,.10);
+    color:var(--ok);
+    font-size:.68rem;
+    font-weight:800;
+    margin-bottom:6px;
+  }
+  .product-confirm-name{
+    font-size:.95rem;
+    line-height:1.4;
+    font-weight:800;
+    color:var(--page-text);
+    overflow-wrap:anywhere;
+  }
+  .product-confirm-url{
+    margin-top:5px;
+    font-size:.69rem;
+    line-height:1.4;
+    color:var(--muted);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .product-confirm-ok{
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:var(--ok);
+    color:white;
+    font-weight:900;
+    font-size:.9rem;
+  }
+  .product-confirm-card.loading .product-confirm-ok{
+    background:#DDE3EA;
+    color:#8491A3;
+  }
+  @media(max-width:600px){
+    .product-confirm-actions{justify-content:stretch;}
+    .product-confirm-btn{width:100%;}
+    .product-confirm-card{
+      grid-template-columns:60px minmax(0,1fr);
+      gap:12px;
+      padding:12px;
+    }
+    .product-confirm-thumb-wrap{width:60px;height:60px;border-radius:12px;}
+    .product-confirm-ok{display:none;}
+  }
 </style>
 
 <style id="ollim-postlogin-redesign">
@@ -1888,6 +1980,24 @@
       <input id="f_link" type="url" inputmode="url" autocomplete="url"
              placeholder="예: https://smartstore.naver.com/스토어명/products/상품번호"
              aria-describedby="f_link_help f_link_error" />
+        <div class="product-confirm-actions">
+          <button class="btn secondary product-confirm-btn" id="productConfirmBtn" type="button">
+            🔎 상품 확인하기
+          </button>
+        </div>
+
+        <div id="productConfirmCard" class="product-confirm-card" style="display:none;">
+          <div class="product-confirm-thumb-wrap">
+            <img id="productConfirmThumb" class="product-confirm-thumb" alt="상품 썸네일" />
+          </div>
+          <div class="product-confirm-info">
+            <div class="product-confirm-badge">확인된 상품</div>
+            <div id="productConfirmName" class="product-confirm-name">상품명을 불러오는 중...</div>
+            <div id="productConfirmUrl" class="product-confirm-url"></div>
+          </div>
+          <div class="product-confirm-ok">✓</div>
+        </div>
+
       <div id="f_link_help" class="hint">
         네이버 <b>공유용 단축 링크(naver.me)</b>는 사용할 수 없습니다.<br>
         상품 페이지를 브라우저에서 연 뒤, 주소창의 <b>상품번호가 포함된 전체 URL</b>을 복사해 주세요.
@@ -3002,6 +3112,69 @@ function updateCyclesOptions(){
   refreshPriceBox();
   toggleKeywordMode(product);
 }
+
+window.__ollimConfirmedProductMeta = { url:'', title:'', image:'' };
+
+function resetConfirmedProductMeta_(){
+  window.__ollimConfirmedProductMeta = { url:'', title:'', image:'' };
+  const card = document.getElementById('productConfirmCard');
+  if(card) card.style.display = 'none';
+}
+
+document.getElementById('f_link').addEventListener('input', ()=>{
+  const current = document.getElementById('f_link').value.trim();
+  if(window.__ollimConfirmedProductMeta.url && current !== window.__ollimConfirmedProductMeta.url){
+    resetConfirmedProductMeta_();
+  }
+});
+
+document.getElementById('productConfirmBtn').addEventListener('click', async ()=>{
+  const url = document.getElementById('f_link').value.trim();
+  if(!url){
+    showMsg('submitMsg', '상품 URL을 먼저 입력해 주세요.', 'warn');
+    return;
+  }
+
+  const btn = document.getElementById('productConfirmBtn');
+  const card = document.getElementById('productConfirmCard');
+  const thumb = document.getElementById('productConfirmThumb');
+  const nameEl = document.getElementById('productConfirmName');
+  const urlEl = document.getElementById('productConfirmUrl');
+
+  setBusy(btn, '상품 확인 중...');
+  card.style.display = 'grid';
+  card.classList.add('loading');
+  nameEl.textContent = '상품 정보를 확인하고 있어요...';
+  urlEl.textContent = url;
+  thumb.removeAttribute('src');
+
+  const res = await apiCall('resolveProductMeta', { url });
+  clearBusy(btn);
+
+  if(!res.ok || !res.title){
+    card.style.display = 'none';
+    resetConfirmedProductMeta_();
+    showMsg('submitMsg', res.error || '상품 정보를 확인하지 못했어요. 네이버 상품 전체 URL인지 확인해 주세요.', 'warn');
+    return;
+  }
+
+  window.__ollimConfirmedProductMeta = {
+    url,
+    title:String(res.title || '').trim(),
+    image:String(res.image || '').trim()
+  };
+
+  nameEl.textContent = window.__ollimConfirmedProductMeta.title;
+  urlEl.textContent = url;
+  if(window.__ollimConfirmedProductMeta.image){
+    thumb.src = window.__ollimConfirmedProductMeta.image;
+    thumb.style.display = 'block';
+  }else{
+    thumb.style.display = 'none';
+  }
+  card.classList.remove('loading');
+});
+
 function toggleKeywordMode(product){
   const isRankOn = product && product.id === 'naver_rankon';
   const isSelectable = product && (product.id === 'naver_jump' || product.id === 'coupang_best');
@@ -3093,9 +3266,16 @@ document.getElementById('autoKeywordBtn').addEventListener('click', async ()=>{
 
   const btn = document.getElementById('autoKeywordBtn');
   setBusy(btn, '분석 중...');
+  const productUrl = document.getElementById('f_link').value.trim();
+  if(!productUrl){ showMsg('submitMsg', '상품 URL을 먼저 입력해 주세요.', 'warn'); clearBusy(btn); return; }
+
+  const confirmedMeta = window.__ollimConfirmedProductMeta || {};
+  const productName = confirmedMeta.url === productUrl ? (confirmedMeta.title || '') : '';
+
   const res = await apiCall('suggestKeyword', {
     seedKeyword,
-    productName: seedKeyword,
+    link: productUrl,
+    productName,
     productId: 'naver_rankon',
     mode: 'auto',
     limit: 10
@@ -3123,9 +3303,16 @@ document.getElementById('selectKeywordBtn').addEventListener('click', async ()=>
   const productId = document.getElementById('f_product').value;
   const btn = document.getElementById('selectKeywordBtn');
   setBusy(btn, '분석 중...');
+  const productUrl = document.getElementById('f_link').value.trim();
+  if(!productUrl){ showMsg('submitMsg', '상품 URL을 먼저 입력해 주세요.', 'warn'); clearBusy(btn); return; }
+
+  const confirmedMeta = window.__ollimConfirmedProductMeta || {};
+  const productName = confirmedMeta.url === productUrl ? (confirmedMeta.title || '') : '';
+
   const res = await apiCall('suggestKeyword', {
     seedKeyword,
-    productName: seedKeyword,
+    link: productUrl,
+    productName,
     productId,
     mode: 'select',
     limit: 10
