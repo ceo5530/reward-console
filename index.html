@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-29 V6.0.4 SUBMIT-DEBUG-DISPLAY -->
+<!-- OLLIM FRONTEND BUILD: 2026-07-29 V6.0.5 FAST-SUBMIT -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -4456,28 +4456,15 @@ document.getElementById('submitBtn').addEventListener('click', (e)=>{
 }, true);
 
 
-async function resolveSubmissionMetaForPayload(link, competitorLinks){
-  const session = await getSession();
-  const token = String(session && session.token || '').trim();
-
+async function resolveSubmissionMetaForPayload(link, competitorLinks, token){
   const confirmed = window.__ollimConfirmedProductMeta || {};
   let productTitle = '';
   let productImage = '';
 
+  // 이미 '상품 확인하기'에서 확인한 메타는 절대 다시 조회하지 않는다.
   if(String(confirmed.url || '').trim() === String(link || '').trim()){
     productTitle = String(confirmed.title || '').trim();
     productImage = String(confirmed.image || '').trim();
-  }
-
-  // 상품 확인 버튼을 생략했거나 확인 카드가 초기화된 경우에도 접수 자체가 깨지지 않도록 보강.
-  if(token && (!productTitle || !productImage)){
-    try{
-      const res = await apiCall('resolveProductMeta', { token, url:link });
-      if(res && res.ok){
-        productTitle = productTitle || String(res.title || '').trim();
-        productImage = productImage || String(res.image || '').trim();
-      }
-    }catch(e){}
   }
 
   const links = (Array.isArray(competitorLinks) ? competitorLinks : [])
@@ -4485,23 +4472,52 @@ async function resolveSubmissionMetaForPayload(link, competitorLinks){
     .filter(Boolean)
     .slice(0,3);
 
-  const competitorMeta = [];
-  if(token){
-    for(const url of links){
-      try{
-        const res = await apiCall('resolveProductMeta', { token, url });
-        competitorMeta.push({
-          url,
-          title:res && res.ok ? String(res.title || '').trim() : '',
-          image:res && res.ok ? String(res.image || '').trim() : ''
-        });
-      }catch(e){
-        competitorMeta.push({ url, title:'', image:'' });
-      }
-    }
+  // 메인상품이 확인되지 않은 경우에만 1회 보강.
+  const mainPromise = (!productTitle && token)
+    ? apiCall('resolveProductMeta', { token, url:link })
+        .then(res => res && res.ok ? {
+          title:String(res.title||'').trim(),
+          image:String(res.image||'').trim()
+        } : null)
+        .catch(()=>null)
+    : Promise.resolve(null);
+
+  // 경쟁사 1~3개를 순차 호출하지 않고 동시에 조회한다.
+  const competitorPromise = token
+    ? Promise.all(links.map(url =>
+        apiCall('resolveProductMeta', { token, url })
+          .then(res => ({
+            url,
+            title:res && res.ok ? String(res.title||'').trim() : '',
+            image:res && res.ok ? String(res.image||'').trim() : ''
+          }))
+          .catch(()=>({url,title:'',image:''}))
+      ))
+    : Promise.resolve(links.map(url=>({url,title:'',image:''})));
+
+  // 메타 조회가 네이버/HUB 응답 때문에 오래 걸려도 접수 자체를 막지 않는다.
+  // 2.2초가 넘으면 현재 확보된 정보만으로 접수하고, 승인 후 기존 hydrate 로직이 보강한다.
+  const timeout = new Promise(resolve =>
+    setTimeout(()=>resolve({ timedOut:true, main:null, competitors:[] }), 2200)
+  );
+
+  const combined = Promise.all([mainPromise, competitorPromise]).then(([main, competitors])=>({
+    timedOut:false, main, competitors
+  }));
+
+  const result = await Promise.race([combined, timeout]);
+
+  if(result && result.main){
+    productTitle = productTitle || result.main.title || '';
+    productImage = productImage || result.main.image || '';
   }
 
-  return { productTitle, productImage, competitorMeta };
+  return {
+    productTitle,
+    productImage,
+    competitorMeta: result && Array.isArray(result.competitors) ? result.competitors : [],
+    metaTimedOut: !!(result && result.timedOut)
+  };
 }
 
 document.getElementById('submitBtn').addEventListener('click', async ()=>{
@@ -4579,9 +4595,13 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
       showMsg('submitMsg',`점프/쿠팡 베스트는 진행 키워드가 정확히 5개 필요합니다. 현재 ${keywords.length}개입니다.`, 'warn');
       return;
     }
-    // 상품/경쟁사 메타정보는 접수 시 여기서 1회만 기다려서 가져온다.
-    // 이전 버전처럼 document click 뒤에서 실행하면 API 접수가 먼저 끝나 썸네일이 저장되지 않는 문제가 있었다.
-    const metaPayload = await resolveSubmissionMetaForPayload(link, competitorLinks);
+    const submitBtn = document.getElementById('submitBtn');
+    const isEditing = !!editingSubmissionId;
+    setBusy(submitBtn, isEditing ? '수정 처리 중...' : '접수 처리 중...');
+
+    // 상품확인에서 이미 확보한 메타는 재조회하지 않고,
+    // 경쟁사 메타는 병렬조회 + 최대 2.2초까지만 기다린다.
+    const metaPayload = await resolveSubmissionMetaForPayload(link, competitorLinks, session.token);
     Object.assign(payload, {
       client, phone, link, productId,
       qty: Number(qty), cycles: Number(cycles),
@@ -4597,7 +4617,9 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
   const submitBtn = document.getElementById('submitBtn');
   const isEditing = !!editingSubmissionId;
   if(isEditing) payload.submissionId = editingSubmissionId;
-  setBusy(submitBtn, isEditing ? '수정 처리 중...' : '접수 처리 중...');
+  if(!submitBtn.classList.contains('is-loading')){
+    setBusy(submitBtn, isEditing ? '수정 처리 중...' : '접수 처리 중...');
+  }
   const res = await apiCall(isEditing ? 'editSubmission' : 'submit', payload);
   clearBusy(submitBtn);
   if(res.ok){
@@ -4614,9 +4636,10 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
     }
     if(isYoutube){ ['y_phone','y_date','y_location','y_notes'].forEach(id=>document.getElementById(id).value=''); }
     else { ['f_phone','f_link','f_qty','f_kw1','f_kw2','f_kw3','f_kw4','f_kw5','f_comp1','f_comp2','f_comp3'].forEach(id=>document.getElementById(id).value=''); document.getElementById('f_coupon').value=''; refreshPriceBox(); }
-    await loadCoupons();
+    // 접수 완료 UI는 즉시 끝내고, 부가 목록 갱신은 백그라운드로 처리한다.
     invalidateSubmissionsCache();
-    renderTable();
+    Promise.resolve().then(()=>loadCoupons()).catch(()=>{});
+    Promise.resolve().then(()=>renderTable()).catch(()=>{});
   } else {
     const parts = [res.error || (isEditing ? '수정 실패' : '접수 실패')];
     if(res.debugStage) parts.push(`단계: ${res.debugStage}`);
