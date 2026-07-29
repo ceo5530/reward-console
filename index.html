@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-29 V6.2.2 BILLING-STATUS+ZIP-FIX -->
+<!-- OLLIM FRONTEND BUILD: 2026-07-29 V6.3.0 SIGNUP-HUB-V6-SPEC -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -2222,6 +2222,46 @@
     color:#287A4B;
   }
 
+
+/* ===== V6.3 실제 회원가입 · V6 목업 명세 ===== */
+.signup-v6-screen{background:radial-gradient(circle at 8% 0%,rgba(36,107,253,.09),transparent 32%),radial-gradient(circle at 100% 18%,rgba(255,112,133,.08),transparent 30%),#F5F7FB;color:#101828;}
+.signup-v6-screen.active{display:block!important;}
+.sv6-top{height:72px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;max-width:1120px;margin:auto;padding:0 24px;position:sticky;top:0;z-index:3;background:rgba(245,247,251,.86);backdrop-filter:blur(14px);}
+.sv6-back-home,.sv6-text-btn,.sv6-link-btn{border:0;background:none;color:#667085;padding:0;font-weight:700;cursor:pointer;}
+.sv6-back-home{justify-self:start;font-size:12px}.sv6-logo{font-size:24px;font-weight:900;letter-spacing:-1px}.sv6-logo span{color:#246BFD}
+.sv6-progress-wrap{justify-self:end;display:flex;align-items:center;gap:12px;font-size:12px;color:#7C879B}.sv6-progress{width:130px;height:6px;background:#E7ECF4;border-radius:99px;overflow:hidden}.sv6-progress i{display:block;height:100%;background:#246BFD;width:20%;transition:.3s}
+.sv6-main{max-width:900px;margin:30px auto 80px;padding:0 20px}.sv6-hero{text-align:center;margin:12px 0 30px}.sv6-eyebrow{font-size:12px;font-weight:800;color:#246BFD;letter-spacing:.03em}.sv6-hero h1{font-size:34px;letter-spacing:-1.6px;line-height:1.2;margin:9px 0 10px}.sv6-hero p{margin:0;color:#667085;line-height:1.65;font-size:14px}
+.sv6-card{background:rgba(255,255,255,.96);border:1px solid #E6EAF0;border-radius:24px;box-shadow:0 18px 55px rgba(32,52,84,.08);padding:30px}.sv6-step{display:none}.sv6-step.active{display:block}
+.sv6-step-title{margin-bottom:22px}.sv6-step-title .num{font-size:12px;color:#246BFD;font-weight:800}.sv6-step-title h2{font-size:23px;letter-spacing:-.7px;margin:6px 0 7px;line-height:1.35}.sv6-step-title p{font-size:13px;color:#667085;margin:0;line-height:1.55}
+.signup-v6-screen label{display:block;font-size:13px;font-weight:800;margin:18px 0 8px}.signup-v6-screen input{width:100%;border:1px solid #D8DEE8;border-radius:13px;padding:14px 15px;outline:none;background:#fff;color:#101828;min-height:50px}.signup-v6-screen input:focus{border-color:#246BFD;box-shadow:0 0 0 3px rgba(36,107,253,.08)}
+.sv6-row{display:flex;gap:9px;align-items:stretch}.sv6-btn{border:0;border-radius:13px;background:#246BFD;color:#fff;font-weight:800;padding:0 22px;min-height:50px;white-space:nowrap;word-break:keep-all;flex:0 0 auto}.sv6-btn.secondary{background:#fff;color:#344054;border:1px solid #DDE3EC}.sv6-btn:disabled{opacity:.45;cursor:not-allowed}
+.sv6-hint{font-size:12px;color:#8A94A6;margin-top:8px;line-height:1.5}.sv6-error{display:none;margin-top:12px;border-radius:13px;padding:13px 14px;font-size:12px;line-height:1.55;background:#FFF5F5;border:1px solid #F4C7C7;color:#9E2A2A}.sv6-error.show{display:block}.sv6-error.big{margin-top:16px}
+.sv6-product-preview{display:none;align-items:center;gap:14px;margin-top:14px;padding:14px;border:1px solid #DDE7FB;background:#F7FAFF;border-radius:15px}.sv6-product-preview.show{display:flex}.sv6-product-preview.compact{margin-bottom:18px}.sv6-thumb{width:68px;height:68px;border-radius:13px;background:#EEF3FB;overflow:hidden;display:grid;place-items:center;flex:none}.sv6-thumb img{width:100%;height:100%;object-fit:cover}.sv6-product-meta{min-width:0}.sv6-product-meta small{display:block;color:#718096;margin-bottom:5px}.sv6-product-meta strong{display:block;font-size:15px;line-height:1.45;word-break:keep-all;overflow-wrap:anywhere}.sv6-ok{font-size:11px;font-weight:800;color:#1F8F59;margin-top:5px}
+.sv6-actions{display:flex;justify-content:space-between;gap:10px;margin-top:26px;padding-top:20px;border-top:1px solid #EDF0F5}.sv6-actions .right{display:flex;gap:8px}
+.sv6-loader{display:none;text-align:center;padding:42px 8px}.sv6-loader.show{display:block}.sv6-spinner{width:38px;height:38px;border:3px solid #E4EAF2;border-top-color:#246BFD;border-radius:50%;margin:0 auto 14px;animation:spin .8s linear infinite}
+.sv6-result{display:none}.sv6-result.show{display:block}.sv6-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}.sv6-metric{border:1px solid #E6EAF0;border-radius:16px;padding:17px;background:#fff}.sv6-metric>span:first-child{font-size:11px;color:#7B8799}.sv6-metric strong{display:block;font-size:20px;margin-top:7px;letter-spacing:-.45px;line-height:1.25}.sv6-metric .blue{color:#246BFD}.sv6-source{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;background:#F2F5FA;color:#667085;font-size:10px;font-weight:800;margin-top:8px}
+.sv6-panel{border:1px solid #E6EAF0;border-radius:17px;padding:18px;background:#fff}.sv6-panel h3{font-size:14px;margin:0 0 14px;letter-spacing:-.25px;line-height:1.35}.sv6-bars{height:90px;display:flex;align-items:end;gap:5px}.sv6-bars i{flex:1;min-width:3px;background:#DCE6FF;border-radius:5px 5px 2px 2px}.sv6-bars i:nth-last-child(-n+5){background:#78A4FF}
+.sv6-section-head{display:flex;align-items:center;justify-content:space-between;margin:18px 0 10px}.sv6-section-head h3{margin:0;font-size:15px}.sv6-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sv6-device-bars{display:grid;gap:16px;margin-top:6px}.sv6-device-row{display:grid;gap:7px}.sv6-device-label{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:#667085}.sv6-device-label b{font-size:14px;color:#101828;font-variant-numeric:tabular-nums}.sv6-device-track{height:12px;border-radius:999px;background:#EDF2F8;overflow:hidden}.sv6-device-track i{display:block;height:100%;border-radius:999px;background:#246BFD}.sv6-device-track i.pc{background:#AFC7FF}
+.sv6-gender-wrap{display:flex;align-items:center;gap:22px;min-height:150px}.sv6-gender-donut{width:126px;height:126px;border-radius:50%;background:conic-gradient(#246BFD 0 50%,#D9E5FF 50% 100%);position:relative;flex:none}.sv6-gender-donut:after{content:"";position:absolute;inset:24px;background:#fff;border-radius:50%}.sv6-gender-center{position:absolute;inset:0;z-index:1;display:grid;place-items:center;text-align:center;font-size:11px;color:#7B8799;line-height:1.35}.sv6-gender-center b{display:block;color:#101828;font-size:17px}.sv6-gender-legend{display:grid;gap:12px;flex:1}.sv6-gender-legend>div{display:grid;grid-template-columns:10px 1fr auto;gap:8px;align-items:center;font-size:12px}.sv6-gender-legend i{width:10px;height:10px;border-radius:50%;background:#246BFD}.sv6-gender-legend i.female{background:#D9E5FF}.sv6-gender-legend b{font-size:14px;font-variant-numeric:tabular-nums}
+.sv6-age-row{display:grid;grid-template-columns:48px minmax(0,1fr) 42px;gap:10px;align-items:center;margin:9px 0;font-size:12px}.sv6-age-row b{text-align:right;font-variant-numeric:tabular-nums}.sv6-age-bar{height:8px;background:#EDF1F6;border-radius:99px;overflow:hidden}.sv6-age-bar i{display:block;height:100%;background:#7AA5FF;border-radius:99px}
+.sv6-chips{display:flex;flex-wrap:wrap;gap:7px}.sv6-chip{padding:8px 11px;border-radius:999px;background:#F4F7FB;border:1px solid #E4EAF1;font-size:12px}.sv6-insight{margin-top:12px;background:#F4F8FF;border:1px solid #D9E5FF;border-radius:17px;padding:18px;line-height:1.65;font-size:13px}.sv6-insight .sv6-badge{display:inline-flex;padding:4px 8px;border-radius:99px;background:#EAF2FF;color:#175CD3;font-size:10px;font-weight:800;margin-bottom:10px}.sv6-insight b{color:#175CD3}
+.sv6-form-stack{display:grid;gap:2px;max-width:620px}.sv6-form-stack .sv6-row .sv6-btn{min-width:126px}.sv6-referral{margin-top:16px;padding:16px;border:1px solid #E6EAF0;background:#FAFBFD;border-radius:14px}.sv6-ref-title{display:flex;align-items:center;justify-content:space-between;gap:10px}.sv6-ref-title b{font-size:13px}.sv6-ref-title span{font-size:10px;color:#7C879B;background:#EEF1F5;padding:3px 7px;border-radius:99px}.sv6-referral .sv6-btn{min-width:78px}
+.sv6-terms{display:grid;gap:9px}.sv6-term{display:grid!important;grid-template-columns:auto 1fr auto;align-items:flex-start;gap:10px;padding:13px;border:1px solid #E6EAF0;border-radius:13px;background:#fff;margin:0!important}.sv6-term.all{background:#F7F9FC;border-color:#DDE4EE}.sv6-term input{width:auto!important;min-height:0!important;margin-top:2px}.sv6-term b{font-size:13px}.sv6-term small{display:block;color:#8A94A6;margin-top:3px;line-height:1.4;font-weight:500}.sv6-link-btn{font-size:11px;color:#667085;text-decoration:underline}
+.sv6-complete{text-align:center;padding:18px 0 8px}.sv6-complete-icon{width:66px;height:66px;border-radius:50%;background:#EAF8F0;color:#1F8F59;display:grid;place-items:center;font-size:30px;margin:0 auto 16px}.sv6-complete h2{font-size:25px;margin:0 0 9px}.sv6-complete p{color:#667085;line-height:1.6;margin:0}.sv6-next-card{margin:20px auto 0;border:1px solid #E6EAF0;border-radius:15px;padding:16px;text-align:left;background:#FAFBFD;max-width:620px}.sv6-next-card b{font-size:13px}.sv6-next-card p{font-size:12px;margin:6px 0 0}.sv6-complete>.sv6-btn{margin-top:20px;min-width:220px}
+.sv6-login-link{text-align:center;color:#8A94A6;font-size:12px;margin-top:18px}.sv6-login-link button{border:0;background:none;color:#246BFD;font-weight:800;cursor:pointer}
+@media(max-width:720px){
+  .sv6-top{height:64px;padding:0 16px;grid-template-columns:1fr auto 1fr}.sv6-logo{font-size:20px}.sv6-progress{width:82px}.sv6-progress-wrap{gap:7px}
+  .sv6-main{padding:0 14px;margin-top:18px}.sv6-card{padding:20px;border-radius:19px}.sv6-hero h1{font-size:27px}.sv6-hero p{font-size:13px}
+  .sv6-row{display:grid;grid-template-columns:minmax(0,1fr) auto}.sv6-row .sv6-btn{min-width:112px}.sv6-metrics,.sv6-grid2{grid-template-columns:1fr}
+  .sv6-actions{display:flex}.sv6-actions>.sv6-btn,.sv6-actions .right,.sv6-actions .right .sv6-btn{flex:1}.sv6-actions .right{display:flex}
+  .sv6-gender-wrap{justify-content:center;gap:18px}.sv6-gender-donut{width:116px;height:116px}.sv6-gender-donut:after{inset:22px}
+  .sv6-term{grid-template-columns:auto minmax(0,1fr) auto}.sv6-form-stack{max-width:none}
+}
+@media(max-width:420px){
+  .sv6-row{grid-template-columns:1fr}.sv6-row .sv6-btn{width:100%;min-width:0}.sv6-actions{gap:8px}.sv6-actions .sv6-btn{padding:0 14px}.sv6-section-head{align-items:flex-start;gap:10px}.sv6-section-head .sv6-source{margin-top:0}
+}
+
 </style>
 
 </head>
@@ -2242,8 +2282,8 @@
     <div class="mark" style="width:40px;height:40px;border-radius:11px;background:#272058; margin:0 auto 30px; display:flex; align-items:center; justify-content:center;">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 18L12 5L20 18" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 18L12 9.5L20 18" stroke="#B7ACFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </div>
-    <div class="gateway-headline">내 상품,<br>몇 등일까요?</div>
-    <div class="gateway-sub">스마트스토어 링크 하나면 충분해요</div>
+    <div class="gateway-headline">내 상품,<br>시장 가능성은 어떨까요?</div>
+    <div class="gateway-sub">상품 링크와 대표 키워드 하나면 충분해요</div>
   </div>
   <div class="gateway-peek">
     <div style="height:64px; background:#272058;"></div>
@@ -2254,7 +2294,7 @@
     <div class="gateway-chevron" style="animation:hintLeft 1.6s ease-in-out infinite;">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="transform:rotate(-90deg);"><path d="M4 18L12 5L20 18" stroke="#3A31A0" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 18L12 9.5L20 18" stroke="#B7ACFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </div>
-    <div class="gateway-hint-label" style="writing-mode:vertical-rl;">밀어서 진단 시작</div>
+    <div class="gateway-hint-label" style="writing-mode:vertical-rl;">밀어서 무료 진단</div>
   </div>
   <div id="gatewayBottomHint" class="gateway-hint-bottom">
     <div style="font-size:13.5px; color:#191F28; font-weight:700; margin-bottom:12px;">우리의 상위 랭커님이세요?</div>
@@ -2265,12 +2305,140 @@
   </div>
 </div>
 
-<div id="diagnosticScreen" class="apple-bg">
-  <div class="diag-header">
-    <button class="back-link" id="diagBack" style="margin:0;">‹ 처음으로</button>
-  </div>
-  <div id="diagChatBody" class="diag-chat-body"></div>
-  <div class="msg" id="diagMsg" style="margin:0 22px 20px;"></div>
+<div id="diagnosticScreen" class="apple-bg signup-v6-screen">
+  <header class="sv6-top">
+    <button class="sv6-back-home" id="diagBack" type="button">‹ 처음으로</button>
+    <div class="sv6-logo">OLLIM<span>.</span></div>
+    <div class="sv6-progress-wrap"><span id="sv6StepLabel">1 / 5</span><div class="sv6-progress"><i id="sv6ProgressBar"></i></div></div>
+  </header>
+
+  <main class="sv6-main">
+    <section class="sv6-hero">
+      <div class="sv6-eyebrow">OLLIM START</div>
+      <h1 id="sv6HeroTitle">판매 중인 상품부터 확인해볼게요.</h1>
+      <p id="sv6HeroSub">가입 전에 내 상품과 시장을 짧게 진단합니다. 입력한 정보는 이후 OLLIM 설정에 이어집니다.</p>
+    </section>
+
+    <section class="sv6-card">
+      <div class="sv6-step active" data-sv6-step="1">
+        <div class="sv6-step-title"><div class="num">STEP 01</div><h2>분석할 상품을 알려주세요.</h2><p>네이버 스마트스토어 상품 링크를 입력하면 상품을 먼저 확인합니다.</p></div>
+        <label>상품 URL</label>
+        <div class="sv6-row">
+          <input id="sv6ProductUrl" type="url" placeholder="https://smartstore.naver.com/스토어명/products/상품번호">
+          <button class="sv6-btn" id="sv6ProductConfirmBtn" type="button">상품 확인</button>
+        </div>
+        <div class="sv6-hint">공유용 단축 링크보다 상품번호가 포함된 네이버 상품 전체 URL을 권장합니다.</div>
+        <div id="sv6ProductError" class="sv6-error"></div>
+        <div id="sv6ProductPreview" class="sv6-product-preview">
+          <div class="sv6-thumb"><img id="sv6ProductImage" alt=""></div>
+          <div class="sv6-product-meta"><small>확인된 상품</small><strong id="sv6ProductTitle">-</strong><div class="sv6-ok">✓ 상품을 확인했습니다</div></div>
+        </div>
+        <div class="sv6-actions"><span></span><div class="right"><button class="sv6-btn" id="sv6Step1Next" type="button" disabled>다음</button></div></div>
+      </div>
+
+      <div class="sv6-step" data-sv6-step="2">
+        <div class="sv6-step-title"><div class="num">STEP 02</div><h2>가장 중요하게 생각하는 대표 키워드는 무엇인가요?</h2><p>전문적인 키워드일 필요는 없습니다. 떠오르는 핵심 검색어 하나만 입력해 주세요.</p></div>
+        <div class="sv6-product-preview show compact">
+          <div class="sv6-thumb"><img id="sv6ProductImage2" alt=""></div>
+          <div class="sv6-product-meta"><small>분석 상품</small><strong id="sv6ProductTitle2">-</strong></div>
+        </div>
+        <label>대표 키워드</label>
+        <input id="sv6Keyword" type="text" maxlength="30" placeholder="예: 야자매트">
+        <div class="sv6-hint">입력한 키워드를 기준으로 검색 관심과 네이버 쇼핑 반응을 분석합니다.</div>
+        <div id="sv6KeywordError" class="sv6-error"></div>
+        <div class="sv6-actions"><button class="sv6-btn secondary" data-sv6-go="1" type="button">이전</button><div class="right"><button class="sv6-btn" id="sv6DiagnoseBtn" type="button">내 상품 시장 분석하기</button></div></div>
+      </div>
+
+      <div class="sv6-step" data-sv6-step="3">
+        <div id="sv6DiagnosisLoading" class="sv6-loader"><div class="sv6-spinner"></div><b>시장 데이터를 분석하고 있어요</b><div class="sv6-hint">검색 관심 · 쇼핑 클릭 흐름 · 고객 특성을 함께 확인합니다.</div></div>
+        <div id="sv6DiagnosisError" class="sv6-error big"></div>
+
+        <div id="sv6DiagnosisResult" class="sv6-result">
+          <div class="sv6-step-title"><div class="num">STEP 03 · MARKET DIAGNOSIS</div><h2><span id="sv6ResultKeyword">-</span> 시장 진단 결과</h2><p>네이버 제공값과 OLLIM 계산값을 구분하여 표시합니다.</p></div>
+
+          <div class="sv6-metrics">
+            <div class="sv6-metric"><span>검색 관심도</span><strong class="blue" id="sv6SearchGrade">-</strong><div class="sv6-hint" id="sv6SearchInterestText">-</div><span class="sv6-source">NAVER 데이터</span></div>
+            <div class="sv6-metric" id="sv6ShoppingMetric"><span>쇼핑 클릭 관심</span><strong id="sv6ShoppingGrade">-</strong><div class="sv6-hint" id="sv6ShoppingInterestText">-</div><span class="sv6-source">NAVER 쇼핑 트렌드</span></div>
+            <div class="sv6-metric"><span>최근 흐름</span><strong id="sv6TrendLabel">-</strong><div class="sv6-hint" id="sv6TrendText">최근 관심 변화</div><span class="sv6-source">OLLIM 분석</span></div>
+          </div>
+
+          <div class="sv6-panel" style="margin-top:12px"><h3>기간별 검색 관심 흐름</h3><div id="sv6TrendBars" class="sv6-bars"></div><div class="sv6-hint">최근 90일 상대 관심 흐름입니다.</div><span class="sv6-source">NAVER 검색어 트렌드</span></div>
+
+          <div id="sv6ShoppingAudience">
+            <div class="sv6-section-head"><h3>네이버 쇼핑 고객 분석</h3><span class="sv6-source">NAVER 쇼핑 트렌드 · OLLIM 환산</span></div>
+            <div class="sv6-grid2">
+              <div class="sv6-panel"><h3>기기별 쇼핑 관심</h3><div class="sv6-device-bars">
+                <div class="sv6-device-row"><div class="sv6-device-label"><span>모바일</span><b id="sv6MobilePct">-</b></div><div class="sv6-device-track"><i id="sv6MobileBar"></i></div></div>
+                <div class="sv6-device-row"><div class="sv6-device-label"><span>PC</span><b id="sv6PcPct">-</b></div><div class="sv6-device-track"><i class="pc" id="sv6PcBar"></i></div></div>
+              </div></div>
+              <div class="sv6-panel"><h3>성별 쇼핑 관심</h3><div class="sv6-gender-wrap">
+                <div class="sv6-gender-donut" id="sv6GenderDonut"><div class="sv6-gender-center"><div><b id="sv6MaleCenter">-</b>남성 비중</div></div></div>
+                <div class="sv6-gender-legend"><div><i></i><span>남성</span><b id="sv6MalePct">-</b></div><div><i class="female"></i><span>여성</span><b id="sv6FemalePct">-</b></div></div>
+              </div></div>
+            </div>
+
+            <div class="sv6-panel" style="margin-top:12px"><h3>연령별 쇼핑 관심</h3><div id="sv6AgeRows"></div></div>
+          </div>
+
+          <div class="sv6-panel" style="margin-top:12px"><h3>함께 검토할 키워드</h3><div id="sv6Recommended" class="sv6-chips"></div><div class="sv6-hint">대표 키워드와 함께 시장성이 있는 검색어 후보를 비교할 수 있습니다.</div><span class="sv6-source">OLLIM 추천</span></div>
+
+          <div class="sv6-insight"><span class="sv6-badge">OLLIM INSIGHT</span><div id="sv6InsightText"></div></div>
+          <div class="sv6-actions"><button class="sv6-btn secondary" data-sv6-go="2" type="button">키워드 다시 입력</button><div class="right"><button class="sv6-btn" data-sv6-go="4" type="button">이 분석으로 시작하기</button></div></div>
+        </div>
+      </div>
+
+      <div class="sv6-step" data-sv6-step="4">
+        <div class="sv6-step-title"><div class="num">STEP 04</div><h2>OLLIM 계정을 만들어볼게요.</h2><p>기존 가입 기능은 그대로 유지하면서, 필요한 정보만 한 줄씩 입력합니다.</p></div>
+        <div class="sv6-form-stack">
+          <label>업체명</label><input id="sv6Company" type="text" placeholder="업체명">
+          <label>담당자명</label><input id="sv6ContactName" type="text" placeholder="담당자명">
+          <label>연락처</label>
+          <div class="sv6-row"><input id="sv6Phone" type="tel" inputmode="numeric" placeholder="010-0000-0000"><button class="sv6-btn secondary" id="sv6SendCodeBtn" type="button">인증번호 전송</button></div>
+          <div class="sv6-hint">문자로 6자리 인증번호를 보내드립니다.</div>
+          <div id="sv6VerifyWrap" style="display:none;">
+            <label>인증번호</label>
+            <div class="sv6-row"><input id="sv6VerifyCode" type="text" inputmode="numeric" maxlength="6" placeholder="6자리 인증번호"><button class="sv6-btn secondary" id="sv6VerifyBtn" type="button">인증 확인</button></div>
+            <div class="sv6-hint"><button id="sv6ResendCodeBtn" class="sv6-text-btn" type="button">인증번호 다시 보내기</button></div>
+          </div>
+          <label>이메일</label><input id="sv6Email" type="email" placeholder="name@company.com">
+          <label>비밀번호</label><input id="sv6Password" type="password" placeholder="8자 이상">
+          <label>비밀번호 확인</label><input id="sv6Password2" type="password" placeholder="한 번 더 입력">
+
+          <div class="sv6-referral">
+            <div class="sv6-ref-title"><b>추천인 코드가 있으신가요?</b><span>선택</span></div>
+            <div class="sv6-hint">추천을 통해 가입하셨다면 코드를 입력해 주세요. 입력하지 않아도 가입할 수 있습니다.</div>
+            <div class="sv6-row" style="margin-top:10px;"><input id="sv6Referral" type="text" maxlength="12" placeholder="추천인 코드 입력"><button class="sv6-btn secondary" id="sv6ReferralBtn" type="button">확인</button></div>
+            <div id="sv6ReferralResult" class="sv6-ok" style="display:none;"></div>
+          </div>
+        </div>
+        <div id="sv6AccountError" class="sv6-error big"></div>
+        <div class="sv6-actions"><button class="sv6-btn secondary" data-sv6-go="3" type="button">이전</button><div class="right"><button class="sv6-btn" id="sv6AccountNext" type="button">다음</button></div></div>
+      </div>
+
+      <div class="sv6-step" data-sv6-step="5">
+        <div class="sv6-step-title"><div class="num">STEP 05</div><h2>마지막으로 이용약관을 확인해 주세요.</h2><p>필수 항목은 가입 및 서비스 제공에 필요한 내용입니다.</p></div>
+        <div class="sv6-terms">
+          <label class="sv6-term all"><input type="checkbox" id="sv6ConsentAll"><div><b>전체 동의</b><small>선택 항목은 언제든 다시 변경할 수 있습니다.</small></div></label>
+          <label class="sv6-term"><input type="checkbox" id="sv6ConsentAge"><div><b>[필수] 만 14세 이상입니다.</b></div></label>
+          <label class="sv6-term"><input type="checkbox" id="sv6ConsentTerms"><div><b>[필수] 서비스 이용약관</b><small>OLLIM 서비스 이용에 관한 기본 약관</small></div><button type="button" class="sv6-link-btn" data-legal-open="terms">보기</button></label>
+          <label class="sv6-term"><input type="checkbox" id="sv6ConsentPrivacy"><div><b>[필수] 개인정보 수집·이용 동의</b><small>회원 식별 및 서비스 제공에 필요한 최소정보 처리</small></div><button type="button" class="sv6-link-btn" data-legal-open="privacy">보기</button></label>
+          <label class="sv6-term"><input type="checkbox" id="sv6ConsentMarketingSms"><div><b>[선택] 광고성 SMS 수신 동의</b><small>이벤트·할인·프로모션 안내</small></div></label>
+          <label class="sv6-term"><input type="checkbox" id="sv6ConsentMarketingEmail"><div><b>[선택] 광고성 이메일 수신 동의</b><small>나중에 내 정보에서 변경할 수 있습니다.</small></div></label>
+        </div>
+        <div id="sv6ConsentError" class="sv6-error big"></div>
+        <div class="sv6-actions"><button class="sv6-btn secondary" data-sv6-go="4" type="button">이전</button><div class="right"><button class="sv6-btn" id="sv6SignupSubmit" type="button">OLLIM 시작하기</button></div></div>
+      </div>
+
+      <div class="sv6-step" data-sv6-step="6">
+        <div class="sv6-complete"><div class="sv6-complete-icon">✓</div><h2>OLLIM 가입이 완료되었습니다.</h2><p>상품과 시장 진단 정보도 함께 저장했어요.<br>이제 필요한 캠페인을 접수하고 상품의 노출 성과를 관리해보세요.</p>
+          <div class="sv6-next-card"><b>저장된 첫 상품</b><p><span id="sv6CompleteProduct">-</span><br>대표 키워드 <b id="sv6CompleteKeyword">-</b></p></div>
+          <button class="sv6-btn" id="sv6EnterDashboard" type="button">대시보드로 이동</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="sv6-login-link">이미 계정이 있으신가요? <button id="sv6GotoLogin" type="button">로그인</button></div>
+  </main>
 </div>
 
 <div id="authScreen" class="apple-bg">
@@ -2301,7 +2469,7 @@
         <div class="switch-link">생각났어요! <a href="#" id="gotoLoginFromReset">로그인으로 돌아가기</a></div>
       </div>
     </div>
-    <div id="signupForm" style="display:none;">
+    <div id="signupForm" style="display:none !important;">
       <div id="signupAnswered"></div>
       <div id="signupActive">
         <h2 class="wizard-title" id="signupQTitle"></h2>
@@ -3273,11 +3441,11 @@ const LEGAL_CONTENT = {
       <h3>제1조 목적</h3>
       <p>본 약관은 주식회사 더봄이 운영하는 올림컴퍼니 서비스(이하 “서비스”)의 이용조건과 회사 및 이용자의 권리·의무를 정합니다.</p>
       <h3>제2조 서비스 내용</h3>
-      <p>서비스는 광고·콘텐츠 관련 캠페인 접수, 진행현황 관리, 검색 노출 순위 관측, 쿠폰·추천 기능, 촬영 접수, 세금계산서 요청 보조 기능 등을 제공합니다.</p>
+      <p>서비스는 광고·콘텐츠 관련 캠페인 접수, 진행현황 관리, 검색 노출 성과 확인, 쿠폰·추천 기능, 촬영 접수, 결제 증빙 관리 기능 등을 제공합니다.</p>
       <h3>제3조 계정</h3>
       <p>이용자는 정확한 가입정보를 제공해야 하며 계정·비밀번호를 안전하게 관리해야 합니다. 타인의 정보를 도용하거나 서비스를 부정하게 이용해서는 안 됩니다.</p>
-      <h3>제4조 순위 관측 데이터</h3>
-      <p>“OLLIM 자연순위”는 올림컴퍼니가 특정 시점의 검색 결과를 관측하여 광고성 노출로 판별된 항목을 제외하고 산정한 참고 데이터입니다. 검색 시점, 개인화, 기기·지역·로그인 상태, 검색 플랫폼 변경 등에 따라 실제 화면과 차이가 발생할 수 있습니다.</p>
+      <h3>제4조 검색 노출 성과 데이터</h3>
+      <p>서비스에서 제공하는 검색 노출 관련 수치는 회사의 자체 데이터 처리 기준에 따라 산정되는 참고 데이터입니다. 검색 시점, 개인화, 기기·지역·로그인 상태, 검색 플랫폼 변경 등에 따라 실제 화면과 차이가 발생할 수 있습니다.</p>
       <p><b>회사는 특정 순위의 달성·유지 또는 매출 증가를 보장하지 않습니다.</b></p>
       <h3>제5조 이용요금·결제·환불</h3>
       <p>상품별 이용요금, 작업기간, 환불·취소 조건은 접수 화면 및 개별 안내 내용을 따릅니다. 관계 법령이 적용되는 경우 해당 법령이 우선합니다.</p>
@@ -5430,13 +5598,21 @@ async function loadLeadsPanel(){
   const leads = (leadsRes.ok ? leadsRes.leads : []) || [];
   leadsWrap.innerHTML = leads.length === 0 ? '<div class="empty">아직 무료진단을 받은 잠재고객이 없어요.</div>' :
     `<div style="overflow-x:auto;"><table>
-      <thead><tr><th>이메일</th><th>키워드</th><th>날짜</th><th></th></tr></thead>
-      <tbody>${leads.map(l => `<tr>
-        <td>${escapeHtml(l.email)}</td>
-        <td>${escapeHtml(l.keyword)}</td>
-        <td>${escapeHtml(prettyDate(fmt(new Date(l.createdAt))))}</td>
-        <td><a class="btn small secondary" href="${escapeHtml(l.link)}" target="_blank">링크 열기</a></td>
-      </tr>`).join('')}</tbody>
+      <thead><tr><th>상태</th><th>상품 / 업체</th><th>대표 키워드</th><th>시장 진단</th><th>연락 계정</th><th>날짜</th><th></th></tr></thead>
+      <tbody>${leads.map(l => {
+        const status = l.status === 'signed_up' ? '가입완료' : '진단완료';
+        const product = l.productTitle || '상품명 미확인';
+        const market = `검색 ${Number(l.searchInterest||0)}${Number(l.shoppingClick||0)>0 ? ` · 쇼핑 ${Number(l.shoppingClick||0)}` : ''}`;
+        return `<tr>
+          <td><span class="admin-billing-badge ${l.status==='signed_up'?'has-billing':''}">${status}</span></td>
+          <td class="admin-product-cell"><b>${escapeHtml(product)}</b>${l.companyName?`<div class="hint">${escapeHtml(l.companyName)}</div>`:''}</td>
+          <td>${escapeHtml(l.keyword||'-')}</td>
+          <td>${escapeHtml(market)}</td>
+          <td>${escapeHtml(l.email||'가입 전')}</td>
+          <td>${escapeHtml(prettyDate(fmt(new Date(l.createdAt))))}</td>
+          <td><a class="btn small secondary" href="${escapeHtml(l.link)}" target="_blank">상품 보기</a></td>
+        </tr>`;
+      }).join('')}</tbody>
     </table></div>`;
 }
 async function loadAdmin(){
@@ -6318,11 +6494,8 @@ function goToScreen(screen, push){
     document.getElementById('loginForm').style.display = 'block';
     document.getElementById('signupForm').style.display = 'none';
   } else if(screen === 'signup'){
-    document.getElementById('authScreen').style.display = 'flex';
-    document.getElementById('authScreen').style.opacity = '1';
-    document.getElementById('signupForm').style.display = 'block';
-    document.getElementById('loginForm').style.display = 'none';
-    resetSignup();
+    document.getElementById('diagnosticScreen').classList.add('active');
+    resetSignupV6_(window.pendingDiagData || null);
   } else {
     screen = 'gateway';
     document.getElementById('gatewayScreen').classList.add('active');
@@ -6384,187 +6557,333 @@ document.getElementById('diagBack').addEventListener('click', showGateway);
   }, {passive:true});
 })();
 
-let diagData = {};
-function resetDiagnostic(){
-  diagData = {};
-  document.getElementById('diagChatBody').innerHTML = '';
-  diagAskLink();
+
+let signupV6 = {
+  step:1,
+  product:{url:'',title:'',image:'',productId:''},
+  keyword:'',
+  diagnosis:null,
+  leadId:'',
+  verificationToken:'',
+  phoneVerified:false,
+  referralValid:false,
+  signupResult:null
+};
+
+const SV6_TITLES = {
+  1:['판매 중인 상품부터 확인해볼게요.','가입 전에 내 상품과 시장을 짧게 진단합니다. 입력한 정보는 이후 OLLIM 설정에 이어집니다.'],
+  2:['상품의 시장 가능성을 확인해볼까요?','대표 키워드 하나만 알려주면 검색 관심과 쇼핑 반응을 함께 살펴봅니다.'],
+  3:['숫자보다 중요한 건 시장의 방향입니다.','검색 관심, 쇼핑 반응, 고객 특성을 한눈에 확인해보세요.'],
+  4:['이제 계정 정보만 입력하면 됩니다.','앞에서 확인한 상품과 분석 데이터는 그대로 이어집니다.'],
+  5:['거의 다 왔습니다.','약관 확인 후 바로 OLLIM을 시작할 수 있어요.'],
+  6:['OLLIM에 오신 것을 환영합니다.','첫 상품 분석부터 운영까지 하나의 흐름으로 이어집니다.']
+};
+
+function sv6ShowError_(id, msg){
+  const el=document.getElementById(id);
+  if(!el) return;
+  el.textContent=msg||'';
+  el.classList.toggle('show',Boolean(msg));
 }
-function diagAppendBot(html){
-  const body = document.getElementById('diagChatBody');
-  const div = document.createElement('div');
-  div.className = 'diag-bubble-bot';
-  div.innerHTML = html;
-  body.appendChild(div);
-  body.scrollTop = body.scrollHeight;
-  return div;
+function sv6ClearErrors_(){
+  ['sv6ProductError','sv6KeywordError','sv6DiagnosisError','sv6AccountError','sv6ConsentError'].forEach(id=>sv6ShowError_(id,''));
 }
-function diagAppendUser(text){
-  const body = document.getElementById('diagChatBody');
-  const div = document.createElement('div');
-  div.className = 'diag-bubble-user';
-  div.textContent = text;
-  body.appendChild(div);
-  body.scrollTop = body.scrollHeight;
+function sv6UpdateHeader_(){
+  const n=signupV6.step;
+  document.getElementById('sv6StepLabel').textContent=n<=5?`${n} / 5`:'완료';
+  document.getElementById('sv6ProgressBar').style.width=n<=5?`${n*20}%`:'100%';
+  document.getElementById('sv6HeroTitle').textContent=SV6_TITLES[n][0];
+  document.getElementById('sv6HeroSub').textContent=SV6_TITLES[n][1];
 }
-function diagAppendInput(placeholder, onSubmit, type, validate){
-  const body = document.getElementById('diagChatBody');
-  const row = document.createElement('div');
-  row.className = 'diag-input-row';
-  row.innerHTML = `<input type="${type||'text'}" placeholder="${placeholder}" class="toss-input" /><button class="btn" style="margin-top:0;width:auto;padding:0 18px;">전송</button>`;
-  body.appendChild(row);
-  body.scrollTop = body.scrollHeight;
-  const input = row.querySelector('input');
-  const btn = row.querySelector('button');
-  setTimeout(()=>input.focus(), 200);
-  const submit = ()=>{
-    const v = input.value.trim();
-    if(!v) return;
-    if(validate){
-      const err = validate(v);
-      if(err){ showMsg('diagMsg', err, 'warn'); return; }
-    }
-    row.remove();
-    onSubmit(v);
+function sv6Go_(n){
+  document.querySelectorAll('.sv6-step').forEach(x=>x.classList.remove('active'));
+  const target=document.querySelector(`.sv6-step[data-sv6-step="${n}"]`);
+  if(target) target.classList.add('active');
+  signupV6.step=n; sv6UpdateHeader_();
+  document.getElementById('diagnosticScreen').scrollTo({top:0,behavior:'smooth'});
+}
+function resetSignupV6_(pending){
+  const preservedReferral=window.pendingReferralCode || '';
+  signupV6={
+    step:1,
+    product:{url:'',title:'',image:'',productId:''},
+    keyword:'',
+    diagnosis:null, leadId:'', verificationToken:'', phoneVerified:false,
+    referralValid:false, signupResult:null
   };
-  btn.addEventListener('click', submit);
-  input.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); submit(); } });
-}
-function diagAskLink(){
-  diagAppendBot('안녕하세요<br>내 상품이 지금 몇 등인지 30초면 알 수 있어요');
-  diagAppendBot('스마트스토어 상품 링크를 알려주세요');
-  diagAppendInput('https://smartstore.naver.com/...', (v)=>{ diagAppendUser(v); diagData.link=v; diagAskKeyword(); }, 'url');
-}
-function diagAskKeyword(){
-  diagAppendBot('검색 키워드도 하나 알려주세요');
-  diagAppendInput('예: 인조잔디', (v)=>{ diagAppendUser(v); diagData.keyword=v; diagAskEmail(); });
-}
-function diagAskEmail(){
-  diagAppendBot('결과를 보내드릴 이메일을 알려주세요');
-  diagAppendInput('you@company.com', (v)=>{ diagAppendUser(v); diagData.email=v; diagRunDiagnosis(); }, 'email',
-    (v)=> /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? null : '이메일 형식을 확인해 주세요. (예: name@example.com)');
-}
-function buildTitleInsight(myTitle, keyword, top3){
-  const hasKeyword = myTitle.includes(keyword);
-  const posRatio = hasKeyword ? myTitle.indexOf(keyword) / myTitle.length : null;
-  const topWithKeyword = top3.filter(t => t.title && t.title.includes(keyword)).length;
+  sv6ClearErrors_();
+  document.getElementById('sv6ProductUrl').value='';
+  document.getElementById('sv6Keyword').value='';
+  document.getElementById('sv6ProductPreview').classList.remove('show');
+  document.getElementById('sv6Step1Next').disabled=true;
+  document.getElementById('sv6DiagnosisResult').classList.remove('show');
+  document.getElementById('sv6DiagnosisLoading').classList.remove('show');
+  document.getElementById('sv6VerifyWrap').style.display='none';
+  document.getElementById('sv6Referral').value=preservedReferral;
+  document.getElementById('sv6ReferralResult').style.display='none';
+  document.getElementById('sv6Company').value='';
+  document.getElementById('sv6ContactName').value='';
+  document.getElementById('sv6Phone').value='';
+  document.getElementById('sv6VerifyCode').value='';
+  document.getElementById('sv6Email').value='';
+  document.getElementById('sv6Password').value='';
+  document.getElementById('sv6Password2').value='';
+  ['sv6ConsentAll','sv6ConsentAge','sv6ConsentTerms','sv6ConsentPrivacy','sv6ConsentMarketingSms','sv6ConsentMarketingEmail'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.checked=false;
+  });
 
-  let headline, tone;
-  if(!hasKeyword){
-    headline = `상품명에 '${keyword}' 키워드가 없어요`;
-    tone = 'bad';
-  } else if(posRatio !== null && posRatio > 0.5){
-    headline = `'${keyword}' 키워드가 상품명 뒤쪽에 있어요`;
-    tone = 'warn';
-  } else {
-    headline = `'${keyword}' 키워드가 상품명 앞쪽에 잘 배치되어 있어요`;
-    tone = 'good';
+  if(pending && pending.link && pending.keyword){
+    // 구형 진단에서 넘어온 세션이 있더라도 상품/키워드만 이어받고 새 HUB 진단을 사용한다.
+    document.getElementById('sv6ProductUrl').value=String(pending.link||'');
+    document.getElementById('sv6Keyword').value=String(pending.keyword||'');
   }
-  const sub = topWithKeyword > 0
-    ? `상위 3개 상품 중 ${topWithKeyword}개가 상품명에 이 키워드를 포함하고 있어요`
-    : `상위권 상품들도 이 키워드를 상품명에 꼭 넣진 않았어요`;
-
-  const color = tone==='good' ? '#0D9463' : tone==='warn' ? '#B7791F' : '#E24B4A';
-  const bg = tone==='good' ? '#E6F9F1' : tone==='warn' ? '#FFF6E5' : '#FCEBEB';
-
-  const card = document.createElement('div');
-  card.className = 'diag-result-card';
-  card.innerHTML = `
-    <div style="font-size:0.7rem; color:var(--muted); font-weight:600;">상품명 키워드 배치 진단</div>
-    <div style="background:${bg}; color:${color}; border-radius:12px; padding:12px 14px; margin-top:8px; font-size:0.85rem; font-weight:700; line-height:1.5;">${escapeHtml(headline)}</div>
-    <div style="font-size:0.78rem; color:#4E5968; margin-top:10px; line-height:1.6;">${escapeHtml(sub)}</div>
-    <div style="font-size:0.7rem; color:var(--muted); margin-top:12px; word-break:break-all;">내 상품명: ${escapeHtml(myTitle)}</div>`;
-  return card;
+  sv6Go_(1);
 }
+async function sv6ConfirmProduct_(){
+  const url=document.getElementById('sv6ProductUrl').value.trim();
+  if(!url){sv6ShowError_('sv6ProductError','상품 URL을 입력해 주세요.');return;}
+  sv6ShowError_('sv6ProductError','');
+  const btn=document.getElementById('sv6ProductConfirmBtn');
+  const original=btn.textContent; btn.disabled=true; btn.textContent='확인 중...';
+  try{
+    const timeout=new Promise(resolve=>setTimeout(()=>resolve({ok:false,error:'상품 확인 시간이 길어지고 있어요. 잠시 후 다시 시도해 주세요.'}),12000));
+    const res=await Promise.race([apiCall('publicResolveProductMeta',{url}),timeout]);
+    if(!res.ok||!res.title){sv6ShowError_('sv6ProductError',res.error||'상품을 확인하지 못했습니다.');btn.disabled=false;btn.textContent=original;return;}
+    signupV6.product={url,title:String(res.title||''),image:String(res.image||''),productId:String(res.productId||'')};
+    const img=document.getElementById('sv6ProductImage'),img2=document.getElementById('sv6ProductImage2');
+    [img,img2].forEach(el=>{el.src=signupV6.product.image||'';el.style.display=signupV6.product.image?'block':'none';});
+    document.getElementById('sv6ProductTitle').textContent=signupV6.product.title;
+    document.getElementById('sv6ProductTitle2').textContent=signupV6.product.title;
+    document.getElementById('sv6ProductPreview').classList.add('show');
+    document.getElementById('sv6Step1Next').disabled=false;
+    btn.textContent='확인 완료';
+  }catch(e){
+    sv6ShowError_('sv6ProductError','상품 확인 중 오류가 발생했습니다. 다시 시도해 주세요.');
+    btn.disabled=false;btn.textContent=original;
+  }
+}
+function sv6BuildTrendBars_(series){
+  const wrap=document.getElementById('sv6TrendBars');
+  const rows=(Array.isArray(series)?series:[]).slice(-30);
+  wrap.innerHTML=rows.length?rows.map(x=>`<i style="height:${Math.max(6,Math.min(100,Number(x.ratio||0)))}%"></i>`).join(''):'<div class="sv6-hint">표시할 기간 데이터가 없습니다.</div>';
+}
+function sv6RenderAge_(ages){
+  const wrap=document.getElementById('sv6AgeRows');
+  const labels={'10':'10대','20':'20대','30':'30대','40':'40대','50':'50대','60':'60대+'};
+  wrap.innerHTML=Object.keys(labels).map(k=>{
+    const v=Math.max(0,Math.min(100,Number((ages||{})[k]||0)));
+    return `<div class="sv6-age-row"><span>${labels[k]}</span><div class="sv6-age-bar"><i style="width:${v}%"></i></div><b>${v}%</b></div>`;
+  }).join('');
+}
+function sv6RenderDiagnosis_(res){
+  signupV6.diagnosis=res; signupV6.leadId=String(res.leadId||'');
+  document.getElementById('sv6ResultKeyword').textContent=`‘${signupV6.keyword}’`;
+  document.getElementById('sv6SearchGrade').textContent=res.searchGrade||'-';
+  document.getElementById('sv6SearchInterestText').textContent=`상대 관심지수 ${Math.round(Number(res.searchInterest||0))}`;
+  document.getElementById('sv6TrendLabel').textContent=(res.trend&&res.trend.label)||'→ 보합';
+  document.getElementById('sv6TrendText').textContent=`최근 구간 변화 ${Number(res.trend&&res.trend.change||0)>0?'+':''}${Number(res.trend&&res.trend.change||0)}%`;
+  sv6BuildTrendBars_(res.searchSeries);
 
-async function diagRunDiagnosis(){
-  const loadingEl = diagAppendBot('잠시만요, 분석 중이에요...');
-  const res = await apiCall('diagnose', { email: diagData.email, link: diagData.link, keyword: diagData.keyword });
-  loadingEl.remove();
+  const audience=document.getElementById('sv6ShoppingAudience');
+  const shoppingMetric=document.getElementById('sv6ShoppingMetric');
+  if(res.shoppingAvailable){
+    audience.style.display='block';shoppingMetric.style.display='block';
+    document.getElementById('sv6ShoppingGrade').textContent=res.shoppingGrade||'-';
+    document.getElementById('sv6ShoppingInterestText').textContent=`상대 클릭지수 ${Math.round(Number(res.shoppingInterest||0))}`;
+
+    const mobile=Math.max(0,Math.min(100,Number(res.device&&res.device.mobile||0)));
+    const pc=Math.max(0,Math.min(100,Number(res.device&&res.device.pc||0)));
+    document.getElementById('sv6MobilePct').textContent=mobile+'%';
+    document.getElementById('sv6PcPct').textContent=pc+'%';
+    document.getElementById('sv6MobileBar').style.width=mobile+'%';
+    document.getElementById('sv6PcBar').style.width=pc+'%';
+
+    const male=Math.max(0,Math.min(100,Number(res.gender&&res.gender.male||0)));
+    const female=Math.max(0,Math.min(100,Number(res.gender&&res.gender.female||0)));
+    document.getElementById('sv6MalePct').textContent=male+'%';
+    document.getElementById('sv6FemalePct').textContent=female+'%';
+    document.getElementById('sv6MaleCenter').textContent=male+'%';
+    document.getElementById('sv6GenderDonut').style.background=`conic-gradient(#246BFD 0 ${male}%,#D9E5FF ${male}% 100%)`;
+    sv6RenderAge_(res.ages||{});
+  }else{
+    audience.style.display='none';
+    shoppingMetric.style.display='none';
+  }
+
+  const rec=(res.recommendedKeywords||[]).filter(Boolean);
+  document.getElementById('sv6Recommended').innerHTML=rec.length?rec.map(k=>`<span class="sv6-chip">${escapeHtml(k)}</span>`).join(''):'<span class="sv6-hint">추천 키워드를 추가 분석 중입니다.</span>';
+
+  let insight=`‘${escapeHtml(signupV6.keyword)}’는 현재 검색 관심이 <b>${escapeHtml(res.searchGrade||'확인')}</b> 수준으로 나타납니다. `;
+  if(res.shoppingAvailable){
+    const male=Number(res.gender&&res.gender.male||0), female=Number(res.gender&&res.gender.female||0);
+    const device=Number(res.device&&res.device.mobile||0)>=Number(res.device&&res.device.pc||0)?'모바일':'PC';
+    const ages=res.ages||{}; const topAge=Object.keys(ages).sort((a,b)=>Number(ages[b]||0)-Number(ages[a]||0))[0];
+    insight+=`${device} 쇼핑 관심 비중이 상대적으로 높고${topAge?`, ${topAge}대의 관심이 두드러집니다`:''}. `;
+  }
+  insight+='좋은 키워드를 찾았다면, 검색 수요가 있는 영역에서 상품의 <b>노출 경쟁력을 높이는 운영</b>이 중요합니다.';
+  document.getElementById('sv6InsightText').innerHTML=insight;
+}
+async function sv6RunDiagnosis_(){
+  const keyword=document.getElementById('sv6Keyword').value.trim();
+  if(!keyword||keyword.length<2){sv6ShowError_('sv6KeywordError','대표 키워드를 2자 이상 입력해 주세요.');return;}
+  signupV6.keyword=keyword;sv6ShowError_('sv6KeywordError','');sv6Go_(3);
+  document.getElementById('sv6DiagnosisResult').classList.remove('show');
+  document.getElementById('sv6DiagnosisLoading').classList.add('show');
+  sv6ShowError_('sv6DiagnosisError','');
+  const res=await apiCall('diagnoseMarket',{
+    link:signupV6.product.url,keyword,
+    productTitle:signupV6.product.title,productImage:signupV6.product.image
+  });
+  document.getElementById('sv6DiagnosisLoading').classList.remove('show');
   if(!res.ok){
-    diagAppendBot(escapeHtml(res.error || '진단에 실패했어요. 링크를 다시 확인해 주세요.'));
-    diagAppendInput('https://smartstore.naver.com/...', (v)=>{ diagAppendUser(v); diagData.link=v; diagRunDiagnosis(); }, 'url');
+    sv6ShowError_('sv6DiagnosisError',(res.error||'시장 분석에 실패했습니다.')+' 다시 분석하기 버튼을 눌러주세요.');
+    const el=document.getElementById('sv6DiagnosisError');
+    const retry=document.createElement('button');retry.type='button';retry.className='sv6-text-btn';retry.style.marginLeft='8px';retry.textContent='다시 분석하기';retry.onclick=sv6RunDiagnosis_;el.appendChild(retry);
     return;
   }
-  diagData.rank = res.rank;
-  const rankText = res.rank ? `${res.rank}위` : '100위 밖';
-  const myThumb = res.myImage ? `<img class="diag-thumb" src="${res.myImage}" style="border:2px solid var(--bad);" />` : `<div class="diag-thumb" style="border:2px solid var(--bad);"></div>`;
-  const compThumbs = (res.top3||[]).map(t=> t.image ? `<img class="diag-thumb" src="${t.image}" />` : `<div class="diag-thumb"></div>`).join('');
-  const card = document.createElement('div');
-  card.className = 'diag-result-card';
-  card.innerHTML = `
-    <div style="font-size:0.7rem; color:var(--muted); font-weight:600;">'${escapeHtml(diagData.keyword)}' 검색 시 순위</div>
-    <div style="font-size:2rem; font-weight:800; color:var(--page-text); margin:4px 0 12px;">${rankText}</div>
-    <div style="font-size:0.7rem; color:var(--muted); margin-top:10px;">내 썸네일 vs 상위 3개 비교</div>
-    <div class="diag-thumb-row">${myThumb}${compThumbs}</div>`;
-  document.getElementById('diagChatBody').appendChild(card);
-  document.getElementById('diagChatBody').scrollTop = document.getElementById('diagChatBody').scrollHeight;
-
-  if(res.myTitle){
-    const titleCard = buildTitleInsight(res.myTitle, diagData.keyword, res.top3||[]);
-    setTimeout(()=>{
-      document.getElementById('diagChatBody').appendChild(titleCard);
-      document.getElementById('diagChatBody').scrollTop = document.getElementById('diagChatBody').scrollHeight;
-    }, 500);
+  sv6RenderDiagnosis_(res);
+  document.getElementById('sv6DiagnosisResult').classList.add('show');
+}
+function sv6ValidateAccount_(){
+  const company=document.getElementById('sv6Company').value.trim();
+  const contact=document.getElementById('sv6ContactName').value.trim();
+  const phone=document.getElementById('sv6Phone').value.trim();
+  const email=document.getElementById('sv6Email').value.trim();
+  const pw=document.getElementById('sv6Password').value;
+  const pw2=document.getElementById('sv6Password2').value;
+  if(!company) return '업체명을 입력해 주세요.';
+  if(!contact) return '담당자명을 입력해 주세요.';
+  if(!/^01[016789]-?\d{3,4}-?\d{4}$/.test(phone)) return '연락처를 확인해 주세요.';
+  if(!signupV6.phoneVerified||!signupV6.verificationToken) return '휴대폰 인증을 완료해 주세요.';
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return '이메일 형식을 확인해 주세요.';
+  if(pw.length<8) return '비밀번호는 8자 이상으로 설정해 주세요.';
+  if(pw!==pw2) return '비밀번호 확인이 일치하지 않습니다.';
+  return '';
+}
+async function sv6SendCode_(isResend){
+  const phone=document.getElementById('sv6Phone').value.trim();
+  if(!/^01[016789]-?\d{3,4}-?\d{4}$/.test(phone)){sv6ShowError_('sv6AccountError','연락처를 확인해 주세요.');return;}
+  const btn=isResend?document.getElementById('sv6ResendCodeBtn'):document.getElementById('sv6SendCodeBtn');
+  const old=btn.textContent;btn.disabled=true;btn.textContent='전송 중...';
+  const res=await apiCall('sendVerificationCode',{phone,purpose:'signup'});
+  btn.disabled=false;btn.textContent=old;
+  if(!res.ok){sv6ShowError_('sv6AccountError',res.error||'인증번호 전송에 실패했습니다.');return;}
+  signupV6.phoneVerified=false;signupV6.verificationToken='';
+  document.getElementById('sv6VerifyWrap').style.display='block';
+  sv6ShowError_('sv6AccountError','');
+}
+async function sv6VerifyCode_(){
+  const phone=document.getElementById('sv6Phone').value.trim();
+  const code=document.getElementById('sv6VerifyCode').value.trim();
+  if(!/^\d{6}$/.test(code)){sv6ShowError_('sv6AccountError','6자리 인증번호를 입력해 주세요.');return;}
+  const btn=document.getElementById('sv6VerifyBtn'),old=btn.textContent;btn.disabled=true;btn.textContent='확인 중...';
+  const res=await apiCall('verifyCode',{phone,code,purpose:'signup'});
+  btn.disabled=false;
+  if(!res.ok){btn.textContent=old;sv6ShowError_('sv6AccountError',res.error||'인증번호가 올바르지 않습니다.');return;}
+  signupV6.phoneVerified=true;signupV6.verificationToken=res.verificationToken;btn.textContent='인증 완료 ✓';btn.disabled=true;sv6ShowError_('sv6AccountError','');
+}
+async function sv6ValidateReferral_(){
+  const code=document.getElementById('sv6Referral').value.trim().toUpperCase();
+  const result=document.getElementById('sv6ReferralResult');
+  if(!code){signupV6.referralValid=false;result.style.display='none';return true;}
+  const btn=document.getElementById('sv6ReferralBtn'),old=btn.textContent;btn.disabled=true;btn.textContent='확인 중...';
+  const res=await apiCall('validateReferralCode',{code});
+  btn.disabled=false;btn.textContent=old;
+  if(!res.ok){signupV6.referralValid=false;result.style.display='block';result.style.color='#C83B3B';result.textContent=res.error||'추천인 코드를 확인해 주세요.';return false;}
+  signupV6.referralValid=true;document.getElementById('sv6Referral').value=code;result.style.display='block';result.style.color='#1F8F59';result.textContent='✓ 추천인 코드가 확인되었습니다. 가입 혜택이 적용됩니다.';return true;
+}
+function sv6ConsentSync_(){
+  const ids=['sv6ConsentAge','sv6ConsentTerms','sv6ConsentPrivacy','sv6ConsentMarketingSms','sv6ConsentMarketingEmail'];
+  document.getElementById('sv6ConsentAll').checked=ids.every(id=>document.getElementById(id).checked);
+}
+async function sv6SubmitSignup_(){
+  if(!document.getElementById('sv6ConsentAge').checked||!document.getElementById('sv6ConsentTerms').checked||!document.getElementById('sv6ConsentPrivacy').checked){
+    sv6ShowError_('sv6ConsentError','필수 약관과 개인정보 동의를 확인해 주세요.');return;
+  }
+  const referral=document.getElementById('sv6Referral').value.trim().toUpperCase();
+  if(referral && !signupV6.referralValid){
+    const ok=await sv6ValidateReferral_(); if(!ok){sv6Go_(4);sv6ShowError_('sv6AccountError','추천인 코드를 다시 확인해 주세요.');return;}
   }
 
-  setTimeout(diagAskNeeds, 1300);
-}
-function diagAskNeeds(){
-  diagAppendBot('가장 먼저 해결하고 싶은 게 뭐예요?');
-  const body = document.getElementById('diagChatBody');
-  const wrap = document.createElement('div');
-  [['search','검색해도 내 상품이 안 보여요'], ['trust','봐도 신뢰가 안 가나봐요'], ['both','둘 다예요']].forEach(([key,label])=>{
-    const btn = document.createElement('div');
-    btn.className = 'diag-choice';
-    btn.textContent = label;
-    btn.addEventListener('click', ()=>{ wrap.remove(); diagAppendUser(label); diagData.need = key; diagShowSolution(); });
-    wrap.appendChild(btn);
+  const btn=document.getElementById('sv6SignupSubmit'),old=btn.textContent;btn.disabled=true;btn.textContent='가입 처리 중...';
+  const diagnosisCompact=signupV6.diagnosis?{
+    searchInterest:signupV6.diagnosis.searchInterest,
+    searchGrade:signupV6.diagnosis.searchGrade,
+    shoppingAvailable:signupV6.diagnosis.shoppingAvailable,
+    shoppingInterest:signupV6.diagnosis.shoppingInterest,
+    trend:signupV6.diagnosis.trend,
+    device:signupV6.diagnosis.device,
+    gender:signupV6.diagnosis.gender,
+    ages:signupV6.diagnosis.ages,
+    recommendedKeywords:signupV6.diagnosis.recommendedKeywords
+  }:{};
+
+  const res=await apiCall('signup',{
+    companyName:document.getElementById('sv6Company').value.trim(),
+    contactName:document.getElementById('sv6ContactName').value.trim(),
+    email:document.getElementById('sv6Email').value.trim(),
+    phone:document.getElementById('sv6Phone').value.trim(),
+    password:document.getElementById('sv6Password').value,
+    referredByCode:referral,
+    verificationToken:signupV6.verificationToken,
+    ageConfirmed:true,
+    termsAgreed:true,
+    privacyAgreed:true,
+    marketingSmsAgreed:document.getElementById('sv6ConsentMarketingSms').checked,
+    marketingEmailAgreed:document.getElementById('sv6ConsentMarketingEmail').checked,
+    termsVersion:OLLIM_TERMS_VERSION,
+    privacyVersion:OLLIM_PRIVACY_VERSION,
+    initialProductUrl:signupV6.product.url,
+    initialProductTitle:signupV6.product.title,
+    initialProductImage:signupV6.product.image,
+    initialKeyword:signupV6.keyword,
+    signupLeadId:signupV6.leadId,
+    signupDiagnosisJson:JSON.stringify(diagnosisCompact)
   });
-  body.appendChild(wrap);
-  body.scrollTop = body.scrollHeight;
+  btn.disabled=false;btn.textContent=old;
+  if(!res.ok){sv6ShowError_('sv6ConsentError',res.error||'회원가입에 실패했습니다.');return;}
+
+  signupV6.signupResult=res;
+  await setSession(res);
+  document.getElementById('sv6CompleteProduct').textContent=signupV6.product.title||'-';
+  document.getElementById('sv6CompleteKeyword').textContent=signupV6.keyword||'-';
+  sv6Go_(6);
 }
-function diagShowSolution(){
-  let title, desc;
-  if(diagData.need === 'trust'){
-    title = '브랜드 PR 영상 제작 추천';
-    desc = '상품 또는 대표님 인터뷰 영상으로 신뢰도와 구매전환을 높여드려요.';
-  } else {
-    title = '리워드 프로그램 추천';
-    desc = `검색 키워드 상위권으로 노출을 끌어올려 드려요. ${diagData.rank?diagData.rank+'위':'100위 밖'} → 상위권 진입을 목표로 진행해요.`;
-  }
-  const body = document.getElementById('diagChatBody');
-  const card = document.createElement('div');
-  card.className = 'diag-result-card';
-  card.innerHTML = `<div style="font-size:0.88rem; font-weight:700; color:var(--navy-2); margin-bottom:6px;">${escapeHtml(title)}</div><div style="font-size:0.82rem; color:#4E5968; line-height:1.7;">${escapeHtml(desc)}</div>`;
-  body.appendChild(card);
-
-  diagAppendBot('이미 함께하고 계신 사장님들, 실제로 순위가 오르고 있어요');
-
-  const trialWrap = document.createElement('div');
-  trialWrap.className = 'diag-trial-badge';
-  trialWrap.innerHTML = `<div style="width:34px;height:34px;border-radius:10px;background:var(--navy-2);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:800;">1</div><div style="font-size:0.85rem; color:var(--navy-2); font-weight:700; line-height:1.5;">가입하면 슬롯 1개, 무료로 체험해보세요</div>`;
-  body.appendChild(trialWrap);
-
-  const ctaBtn = document.createElement('div');
-  ctaBtn.className = 'btn';
-  ctaBtn.style.textAlign = 'center';
-  ctaBtn.textContent = '1슬롯 무료체험 받기 →';
-  ctaBtn.addEventListener('click', diagGotoSignup);
-  body.appendChild(ctaBtn);
-
-  const loginLink = document.createElement('div');
-  loginLink.className = 'switch-link';
-  loginLink.innerHTML = '이미 계정이 있으신가요? <a href="#">로그인</a>';
-  loginLink.querySelector('a').addEventListener('click', (e)=>{ e.preventDefault(); openLoginFromGateway(); });
-  body.appendChild(loginLink);
-
-  body.scrollTop = body.scrollHeight;
+async function sv6EnterApp_(){
+  const res=signupV6.signupResult;
+  if(!res) return;
+  showReferralReveal(document.getElementById('sv6Company').value.trim(),res.referralCode,async()=>{
+    await enterApp(res);
+    scheduleInstallOffer('signup');
+  });
 }
-function diagGotoSignup(){
-  window.pendingDiagData = diagData;
-  goToScreen('signup');
-}
+
+document.getElementById('sv6ProductConfirmBtn').addEventListener('click',sv6ConfirmProduct_);
+document.getElementById('sv6Step1Next').addEventListener('click',()=>sv6Go_(2));
+document.getElementById('sv6DiagnoseBtn').addEventListener('click',sv6RunDiagnosis_);
+document.querySelectorAll('[data-sv6-go]').forEach(btn=>btn.addEventListener('click',()=>{
+  const n=Number(btn.dataset.sv6Go);
+  if(n===3 && !signupV6.diagnosis) sv6RunDiagnosis_(); else sv6Go_(n);
+}));
+document.getElementById('sv6Phone').addEventListener('input',e=>{applyPhoneFormatting(e.currentTarget);signupV6.phoneVerified=false;signupV6.verificationToken='';const b=document.getElementById('sv6VerifyBtn');b.textContent='인증 확인';b.disabled=false;});
+document.getElementById('sv6SendCodeBtn').addEventListener('click',()=>sv6SendCode_(false));
+document.getElementById('sv6ResendCodeBtn').addEventListener('click',()=>sv6SendCode_(true));
+document.getElementById('sv6VerifyBtn').addEventListener('click',sv6VerifyCode_);
+document.getElementById('sv6ReferralBtn').addEventListener('click',sv6ValidateReferral_);
+document.getElementById('sv6Referral').addEventListener('input',()=>{signupV6.referralValid=false;document.getElementById('sv6ReferralResult').style.display='none';});
+document.getElementById('sv6AccountNext').addEventListener('click',async()=>{
+  const err=sv6ValidateAccount_();if(err){sv6ShowError_('sv6AccountError',err);return;}
+  const referral=document.getElementById('sv6Referral').value.trim();
+  if(referral && !signupV6.referralValid){const ok=await sv6ValidateReferral_();if(!ok)return;}
+  sv6ShowError_('sv6AccountError','');sv6Go_(5);
+});
+document.getElementById('sv6ConsentAll').addEventListener('change',e=>{
+  ['sv6ConsentAge','sv6ConsentTerms','sv6ConsentPrivacy','sv6ConsentMarketingSms','sv6ConsentMarketingEmail'].forEach(id=>document.getElementById(id).checked=e.currentTarget.checked);
+});
+['sv6ConsentAge','sv6ConsentTerms','sv6ConsentPrivacy','sv6ConsentMarketingSms','sv6ConsentMarketingEmail'].forEach(id=>document.getElementById(id).addEventListener('change',sv6ConsentSync_));
+document.getElementById('sv6SignupSubmit').addEventListener('click',sv6SubmitSignup_);
+document.getElementById('sv6EnterDashboard').addEventListener('click',sv6EnterApp_);
+document.getElementById('sv6GotoLogin').addEventListener('click',openLoginFromGateway);
 
 function stabilizeInitialViewport(){
   const root = document.documentElement;
