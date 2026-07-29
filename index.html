@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-29 V6.3.0 SIGNUP-HUB-V6-SPEC -->
+<!-- OLLIM FRONTEND BUILD: 2026-07-29 V6.3.1 SIGNUP-DIAG-FIX -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -2262,6 +2262,24 @@
   .sv6-row{grid-template-columns:1fr}.sv6-row .sv6-btn{width:100%;min-width:0}.sv6-actions{gap:8px}.sv6-actions .sv6-btn{padding:0 14px}.sv6-section-head{align-items:flex-start;gap:10px}.sv6-section-head .sv6-source{margin-top:0}
 }
 
+
+/* ===== V6.3.1 회원가입 레이아웃/지표 설명 보정 ===== */
+#diagnosticScreen .sv6-main{
+  display:block !important;
+  grid-template-columns:none !important;
+  gap:0 !important;
+  width:100%;
+  max-width:900px;
+}
+#diagnosticScreen .sv6-card{width:100%;}
+#diagnosticScreen .sv6-row input{min-width:0;flex:1 1 auto;}
+#diagnosticScreen .sv6-row>.sv6-btn{align-self:stretch;}
+.sv6-info-line{display:flex;align-items:flex-start;gap:6px;margin-top:8px;color:#8A94A6;font-size:11px;line-height:1.5}
+.sv6-info-icon{width:16px;height:16px;flex:none;border:1px solid #CBD5E1;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#64748B;margin-top:1px}
+.sv6-data-note{margin:12px 0 0;padding:11px 12px;background:#F8FAFC;border:1px solid #E7EBF1;border-radius:11px;color:#64748B;font-size:11px;line-height:1.55}
+.sv6-empty-dimension{padding:24px 12px;text-align:center;color:#8A94A6;font-size:12px;background:#FAFBFD;border-radius:12px}
+.sv6-metric strong .idx-unit{font-size:12px;color:#98A2B3;font-weight:700;margin-left:3px}
+
 </style>
 
 </head>
@@ -2357,27 +2375,27 @@
           <div class="sv6-step-title"><div class="num">STEP 03 · MARKET DIAGNOSIS</div><h2><span id="sv6ResultKeyword">-</span> 시장 진단 결과</h2><p>네이버 제공값과 OLLIM 계산값을 구분하여 표시합니다.</p></div>
 
           <div class="sv6-metrics">
-            <div class="sv6-metric"><span>검색 관심도</span><strong class="blue" id="sv6SearchGrade">-</strong><div class="sv6-hint" id="sv6SearchInterestText">-</div><span class="sv6-source">NAVER 데이터</span></div>
-            <div class="sv6-metric" id="sv6ShoppingMetric"><span>쇼핑 클릭 관심</span><strong id="sv6ShoppingGrade">-</strong><div class="sv6-hint" id="sv6ShoppingInterestText">-</div><span class="sv6-source">NAVER 쇼핑 트렌드</span></div>
-            <div class="sv6-metric"><span>최근 흐름</span><strong id="sv6TrendLabel">-</strong><div class="sv6-hint" id="sv6TrendText">최근 관심 변화</div><span class="sv6-source">OLLIM 분석</span></div>
+            <div class="sv6-metric"><span>90일 평균 검색 관심</span><strong class="blue" id="sv6SearchGrade">-</strong><div class="sv6-hint" id="sv6SearchInterestText">-</div><div class="sv6-info-line"><span class="sv6-info-icon">i</span><span>조회기간 중 검색량 최고 구간을 100으로 환산한 상대지수의 평균입니다.</span></div><span class="sv6-source">NAVER 데이터</span></div>
+            <div class="sv6-metric" id="sv6ShoppingMetric"><span>90일 평균 쇼핑 클릭</span><strong id="sv6ShoppingGrade">-</strong><div class="sv6-hint" id="sv6ShoppingInterestText">-</div><div class="sv6-info-line"><span class="sv6-info-icon">i</span><span>조회기간 중 쇼핑 클릭량 최고 구간을 100으로 환산한 상대 클릭지수의 평균입니다.</span></div><span class="sv6-source">NAVER 쇼핑 트렌드</span></div>
+            <div class="sv6-metric"><span>최근 검색 관심 흐름</span><strong id="sv6TrendLabel">-</strong><div class="sv6-hint" id="sv6TrendText">직전 14일 대비</div><div class="sv6-info-line"><span class="sv6-info-icon">i</span><span>최근 14일 평균 검색지수와 바로 전 14일 평균을 비교합니다.</span></div><span class="sv6-source">OLLIM 분석</span></div>
           </div>
 
-          <div class="sv6-panel" style="margin-top:12px"><h3>기간별 검색 관심 흐름</h3><div id="sv6TrendBars" class="sv6-bars"></div><div class="sv6-hint">최근 90일 상대 관심 흐름입니다.</div><span class="sv6-source">NAVER 검색어 트렌드</span></div>
+          <div class="sv6-panel" style="margin-top:12px"><h3>최근 90일 검색 관심 추이</h3><div id="sv6TrendBars" class="sv6-bars"></div><div class="sv6-info-line"><span class="sv6-info-icon">i</span><span>각 막대는 검색량의 상대지수입니다. 조회기간 중 가장 높은 구간이 100입니다.</span></div><span class="sv6-source">NAVER 검색어 트렌드</span></div>
 
           <div id="sv6ShoppingAudience">
-            <div class="sv6-section-head"><h3>네이버 쇼핑 고객 분석</h3><span class="sv6-source">NAVER 쇼핑 트렌드 · OLLIM 환산</span></div>
+            <div class="sv6-section-head"><h3>네이버 쇼핑 고객 분석</h3><span class="sv6-source">NAVER 쇼핑 트렌드 · 상대지수 환산</span></div>
             <div class="sv6-grid2">
-              <div class="sv6-panel"><h3>기기별 쇼핑 관심</h3><div class="sv6-device-bars">
+              <div class="sv6-panel"><h3>기기별 쇼핑 클릭 환산 비중</h3><div class="sv6-device-bars">
                 <div class="sv6-device-row"><div class="sv6-device-label"><span>모바일</span><b id="sv6MobilePct">-</b></div><div class="sv6-device-track"><i id="sv6MobileBar"></i></div></div>
                 <div class="sv6-device-row"><div class="sv6-device-label"><span>PC</span><b id="sv6PcPct">-</b></div><div class="sv6-device-track"><i class="pc" id="sv6PcBar"></i></div></div>
               </div></div>
-              <div class="sv6-panel"><h3>성별 쇼핑 관심</h3><div class="sv6-gender-wrap">
+              <div class="sv6-panel"><h3>성별 쇼핑 클릭 환산 비중</h3><div class="sv6-gender-wrap">
                 <div class="sv6-gender-donut" id="sv6GenderDonut"><div class="sv6-gender-center"><div><b id="sv6MaleCenter">-</b>남성 비중</div></div></div>
                 <div class="sv6-gender-legend"><div><i></i><span>남성</span><b id="sv6MalePct">-</b></div><div><i class="female"></i><span>여성</span><b id="sv6FemalePct">-</b></div></div>
               </div></div>
             </div>
 
-            <div class="sv6-panel" style="margin-top:12px"><h3>연령별 쇼핑 관심</h3><div id="sv6AgeRows"></div></div>
+            <div class="sv6-panel" style="margin-top:12px"><h3>연령별 쇼핑 클릭 환산 비중</h3><div id="sv6AgeRows"></div><div class="sv6-data-note">※ 실제 인구 점유율이 아니라, 네이버가 제공하는 연령별 상대 클릭지수를 조회기간 전체로 합산해 100% 기준으로 환산한 비교값입니다.</div></div>
           </div>
 
           <div class="sv6-panel" style="margin-top:12px"><h3>함께 검토할 키워드</h3><div id="sv6Recommended" class="sv6-chips"></div><div class="sv6-hint">대표 키워드와 함께 시장성이 있는 검색어 후보를 비교할 수 있습니다.</div><span class="sv6-source">OLLIM 추천</span></div>
@@ -6664,11 +6682,27 @@ async function sv6ConfirmProduct_(){
 }
 function sv6BuildTrendBars_(series){
   const wrap=document.getElementById('sv6TrendBars');
-  const rows=(Array.isArray(series)?series:[]).slice(-30);
-  wrap.innerHTML=rows.length?rows.map(x=>`<i style="height:${Math.max(6,Math.min(100,Number(x.ratio||0)))}%"></i>`).join(''):'<div class="sv6-hint">표시할 기간 데이터가 없습니다.</div>';
+  const rows=Array.isArray(series)?series:[];
+  if(!rows.length){
+    wrap.innerHTML='<div class="sv6-hint">표시할 기간 데이터가 없습니다.</div>';
+    return;
+  }
+  const bucketCount=Math.min(30,rows.length);
+  const bucketSize=Math.ceil(rows.length/bucketCount);
+  const buckets=[];
+  for(let i=0;i<rows.length;i+=bucketSize){
+    const chunk=rows.slice(i,i+bucketSize);
+    const avg=chunk.reduce((s,x)=>s+Number(x.ratio||0),0)/chunk.length;
+    buckets.push(avg);
+  }
+  wrap.innerHTML=buckets.map(v=>`<i title="상대 검색지수 ${Math.round(v)}" style="height:${Math.max(6,Math.min(100,v))}%"></i>`).join('');
 }
-function sv6RenderAge_(ages){
+function sv6RenderAge_(ages, valid){
   const wrap=document.getElementById('sv6AgeRows');
+  if(!valid){
+    wrap.innerHTML='<div class="sv6-empty-dimension">연령별 비교에 충분한 데이터가 없어 표시하지 않습니다.</div>';
+    return;
+  }
   const labels={'10':'10대','20':'20대','30':'30대','40':'40대','50':'50대','60':'60대+'};
   wrap.innerHTML=Object.keys(labels).map(k=>{
     const v=Math.max(0,Math.min(100,Number((ages||{})[k]||0)));
@@ -6679,9 +6713,9 @@ function sv6RenderDiagnosis_(res){
   signupV6.diagnosis=res; signupV6.leadId=String(res.leadId||'');
   document.getElementById('sv6ResultKeyword').textContent=`‘${signupV6.keyword}’`;
   document.getElementById('sv6SearchGrade').textContent=res.searchGrade||'-';
-  document.getElementById('sv6SearchInterestText').textContent=`상대 관심지수 ${Math.round(Number(res.searchInterest||0))}`;
+  document.getElementById('sv6SearchInterestText').textContent=`평균 지수 ${Math.round(Number(res.searchInterest||0))} / 100`;
   document.getElementById('sv6TrendLabel').textContent=(res.trend&&res.trend.label)||'→ 보합';
-  document.getElementById('sv6TrendText').textContent=`최근 구간 변화 ${Number(res.trend&&res.trend.change||0)>0?'+':''}${Number(res.trend&&res.trend.change||0)}%`;
+  document.getElementById('sv6TrendText').textContent=`직전 14일 대비 ${Number(res.trend&&res.trend.change||0)>0?'+':''}${Number(res.trend&&res.trend.change||0)}%`;
   sv6BuildTrendBars_(res.searchSeries);
 
   const audience=document.getElementById('sv6ShoppingAudience');
@@ -6689,22 +6723,36 @@ function sv6RenderDiagnosis_(res){
   if(res.shoppingAvailable){
     audience.style.display='block';shoppingMetric.style.display='block';
     document.getElementById('sv6ShoppingGrade').textContent=res.shoppingGrade||'-';
-    document.getElementById('sv6ShoppingInterestText').textContent=`상대 클릭지수 ${Math.round(Number(res.shoppingInterest||0))}`;
+    document.getElementById('sv6ShoppingInterestText').textContent=`평균 지수 ${Math.round(Number(res.shoppingInterest||0))} / 100`;
 
     const mobile=Math.max(0,Math.min(100,Number(res.device&&res.device.mobile||0)));
     const pc=Math.max(0,Math.min(100,Number(res.device&&res.device.pc||0)));
-    document.getElementById('sv6MobilePct').textContent=mobile+'%';
-    document.getElementById('sv6PcPct').textContent=pc+'%';
-    document.getElementById('sv6MobileBar').style.width=mobile+'%';
-    document.getElementById('sv6PcBar').style.width=pc+'%';
+    if(res.device && res.device.valid){
+      document.getElementById('sv6MobilePct').textContent=mobile+'%';
+      document.getElementById('sv6PcPct').textContent=pc+'%';
+      document.getElementById('sv6MobileBar').style.width=mobile+'%';
+      document.getElementById('sv6PcBar').style.width=pc+'%';
+    }else{
+      document.getElementById('sv6MobilePct').textContent='데이터 부족';
+      document.getElementById('sv6PcPct').textContent='-';
+      document.getElementById('sv6MobileBar').style.width='0%';
+      document.getElementById('sv6PcBar').style.width='0%';
+    }
 
     const male=Math.max(0,Math.min(100,Number(res.gender&&res.gender.male||0)));
     const female=Math.max(0,Math.min(100,Number(res.gender&&res.gender.female||0)));
-    document.getElementById('sv6MalePct').textContent=male+'%';
-    document.getElementById('sv6FemalePct').textContent=female+'%';
-    document.getElementById('sv6MaleCenter').textContent=male+'%';
-    document.getElementById('sv6GenderDonut').style.background=`conic-gradient(#246BFD 0 ${male}%,#D9E5FF ${male}% 100%)`;
-    sv6RenderAge_(res.ages||{});
+    if(res.gender && res.gender.valid){
+      document.getElementById('sv6MalePct').textContent=male+'%';
+      document.getElementById('sv6FemalePct').textContent=female+'%';
+      document.getElementById('sv6MaleCenter').textContent=male+'%';
+      document.getElementById('sv6GenderDonut').style.background=`conic-gradient(#246BFD 0 ${male}%,#D9E5FF ${male}% 100%)`;
+    }else{
+      document.getElementById('sv6MalePct').textContent='-';
+      document.getElementById('sv6FemalePct').textContent='-';
+      document.getElementById('sv6MaleCenter').textContent='-';
+      document.getElementById('sv6GenderDonut').style.background='#EDF2F7';
+    }
+    sv6RenderAge_(res.ages||{},Boolean(res.ageValid));
   }else{
     audience.style.display='none';
     shoppingMetric.style.display='none';
@@ -6715,13 +6763,33 @@ function sv6RenderDiagnosis_(res){
 
   let insight=`‘${escapeHtml(signupV6.keyword)}’는 현재 검색 관심이 <b>${escapeHtml(res.searchGrade||'확인')}</b> 수준으로 나타납니다. `;
   if(res.shoppingAvailable){
-    const male=Number(res.gender&&res.gender.male||0), female=Number(res.gender&&res.gender.female||0);
-    const device=Number(res.device&&res.device.mobile||0)>=Number(res.device&&res.device.pc||0)?'모바일':'PC';
-    const ages=res.ages||{}; const topAge=Object.keys(ages).sort((a,b)=>Number(ages[b]||0)-Number(ages[a]||0))[0];
-    insight+=`${device} 쇼핑 관심 비중이 상대적으로 높고${topAge?`, ${topAge}대의 관심이 두드러집니다`:''}. `;
+    if(res.device && res.device.valid){
+      const device=Number(res.device.mobile||0)>=Number(res.device.pc||0)?'모바일':'PC';
+      insight+=`${device} 쇼핑 클릭의 환산 비중이 상대적으로 높습니다. `;
+    }
+    if(res.ageValid){
+      const ages=res.ages||{}; const topAge=Object.keys(ages).sort((a,b)=>Number(ages[b]||0)-Number(ages[a]||0))[0];
+      if(topAge) insight+=`${topAge}대의 상대 클릭지수가 조회기간에서 가장 높게 나타났습니다. `;
+    }
   }
   insight+='좋은 키워드를 찾았다면, 검색 수요가 있는 영역에서 상품의 <b>노출 경쟁력을 높이는 운영</b>이 중요합니다.';
   document.getElementById('sv6InsightText').innerHTML=insight;
+
+  // 추천 키워드는 본 진단 결과를 먼저 보여준 뒤 별도 호출해 체감 대기시간을 줄인다.
+  const recWrap=document.getElementById('sv6Recommended');
+  recWrap.innerHTML='<span class="sv6-hint">관련 키워드 후보를 추가 분석 중입니다.</span>';
+  apiCall('recommendSignupKeywords',{
+    productTitle:signupV6.product.title,
+    keyword:signupV6.keyword,
+    shoppingCategory:String(res.shoppingCategory||'')
+  }).then(recRes=>{
+    const rec=(recRes&&recRes.ok&&Array.isArray(recRes.recommendedKeywords))?recRes.recommendedKeywords.filter(Boolean):[];
+    recWrap.innerHTML=rec.length
+      ? rec.map(k=>`<span class="sv6-chip">${escapeHtml(k)}</span>`).join('')
+      : '<span class="sv6-hint">추가 추천 키워드가 없습니다.</span>';
+  }).catch(()=>{
+    recWrap.innerHTML='<span class="sv6-hint">추가 추천 키워드를 불러오지 못했습니다.</span>';
+  });
 }
 async function sv6RunDiagnosis_(){
   const keyword=document.getElementById('sv6Keyword').value.trim();
