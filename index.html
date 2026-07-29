@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-29 V6.2.0 BILLING-PROFILE-AUTO-EVIDENCE -->
+<!-- OLLIM FRONTEND BUILD: 2026-07-29 V6.2.1 BIZNO-HYPHEN+ADMIN-BILLING -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -2131,6 +2131,57 @@
   .billing-two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
   @media(max-width:700px){.billing-checkout-card{align-items:flex-start;}.billing-two-col{grid-template-columns:1fr;}.billing-modal-card{width:calc(100vw - 28px);max-height:90vh;}}
 
+
+  /* ===== V6.2.1 사업자번호 자동 하이픈 + 관리자 증빙 가독성 ===== */
+  .admin-billing-badge{
+    display:inline-flex;
+    align-items:center;
+    min-height:24px;
+    padding:3px 8px;
+    border:1px solid #E5EAF1;
+    border-radius:999px;
+    background:#F7F9FC;
+    color:#8491A3;
+    font-size:.68rem;
+    font-weight:800;
+    white-space:nowrap;
+  }
+  .admin-billing-badge.has-billing{
+    border-color:#CFE2FF;
+    background:#F1F7FF;
+    color:#3676D8;
+  }
+  #adminPendingWrap table th,
+  #adminPendingWrap table td,
+  #adminTaxWrap table th,
+  #adminTaxWrap table td{
+    vertical-align:middle;
+    white-space:nowrap;
+  }
+  #adminPendingWrap .admin-product-cell{
+    min-width:220px;
+    max-width:360px;
+    white-space:normal;
+    line-height:1.45;
+  }
+  #adminPendingWrap .admin-money-cell{
+    text-align:right;
+    font-variant-numeric:tabular-nums;
+    font-weight:700;
+  }
+  #adminTaxWrap td:nth-child(5){
+    min-width:220px;
+    max-width:360px;
+    white-space:normal;
+    line-height:1.45;
+  }
+  #adminTaxWrap td:nth-child(7){
+    min-width:260px;
+    max-width:420px;
+    white-space:normal;
+    line-height:1.45;
+  }
+
 </style>
 
 </head>
@@ -2328,7 +2379,7 @@
 
     <div id="billingTaxFields" style="display:none;">
       <label>상호 / 법인명</label><input id="billingBizName" type="text" placeholder="예: 주식회사 경성매트">
-      <label>사업자등록번호</label><input id="billingBizNumber" type="text" placeholder="000-00-00000">
+      <label>사업자등록번호</label><input id="billingBizNumber" type="text" inputmode="numeric" maxlength="12" placeholder="000-00-00000">
       <label>대표자명</label><input id="billingRepresentative" type="text" placeholder="대표자명">
       <label>사업장 주소</label><input id="billingAddress" type="text" placeholder="사업장 주소">
       <div class="billing-two-col">
@@ -2343,7 +2394,7 @@
 
     <div id="billingExpenseFields" style="display:none;">
       <label>지출증빙용 사업자등록번호</label>
-      <input id="billingExpenseBizNumber" type="text" placeholder="000-00-00000">
+      <input id="billingExpenseBizNumber" type="text" inputmode="numeric" maxlength="12" placeholder="000-00-00000">
     </div>
 
     <div id="billingIncomeFields" style="display:none;">
@@ -2897,9 +2948,10 @@
     </div>
     <div class="card">
       <h2><span class="n">A3</span> 증빙 발행 관리</h2>
+      <p class="hint" style="margin-bottom:12px;">입금 확인·승인된 접수 중 증빙 설정이 있는 건이 자동으로 이곳에 들어옵니다. 세금계산서와 현금영수증을 처리한 뒤 <b>처리완료</b>만 눌러주세요.</p>
       <div class="toolbar">
         <label style="display:flex; align-items:center; gap:6px; font-size:0.85rem; color:var(--muted); margin:0;"><input type="checkbox" id="taxSelectAll" style="width:auto;" /> 전체선택</label>
-        <button class="btn small secondary" id="zipTaxCertsBtn">📦 사업자등록증 ZIP</button>
+        <button class="btn small secondary" id="zipTaxCertsBtn" title="선택한 세금계산서 건의 사업자등록증만 ZIP으로 내려받습니다.">📦 사업자등록증 ZIP</button>
       </div>
       <div id="adminTaxWrap"><div class="empty"><div class="spinner"></div>로딩중...</div></div>
     </div>
@@ -5254,8 +5306,8 @@ function renderPendingTable(){
   });
 
   const cols = isPendingMode
-    ? [{key:'client',label:'업체명'},{key:'qty',label:'슬롯갯수'},{key:'grandTotal',label:'금액'},{key:'createdAt',label:'접수일'}]
-    : [{key:'client',label:'업체명'},{key:'qty',label:'슬롯갯수'},{key:'grandTotal',label:'금액'},{key:'startDate',label:'시작일'},{key:'endDate',label:'종료일'}];
+    ? [{key:'client',label:'업체명'},{key:'productName',label:'상품'},{key:'grandTotal',label:'금액'},{key:'depositorName',label:'입금자'},{key:'billingType',label:'증빙'},{key:'createdAt',label:'접수일'}]
+    : [{key:'client',label:'업체명'},{key:'productName',label:'상품'},{key:'grandTotal',label:'금액'},{key:'billingType',label:'증빙'},{key:'startDate',label:'시작일'},{key:'endDate',label:'종료일'}];
   const theadHtml = (isPendingMode?'<th></th>':'') + cols.map(c=>{
     const arrow = pendingSortState.key===c.key ? (pendingSortState.dir==='asc'?' ▲':' ▼') : '';
     return `<th class="sortable-th" data-sort="${c.key}" style="cursor:pointer; user-select:none;">${c.label}${arrow}</th>`;
@@ -5269,19 +5321,24 @@ function renderPendingTable(){
         const isExpiringSoon = r.productType==='reward' && r.status==='approved' && r.endDate && r.endDate >= today && r.endDate <= in3days;
         const extendBadge = isExpiringSoon ? '<span class="extend-badge">연장계약 필요</span>' : '';
         if(isPendingMode){
+          const billingLabel = billingTypeLabelFront_(r.billingType);
           return `<tr>
             <td><input type="checkbox" class="pendingRowCheck" data-id="${r.id}" style="width:auto;" /></td>
-            <td>${escapeHtml(r.client)}</td>
-            <td>${escapeHtml(title)}</td>
-            <td>${amount}</td>
+            <td><b>${escapeHtml(r.client)}</b></td>
+            <td class="admin-product-cell">${escapeHtml(title)}</td>
+            <td class="admin-money-cell">${amount}</td>
+            <td>${escapeHtml(r.depositorName || '-')}</td>
+            <td><span class="admin-billing-badge ${r.billingType && r.billingType!=='none'?'has-billing':''}">${escapeHtml(billingLabel)}</span></td>
             <td>${escapeHtml(prettyDate(fmt(new Date(r.createdAt))))}</td>
             <td><button class="btn small adminApproveBtn" data-id="${r.id}">승인</button></td>
           </tr>`;
         }
+        const billingLabel = billingTypeLabelFront_(r.billingType);
         return `<tr>
-          <td>${escapeHtml(r.client)}${extendBadge}</td>
-          <td>${escapeHtml(title)}</td>
-          <td>${amount}</td>
+          <td><b>${escapeHtml(r.client)}</b>${extendBadge}</td>
+          <td class="admin-product-cell">${escapeHtml(title)}</td>
+          <td class="admin-money-cell">${amount}</td>
+          <td><span class="admin-billing-badge ${r.billingType && r.billingType!=='none'?'has-billing':''}">${escapeHtml(billingLabel)}</span></td>
           <td>${escapeHtml(prettyDate(r.startDate))}</td>
           <td>${escapeHtml(prettyDate(r.endDate))}</td>
           <td></td>
@@ -6562,6 +6619,25 @@ document.getElementById('signupConsentSubmit')?.addEventListener('click',async()
 });
 
 
+
+function formatBizNumberInput_(value){
+  const d=String(value||'').replace(/\D/g,'').slice(0,10);
+  if(d.length<=3) return d;
+  if(d.length<=5) return d.slice(0,3)+'-'+d.slice(3);
+  return d.slice(0,3)+'-'+d.slice(3,5)+'-'+d.slice(5);
+}
+function bindBizNumberAutoFormat_(id){
+  const el=document.getElementById(id);
+  if(!el) return;
+  el.addEventListener('input',()=>{
+    const next=formatBizNumberInput_(el.value);
+    if(el.value!==next) el.value=next;
+  });
+  el.addEventListener('blur',()=>{ el.value=formatBizNumberInput_(el.value); });
+}
+bindBizNumberAutoFormat_('billingBizNumber');
+bindBizNumberAutoFormat_('billingExpenseBizNumber');
+
 let currentBillingProfile = { evidenceType:'none' };
 let billingProfileLoaded = false;
 
@@ -6607,13 +6683,13 @@ function openBillingProfileModal_(){
   const p=currentBillingProfile||{evidenceType:'none'};
   document.getElementById('billingEvidenceType').value=p.evidenceType||'none';
   document.getElementById('billingBizName').value=p.bizName||'';
-  document.getElementById('billingBizNumber').value=p.bizNumber||'';
+  document.getElementById('billingBizNumber').value=formatBizNumberInput_(p.bizNumber||'');
   document.getElementById('billingRepresentative').value=p.representative||'';
   document.getElementById('billingAddress').value=p.address||'';
   document.getElementById('billingBizType').value=p.bizType||'';
   document.getElementById('billingBizItem').value=p.bizItem||'';
   document.getElementById('billingInvoiceEmail').value=p.invoiceEmail||'';
-  document.getElementById('billingExpenseBizNumber').value=p.bizNumber||'';
+  document.getElementById('billingExpenseBizNumber').value=formatBizNumberInput_(p.bizNumber||'');
   document.getElementById('billingReceiptPhone').value=p.receiptPhone||'';
   document.getElementById('billingCertFile').value='';
   document.getElementById('billingCertState').textContent=p.certFileUrl?'· 등록됨':'· 미등록';
