@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-28 V6.0.3 METRIC-GUIDE-RESPONSIVE -->
+<!-- OLLIM FRONTEND BUILD: 2026-07-29 V6.0.4 SUBMIT-DEBUG-DISPLAY -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -4617,7 +4617,15 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
     await loadCoupons();
     invalidateSubmissionsCache();
     renderTable();
-  } else showMsg('submitMsg', res.error || (isEditing ? '수정 실패' : '접수 실패'),'warn');
+  } else {
+    const parts = [res.error || (isEditing ? '수정 실패' : '접수 실패')];
+    if(res.debugStage) parts.push(`단계: ${res.debugStage}`);
+    if(res.debug) parts.push(`오류: ${res.debug}`);
+    showMsg('submitMsg', parts.join(' / '), 'warn');
+  }
+  } catch(err) {
+    const detail = String(err && err.message ? err.message : err);
+    showMsg('submitMsg', `서버 통신 또는 접수 처리 오류 / 오류: ${detail}`, 'warn');
   } finally {
     isSubmittingOrder = false;
   }
