@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-29 V6.2.1 BIZNO-HYPHEN+ADMIN-BILLING -->
+<!-- OLLIM FRONTEND BUILD: 2026-07-29 V6.2.2 BILLING-STATUS+ZIP-FIX -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -2180,6 +2180,46 @@
     max-width:420px;
     white-space:normal;
     line-height:1.45;
+  }
+
+
+  /* ===== V6.2.2 사용자 증빙 상태 + ZIP 안정화 ===== */
+  .billing-user-status{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:7px;
+    margin-top:10px;
+  }
+  .billing-user-type,
+  .billing-user-state{
+    display:inline-flex;
+    align-items:center;
+    min-height:25px;
+    padding:3px 9px;
+    border-radius:999px;
+    font-size:.69rem;
+    font-weight:800;
+  }
+  .billing-user-type{
+    border:1px solid #E3E9F1;
+    background:#F7F9FC;
+    color:#627189;
+  }
+  .billing-user-state.billing-pending{
+    border:1px solid #F2D6A7;
+    background:#FFF8EA;
+    color:#A56B16;
+  }
+  .billing-user-state.billing-scheduled{
+    border:1px solid #DDE4EC;
+    background:#F7F9FC;
+    color:#738197;
+  }
+  .billing-user-state.billing-completed{
+    border:1px solid #BFE5CF;
+    background:#F0FBF5;
+    color:#287A4B;
   }
 
 </style>
@@ -5139,9 +5179,14 @@ async function renderTable(quiet){
     }
 
     let taxHtml = '';
-    if(rec.productType === 'reward'){
+    if(rec.productType === 'reward' && rec.billingType && rec.billingType !== 'none'){
       const billingLabel = billingTypeLabelFront_(rec.billingType);
-      taxHtml = `<div style="margin-top:10px;"><span class="pill ${rec.billingType && rec.billingType!=='none'?'approved':''}">증빙 · ${escapeHtml(billingLabel)}</span></div>`;
+      const billingStatus = billingStatusLabelFront_(rec.billingStatus, rec.billingType);
+      taxHtml = `
+        <div class="billing-user-status">
+          <span class="billing-user-type">증빙 · ${escapeHtml(billingLabel)}</span>
+          <span class="billing-user-state ${billingStatusClassFront_(rec.billingStatus)}">${escapeHtml(billingStatus)}</span>
+        </div>`;
     }
 
     html += `
@@ -5489,19 +5534,60 @@ async function loadAdmin(){
   document.getElementById('zipTaxCertsBtn').onclick = async ()=>{
     const ids = Array.from(document.querySelectorAll('.taxRowCheck:checked')).map(cb=>cb.dataset.id);
     const btn = document.getElementById('zipTaxCertsBtn');
-    setBusy(btn, 'zip 만드는 중...');
+    setBusy(btn, 'ZIP 만드는 중...');
+
     const res = await apiCall('zipTaxCerts', { token: session.token, taxIds: ids });
     clearBusy(btn);
-    if(!res.ok){ showMsg('submitMsg', res.error || 'zip 생성 실패', 'warn'); return; }
-    const byteChars = atob(res.base64);
-    const byteNumbers = new Array(byteChars.length);
-    for(let i=0;i<byteChars.length;i++) byteNumbers[i] = byteChars.charCodeAt(i);
-    const blob = new Blob([new Uint8Array(byteNumbers)], { type:'application/zip' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = res.filename; document.body.appendChild(a); a.click(); a.remove();
-    URL.revokeObjectURL(url);
-    showMsg('submitMsg', `${res.count}개 파일을 zip으로 받았어요.`, 'ok');
+
+    if(!res.ok){
+      showMsg('submitMsg', res.error || 'ZIP 생성 실패', 'warn');
+      return;
+    }
+
+    try{
+      // 큰 base64를 한 번에 배열로 만들지 않고 chunk 단위로 변환해 파일 손상을 방지.
+      const binary = atob(String(res.base64 || ''));
+      const chunkSize = 1024 * 512;
+      const parts = [];
+
+      for(let offset=0; offset<binary.length; offset+=chunkSize){
+        const end = Math.min(offset + chunkSize, binary.length);
+        const bytes = new Uint8Array(end - offset);
+        for(let i=offset; i<end; i++) bytes[i-offset] = binary.charCodeAt(i);
+        parts.push(bytes);
+      }
+
+      const blob = new Blob(parts, { type:res.mimeType || 'application/zip' });
+
+      // 서버가 알려준 ZIP byte 수와 브라우저에서 만든 Blob 크기가 다르면 다운로드하지 않는다.
+      if(res.byteLength && Number(res.byteLength) !== blob.size){
+        throw new Error(`ZIP 크기 검증 실패 (서버 ${res.byteLength} / 브라우저 ${blob.size})`);
+      }
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = res.filename || '사업자등록증.zip';
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      // 일부 브라우저는 click 직후 revoke하면 다운로드가 잘릴 수 있어 충분히 늦게 해제.
+      setTimeout(()=>URL.revokeObjectURL(url), 30000);
+
+      const skipped = Number(res.skippedCount || 0);
+      showMsg(
+        'submitMsg',
+        skipped
+          ? `${res.count}개 사업자등록증 ZIP 다운로드 완료 · ${skipped}개 파일은 제외됐어요.`
+          : `${res.count}개 사업자등록증 ZIP 다운로드가 시작됐어요.`,
+        'ok'
+      );
+    }catch(e){
+      console.error('ZIP download failed', e);
+      showMsg('submitMsg', `ZIP 다운로드 처리 실패: ${e.message || e}`, 'warn');
+    }
   };
 }
 
@@ -6640,6 +6726,19 @@ bindBizNumberAutoFormat_('billingExpenseBizNumber');
 
 let currentBillingProfile = { evidenceType:'none' };
 let billingProfileLoaded = false;
+
+
+function billingStatusLabelFront_(status, type){
+  if(!type || type==='none') return '';
+  if(status==='completed') return type==='tax_invoice' ? '발행 완료' : '처리 완료';
+  if(status==='scheduled') return '입금 확인 후 처리 예정';
+  return type==='tax_invoice' ? '발행 대기' : '처리 대기';
+}
+function billingStatusClassFront_(status){
+  if(status==='completed') return 'billing-completed';
+  if(status==='scheduled') return 'billing-scheduled';
+  return 'billing-pending';
+}
 
 function billingTypeLabelFront_(type){
   return type === 'tax_invoice' ? '세금계산서'
