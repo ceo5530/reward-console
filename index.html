@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-29 V6.0.5 FAST-SUBMIT -->
+<!-- OLLIM FRONTEND BUILD: 2026-07-29 V6.0.6 INSTANT-SUBMIT -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -4458,65 +4458,14 @@ document.getElementById('submitBtn').addEventListener('click', (e)=>{
 
 async function resolveSubmissionMetaForPayload(link, competitorLinks, token){
   const confirmed = window.__ollimConfirmedProductMeta || {};
-  let productTitle = '';
-  let productImage = '';
-
-  // 이미 '상품 확인하기'에서 확인한 메타는 절대 다시 조회하지 않는다.
-  if(String(confirmed.url || '').trim() === String(link || '').trim()){
-    productTitle = String(confirmed.title || '').trim();
-    productImage = String(confirmed.image || '').trim();
-  }
-
-  const links = (Array.isArray(competitorLinks) ? competitorLinks : [])
-    .map(v=>String(v||'').trim())
-    .filter(Boolean)
-    .slice(0,3);
-
-  // 메인상품이 확인되지 않은 경우에만 1회 보강.
-  const mainPromise = (!productTitle && token)
-    ? apiCall('resolveProductMeta', { token, url:link })
-        .then(res => res && res.ok ? {
-          title:String(res.title||'').trim(),
-          image:String(res.image||'').trim()
-        } : null)
-        .catch(()=>null)
-    : Promise.resolve(null);
-
-  // 경쟁사 1~3개를 순차 호출하지 않고 동시에 조회한다.
-  const competitorPromise = token
-    ? Promise.all(links.map(url =>
-        apiCall('resolveProductMeta', { token, url })
-          .then(res => ({
-            url,
-            title:res && res.ok ? String(res.title||'').trim() : '',
-            image:res && res.ok ? String(res.image||'').trim() : ''
-          }))
-          .catch(()=>({url,title:'',image:''}))
-      ))
-    : Promise.resolve(links.map(url=>({url,title:'',image:''})));
-
-  // 메타 조회가 네이버/HUB 응답 때문에 오래 걸려도 접수 자체를 막지 않는다.
-  // 2.2초가 넘으면 현재 확보된 정보만으로 접수하고, 승인 후 기존 hydrate 로직이 보강한다.
-  const timeout = new Promise(resolve =>
-    setTimeout(()=>resolve({ timedOut:true, main:null, competitors:[] }), 2200)
-  );
-
-  const combined = Promise.all([mainPromise, competitorPromise]).then(([main, competitors])=>({
-    timedOut:false, main, competitors
-  }));
-
-  const result = await Promise.race([combined, timeout]);
-
-  if(result && result.main){
-    productTitle = productTitle || result.main.title || '';
-    productImage = productImage || result.main.image || '';
-  }
+  const sameUrl = String(confirmed.url || '').trim() === String(link || '').trim();
 
   return {
-    productTitle,
-    productImage,
-    competitorMeta: result && Array.isArray(result.competitors) ? result.competitors : [],
-    metaTimedOut: !!(result && result.timedOut)
+    productTitle: sameUrl ? String(confirmed.title || '').trim() : '',
+    productImage: sameUrl ? String(confirmed.image || '').trim() : '',
+    // 경쟁사 메타는 접수 완료를 기다리게 하지 않는다.
+    // URL만 저장하고 승인/현황 단계의 기존 hydrate 로직에서 보강한다.
+    competitorMeta: []
   };
 }
 
@@ -4621,6 +4570,7 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
     setBusy(submitBtn, isEditing ? '수정 처리 중...' : '접수 처리 중...');
   }
   const res = await apiCall(isEditing ? 'editSubmission' : 'submit', payload);
+  if(res && res.timings) console.info('[OLLIM submit timings]', res.timings);
   clearBusy(submitBtn);
   if(res.ok){
     if(isEditing){
