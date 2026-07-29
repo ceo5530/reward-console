@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-29 V6.0.6 INSTANT-SUBMIT -->
+<!-- OLLIM FRONTEND BUILD: 2026-07-29 V6.1.0 FINAL-STEP-SUBMIT-FLOW -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -2092,6 +2092,34 @@
     }
   }
 
+
+  /* ===== V6.1.0 최종 접수 단계 ===== */
+  .checkout-guide{
+    margin-top:8px;
+    color:var(--muted);
+    font-size:.78rem;
+    line-height:1.55;
+  }
+  .checkout-guide b{color:var(--text);}
+  .required-dot{color:#ff5a5f;font-weight:800;}
+  .final-submit-btn{
+    margin-top:16px !important;
+    min-height:56px;
+    font-size:1rem;
+    font-weight:800;
+  }
+  .submission-complete-card{text-align:center;}
+  .submission-complete-id{
+    margin-top:14px;
+    padding:10px 12px;
+    border-radius:10px;
+    background:#F6F8FC;
+    color:#66768C;
+    font-family:var(--mono);
+    font-size:.78rem;
+    font-weight:700;
+  }
+
 </style>
 
 </head>
@@ -2270,6 +2298,19 @@
   </div>
 </div>
 
+
+
+<div id="submissionCompleteModal" class="ollim-modal" aria-hidden="true">
+  <div class="ollim-modal-card submission-complete-card">
+    <div class="ollim-modal-icon">✅</div>
+    <h3 class="ollim-modal-title">접수가 완료되었습니다</h3>
+    <p class="ollim-modal-sub" id="submissionCompleteText">입금 확인 대기 중입니다.</p>
+    <div class="submission-complete-id" id="submissionCompleteId"></div>
+    <div class="ollim-modal-actions">
+      <button type="button" class="btn" id="submissionCompleteCloseBtn">확인</button>
+    </div>
+  </div>
+</div>
 
 <div id="rankVerifyModal" class="ollim-modal" aria-hidden="true">
   <div class="ollim-modal-card">
@@ -2596,24 +2637,22 @@
       <div class="hint">가격은 협의 후 안내드립니다. 접수 후 담당자가 별도 연락드려요.</div>
     </div>
 
-    <button class="btn" id="submitBtn">순위 올림 시작</button>
-    <div class="msg" id="submitMsg"></div>
-    <div class="bank-banner" id="bankBanner" style="display:none;">
+    <div class="bank-banner" id="bankBanner" style="display:block;">
       <strong>💳 입금 계좌 안내</strong>
-      <div style="display:flex; align-items:center; gap:10px;">
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
         <div class="acc" id="bankAcc">-</div>
         <button class="btn small secondary" id="copyBankAccBtn" type="button" style="margin-top:0;">복사</button>
       </div>
-      <div>입금 확인 후 관리자 승인 시 작업이 시작됩니다.</div>
-      <div style="margin-top:12px;">
-        <label style="margin-top:0;">입금자 성함 (계좌이체 시 사용하실 이름, 입금 대조용)</label>
-        <div style="display:flex; gap:8px;">
-          <input id="depositorNameInput" type="text" placeholder="예: 김경근" style="margin:0;" />
-          <button class="btn small secondary" id="saveDepositorBtn" type="button" style="margin-top:0; flex-shrink:0;">저장</button>
-        </div>
-        <div class="msg" id="depositorMsg"></div>
+      <div class="checkout-guide">아래 계좌로 입금하실 때 사용할 <b>입금자명</b>을 입력한 뒤, 마지막으로 <b>순위 올림 시작</b>을 눌러주세요.</div>
+      <div style="margin-top:14px;">
+        <label style="margin-top:0;">입금자명 <span class="required-dot">*</span></label>
+        <input id="depositorNameInput" type="text" placeholder="예: 김경근" autocomplete="name" style="margin:0;" />
+        <div class="hint" style="margin-top:6px;">계좌 입금내역과 접수건을 대조하는 데 사용됩니다.</div>
       </div>
     </div>
+
+    <button class="btn final-submit-btn" id="submitBtn">순위 올림 시작</button>
+    <div class="msg" id="submitMsg"></div>
     </div>
   </section>
 
@@ -3569,11 +3608,13 @@ document.getElementById('sidebarBackdrop').addEventListener('click', closeSideba
 document.getElementById('pt_reward').addEventListener('click', ()=>{
   document.getElementById('pt_reward').classList.add('active'); document.getElementById('pt_youtube').classList.remove('active');
   document.getElementById('rewardForm').style.display='block'; document.getElementById('youtubeForm').style.display='none';
+  document.getElementById('bankBanner').style.display='block';
   document.getElementById('submitBtn').textContent = '순위 올림 시작';
 });
 document.getElementById('pt_youtube').addEventListener('click', ()=>{
   document.getElementById('pt_youtube').classList.add('active'); document.getElementById('pt_reward').classList.remove('active');
   document.getElementById('youtubeForm').style.display='block'; document.getElementById('rewardForm').style.display='none';
+  document.getElementById('bankBanner').style.display='none';
   document.getElementById('submitBtn').textContent = 'PR영상 제작 시작';
 });
 
@@ -4318,19 +4359,6 @@ async function enterApp(session){
 }
 
 let isSubmittingOrder = false;
-let lastSubmittedId = null; // 방금 접수한 건 - 입금자 성함 저장 대상
-document.getElementById('saveDepositorBtn').addEventListener('click', async ()=>{
-  const name = document.getElementById('depositorNameInput').value.trim();
-  if(!name){ showMsg('depositorMsg','입금자 성함을 입력해 주세요.','warn'); return; }
-  if(!lastSubmittedId){ showMsg('depositorMsg','접수건 정보를 찾을 수 없어요. 새로고침 후 다시 시도해 주세요.','warn'); return; }
-  const btn = document.getElementById('saveDepositorBtn');
-  setBusy(btn, '저장 중...');
-  const session = await getSession();
-  const res = await apiCall('updateDepositorName', { token: session.token, submissionId: lastSubmittedId, depositorName: name });
-  clearBusy(btn);
-  if(res.ok){ showMsg('depositorMsg','저장됐어요. 감사합니다!','ok'); invalidateSubmissionsCache(); }
-  else showMsg('depositorMsg', res.error || '저장 실패', 'warn');
-});
 function validateNaverProductUrl(raw){
   const original = String(raw || '').trim();
   if(!original) return { ok:false, message:'네이버 상품 URL을 입력해 주세요.' };
@@ -4469,6 +4497,62 @@ async function resolveSubmissionMetaForPayload(link, competitorLinks, token){
   };
 }
 
+
+function resetRewardIntakeAfterSubmit_(){
+  // 계정 고정정보(업체명/연락처)는 유지하고 캠페인별 입력만 초기화.
+  ['f_link','f_qty','f_kw1','f_kw2','f_kw3','f_kw4','f_kw5','f_comp1','f_comp2','f_comp3',
+   'autoKeywordProductName','selectKeywordProductName','depositorNameInput']
+    .forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+
+  const coupon=document.getElementById('f_coupon');
+  if(coupon) coupon.value='';
+
+  const cycles=document.getElementById('f_cycles');
+  if(cycles && cycles.options.length) cycles.selectedIndex=0;
+
+  window.__ollimRankOnAutoKeywords=[];
+  if(typeof resetConfirmedProductMeta_ === 'function') resetConfirmedProductMeta_();
+
+  const autoWrap=document.getElementById('autoKeywordCandidates');
+  if(autoWrap) autoWrap.innerHTML='';
+  const selectWrap=document.getElementById('selectKeywordCandidates');
+  if(selectWrap){ selectWrap.innerHTML=''; selectWrap.style.display='none'; }
+
+  const countBadge=document.getElementById('keywordCountBadge');
+  if(countBadge) countBadge.textContent='0 / 5';
+
+  refreshCouponOptions();
+  refreshPriceBox();
+}
+
+function showSubmissionComplete_(submissionId, isYoutube){
+  const modal=document.getElementById('submissionCompleteModal');
+  const idEl=document.getElementById('submissionCompleteId');
+  const textEl=document.getElementById('submissionCompleteText');
+  if(!modal) return;
+
+  if(idEl) idEl.textContent = submissionId ? `접수번호 ${submissionId}` : '';
+  if(textEl){
+    textEl.textContent = isYoutube
+      ? '접수가 정상적으로 완료되었습니다. 담당자가 확인 후 연락드릴게요.'
+      : '입금 확인 대기 중입니다. 입금 확인 후 관리자 승인 시 캠페인이 시작됩니다.';
+  }
+  modal.classList.add('show');
+  modal.setAttribute('aria-hidden','false');
+}
+
+function closeSubmissionComplete_(){
+  const modal=document.getElementById('submissionCompleteModal');
+  if(!modal) return;
+  modal.classList.remove('show');
+  modal.setAttribute('aria-hidden','true');
+}
+
+document.getElementById('submissionCompleteCloseBtn').addEventListener('click', closeSubmissionComplete_);
+document.getElementById('submissionCompleteModal').addEventListener('click', e=>{
+  if(e.target && e.target.id==='submissionCompleteModal') closeSubmissionComplete_();
+});
+
 document.getElementById('submitBtn').addEventListener('click', async ()=>{
   if(isSubmittingOrder) return;
 
@@ -4528,12 +4612,18 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
       : document.getElementById('selectKeywordProductName').value.trim();
     const competitorLinks = [1,2,3].map(n=>document.getElementById('f_comp'+n).value.trim()).filter(Boolean);
     const couponId = document.getElementById('f_coupon').value;
+    const depositorName = document.getElementById('depositorNameInput').value.trim();
     if(!client || !link || !qty){
       const missing = [];
       if(!client) missing.push('업체명');
       if(!link) missing.push('상품 링크');
       if(!qty) missing.push('갯수');
       showMsg('submitMsg', `다음 항목이 비어있어요: ${missing.join(', ')}`, 'warn');
+      return;
+    }
+    if(!depositorName){
+      showMsg('submitMsg','입금자명을 입력해 주세요.','warn');
+      document.getElementById('depositorNameInput').focus();
       return;
     }
     if(isRankOn && (!seedKeyword || keywords.length < 1)){
@@ -4556,7 +4646,7 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
       qty: Number(qty), cycles: Number(cycles),
       keywords, seedKeyword,
       keywordMode: isRankOn ? 'AUTO' : 'SELECT',
-      competitorLinks, couponId,
+      competitorLinks, couponId, depositorName,
       productName: metaPayload.productTitle || String((window.__ollimConfirmedProductMeta||{}).title || '').trim(),
       productImage: metaPayload.productImage || '',
       competitorMeta: metaPayload.competitorMeta || []
@@ -4578,14 +4668,14 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
       editingSubmissionId = null;
       submitBtn.textContent = isYoutube ? 'PR영상 제작 시작' : '순위 올림 시작';
     } else {
-      showMsg('submitMsg','접수 완료! 입금 확인 후 승인되면 작업이 시작됩니다.','ok');
-      document.getElementById('bankBanner').style.display = isYoutube ? 'none' : 'block';
-      if(res.bank) document.getElementById('bankAcc').textContent = `${res.bank.bank} ${res.bank.account} (${res.bank.holder})`;
-      lastSubmittedId = res.id; // 입금자 성함 저장 버튼에서 이 접수건을 대상으로 함
-      document.getElementById('depositorNameInput').value = '';
+      showMsg('submitMsg','접수가 정상적으로 완료되었습니다.','ok');
+      showSubmissionComplete_(res.id, isYoutube);
     }
-    if(isYoutube){ ['y_phone','y_date','y_location','y_notes'].forEach(id=>document.getElementById(id).value=''); }
-    else { ['f_phone','f_link','f_qty','f_kw1','f_kw2','f_kw3','f_kw4','f_kw5','f_comp1','f_comp2','f_comp3'].forEach(id=>document.getElementById(id).value=''); document.getElementById('f_coupon').value=''; refreshPriceBox(); }
+    if(isYoutube){
+      ['y_date','y_location','y_notes'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+    } else {
+      resetRewardIntakeAfterSubmit_();
+    }
     // 접수 완료 UI는 즉시 끝내고, 부가 목록 갱신은 백그라운드로 처리한다.
     invalidateSubmissionsCache();
     Promise.resolve().then(()=>loadCoupons()).catch(()=>{});
