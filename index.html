@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-29 V6.1.0 FINAL-STEP-SUBMIT-FLOW -->
+<!-- OLLIM FRONTEND BUILD: 2026-07-29 V6.2.0 BILLING-PROFILE-AUTO-EVIDENCE -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -2120,6 +2120,17 @@
     font-weight:700;
   }
 
+
+  /* ===== V6.2.0 결제 증빙 프로필 ===== */
+  .billing-checkout-card{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:16px 0 10px;padding:14px 15px;border:1px solid #E8EDF4;border-radius:13px;background:#FAFBFD;}
+  .billing-checkout-card>div{min-width:0;}
+  .billing-checkout-label{display:block;margin-bottom:4px;color:#8A98AA;font-size:.7rem;font-weight:700;}
+  .billing-checkout-card strong{display:block;color:var(--text);font-size:.84rem;overflow-wrap:anywhere;}
+  .billing-profile-summary{margin:14px 0;padding:13px 14px;border:1px solid #E8EDF4;border-radius:12px;background:#FAFBFD;color:#53647A;font-weight:700;line-height:1.5;}
+  .billing-modal-card{max-width:560px;max-height:88vh;overflow:auto;text-align:left;}
+  .billing-two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  @media(max-width:700px){.billing-checkout-card{align-items:flex-start;}.billing-two-col{grid-template-columns:1fr;}.billing-modal-card{width:calc(100vw - 28px);max-height:90vh;}}
+
 </style>
 
 </head>
@@ -2299,6 +2310,54 @@
 </div>
 
 
+
+
+<div id="billingProfileModal" class="ollim-modal" aria-hidden="true">
+  <div class="ollim-modal-card billing-modal-card">
+    <button type="button" class="ollim-modal-x" id="billingProfileCloseBtn" aria-label="닫기">×</button>
+    <h3 class="ollim-modal-title">결제 증빙 설정</h3>
+    <p class="ollim-modal-sub">앞으로 접수하는 캠페인에 자동 적용됩니다.</p>
+
+    <label>증빙 방식</label>
+    <select id="billingEvidenceType">
+      <option value="none">증빙 필요 없음</option>
+      <option value="tax_invoice">세금계산서</option>
+      <option value="cash_receipt_expense">현금영수증 · 지출증빙용</option>
+      <option value="cash_receipt_income">현금영수증 · 소득공제용</option>
+    </select>
+
+    <div id="billingTaxFields" style="display:none;">
+      <label>상호 / 법인명</label><input id="billingBizName" type="text" placeholder="예: 주식회사 경성매트">
+      <label>사업자등록번호</label><input id="billingBizNumber" type="text" placeholder="000-00-00000">
+      <label>대표자명</label><input id="billingRepresentative" type="text" placeholder="대표자명">
+      <label>사업장 주소</label><input id="billingAddress" type="text" placeholder="사업장 주소">
+      <div class="billing-two-col">
+        <div><label>업태</label><input id="billingBizType" type="text" placeholder="예: 도소매"></div>
+        <div><label>종목</label><input id="billingBizItem" type="text" placeholder="예: 광고대행"></div>
+      </div>
+      <label>세금계산서 수신 이메일</label><input id="billingInvoiceEmail" type="email" placeholder="tax@company.com">
+      <label>사업자등록증 <span id="billingCertState" class="hint"></span></label>
+      <input id="billingCertFile" type="file" accept="image/*">
+      <div class="hint">최초 등록 시 1회 첨부해 주세요. 변경할 때만 다시 올리면 됩니다.</div>
+    </div>
+
+    <div id="billingExpenseFields" style="display:none;">
+      <label>지출증빙용 사업자등록번호</label>
+      <input id="billingExpenseBizNumber" type="text" placeholder="000-00-00000">
+    </div>
+
+    <div id="billingIncomeFields" style="display:none;">
+      <label>소득공제용 휴대폰 번호</label>
+      <input id="billingReceiptPhone" type="tel" placeholder="010-0000-0000">
+    </div>
+
+    <div class="msg" id="billingProfileMsg"></div>
+    <div class="ollim-modal-actions">
+      <button type="button" class="btn secondary" id="billingProfileCancelBtn">취소</button>
+      <button type="button" class="btn" id="billingProfileSaveBtn">저장</button>
+    </div>
+  </div>
+</div>
 
 <div id="submissionCompleteModal" class="ollim-modal" aria-hidden="true">
   <div class="ollim-modal-card submission-complete-card">
@@ -2637,7 +2696,16 @@
       <div class="hint">가격은 협의 후 안내드립니다. 접수 후 담당자가 별도 연락드려요.</div>
     </div>
 
-    <div class="bank-banner" id="bankBanner" style="display:block;">
+    
+    <div class="billing-checkout-card" id="billingCheckoutCard">
+      <div>
+        <span class="billing-checkout-label">결제 증빙</span>
+        <strong id="billingCheckoutSummary">확인 중...</strong>
+      </div>
+      <button type="button" class="btn small secondary" id="billingCheckoutChangeBtn">변경</button>
+    </div>
+
+<div class="bank-banner" id="bankBanner" style="display:block;">
       <strong>💳 입금 계좌 안내</strong>
       <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
         <div class="acc" id="bankAcc">-</div>
@@ -2828,10 +2896,10 @@
       <div id="adminPendingWrap"><div class="empty"><div class="spinner"></div>로딩중...</div></div>
     </div>
     <div class="card">
-      <h2><span class="n">A3</span> 세금계산서 요청</h2>
+      <h2><span class="n">A3</span> 증빙 발행 관리</h2>
       <div class="toolbar">
         <label style="display:flex; align-items:center; gap:6px; font-size:0.85rem; color:var(--muted); margin:0;"><input type="checkbox" id="taxSelectAll" style="width:auto;" /> 전체선택</label>
-        <button class="btn small secondary" id="zipTaxCertsBtn">📦 사업자등록증 일괄 zip 다운로드</button>
+        <button class="btn small secondary" id="zipTaxCertsBtn">📦 사업자등록증 ZIP</button>
       </div>
       <div id="adminTaxWrap"><div class="empty"><div class="spinner"></div>로딩중...</div></div>
     </div>
@@ -2880,6 +2948,13 @@
         <button class="btn secondary small" data-legal-open="privacy">개인정보 처리방침</button>
         <button class="btn secondary small" data-legal-open="terms">서비스 이용약관</button>
       </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="n">PAY</span> 결제 증빙 설정</h2>
+      <p class="hint">최초 1회만 설정하면 이후 접수건에 자동 적용됩니다. 접수 당시 증빙 정보는 각 접수건에 별도로 저장됩니다.</p>
+      <div class="billing-profile-summary" id="billingProfileSummary">증빙 설정을 확인하는 중입니다.</div>
+      <button class="btn secondary" id="billingProfileEditBtn" type="button">증빙 설정 변경</button>
     </div>
     <div class="card">
       <h2><span class="n">ACCOUNT</span> 계정 관리</h2>
@@ -3549,7 +3624,8 @@ function switchPanelDOM(panelName){
   const safeRun = (fn) => { try { fn(); } catch(e) { console.error('패널 로딩 중 오류(' + panelName + '):', e); } };
   if(panelName === 'panelMain') safeRun(loadCoupons); // 관리자가 방금 지급한 쿠폰이 있을 수 있어서, 접수폼 들어갈 때마다 최신 쿠폰 목록으로 갱신
   if(panelName === 'panelCoupons') safeRun(renderCoupons);
-  if(panelName === 'panelPrivacy') safeRun(loadPrivacySettings);
+  if(panelName === 'panelPrivacy'){ safeRun(loadPrivacySettings); safeRun(()=>loadBillingProfile()); }
+  if(panelName === 'panelMain') safeRun(()=>loadBillingProfile());
   if(panelName === 'panelReferrals') safeRun(renderReferrals);
   if(panelName === 'panelDashboard'){
     safeRun(loadDashboard);
@@ -5011,22 +5087,9 @@ async function renderTable(quiet){
     }
 
     let taxHtml = '';
-    if(rec.productType === 'reward' && (rec.status === 'approved' || rec.status === 'confirmed')){
-      if(rec.taxInvoiceRequested === 'Y'){
-        taxHtml = `<div style="margin-top:10px;"><span class="pill approved">세금계산서 신청완료</span></div>`;
-      } else {
-        taxHtml = `
-          <div style="margin-top:10px;">
-            <button class="btn small secondary taxToggleBtn" data-id="${rec.id}">세금계산서 요청</button>
-            <div class="tax-form" id="taxForm-${rec.id}" style="display:none; margin-top:10px; max-width:320px;">
-              <input type="email" placeholder="계산서 받을 이메일" id="taxEmail-${rec.id}" style="margin-bottom:8px;" />
-              <input type="file" accept="image/*" id="taxFile-${rec.id}" style="margin-bottom:8px;" />
-              <div class="msg" id="taxMsg-${rec.id}"></div>
-              <div class="hint" style="margin-bottom:8px;">사업자등록증 이미지 1장을 첨부해 주세요. 최대 15MB까지 가능하며 큰 이미지는 자동으로 압축해 전송해요.</div>
-              <button class="btn small taxSubmitBtn" data-id="${rec.id}">제출하기</button>
-            </div>
-          </div>`;
-      }
+    if(rec.productType === 'reward'){
+      const billingLabel = billingTypeLabelFront_(rec.billingType);
+      taxHtml = `<div style="margin-top:10px;"><span class="pill ${rec.billingType && rec.billingType!=='none'?'approved':''}">증빙 · ${escapeHtml(billingLabel)}</span></div>`;
     }
 
     html += `
@@ -5124,55 +5187,7 @@ async function renderTable(quiet){
     });
   });
 
-  document.querySelectorAll('.taxToggleBtn').forEach(btn=>{
-    btn.addEventListener('click', (e)=>{
-      e.stopPropagation();
-      const form = document.getElementById('taxForm-'+btn.dataset.id);
-      form.style.display = form.style.display==='none' ? 'block' : 'none';
-    });
-  });
-  document.querySelectorAll('.taxSubmitBtn').forEach(btn=>{
-    btn.addEventListener('click', async (e)=>{
-      e.stopPropagation();
-      const id = btn.dataset.id;
-      const email = document.getElementById('taxEmail-'+id).value.trim();
-      const fileInput = document.getElementById('taxFile-'+id);
-      const file = fileInput.files[0];
-      if(!email || !file){ showMsg('taxMsg-'+id,'이메일과 사업자등록증 파일을 모두 입력해 주세요.','warn'); return; }
-      const MAX_ORIGINAL_BYTES = 15 * 1024 * 1024;
-      if(file.size > MAX_ORIGINAL_BYTES){
-        showMsg('taxMsg-'+id,'사업자등록증 이미지는 최대 15MB까지 업로드할 수 있어요.','warn');
-        return;
-      }
-      isUploadingTaxFile = true;
-      setBusy(btn, '이미지 준비 중...');
-      try{
-        const prepared = await prepareTaxImageForUpload(file);
-        btn.textContent = '업로드 중...';
-        const base64 = await fileToBase64(prepared.file);
-        const s = await getSession();
-        const res = await apiCall('requestTaxInvoice', {
-          token:s.token,
-          submissionId:id,
-          invoiceEmail:email,
-          certImageBase64:base64,
-          certFileName:prepared.fileName,
-          certMimeType:prepared.mimeType
-        });
-        clearBusy(btn);
-        if(res.ok){ showMsg('taxMsg-'+id,'세금계산서 요청이 접수됐어요.','ok'); invalidateSubmissionsCache(); setTimeout(()=>renderTable(), 1200); }
-        else { showMsg('taxMsg-'+id, res.error||'요청 실패','warn'); }
-      }catch(e){
-        clearBusy(btn);
-        const msg = e && e.message === 'IMAGE_ONLY' ? '이미지 파일만 업로드할 수 있어요.'
-          : e && e.message === 'IMAGE_DECODE_FAILED' ? '이 이미지 형식은 처리할 수 없어요. 스크린샷이나 갤러리에서 JPG/PNG로 다시 저장 후 시도해 주세요.'
-          : '파일 처리 중 오류가 발생했어요.';
-        showMsg('taxMsg-'+id, msg, 'warn');
-      } finally {
-        isUploadingTaxFile = false;
-      }
-    });
-  });
+
 }
 document.getElementById('refreshBtn').addEventListener('click', ()=>{ loadCoupons(); renderTable(); });
 setInterval(async ()=>{
@@ -5374,31 +5389,41 @@ async function loadAdmin(){
   const taxRes = await apiCall('listTaxInvoices', { token: session.token });
   const invoices = ((taxRes.ok ? taxRes.invoices : []) || []).filter(t => t.status !== 'completed');
   const taxWrap = document.getElementById('adminTaxWrap');
-  taxWrap.innerHTML = invoices.length === 0 ? '<div class="empty">발행 대기중인 세금계산서 요청이 없어요.</div>' :
+  taxWrap.innerHTML = invoices.length === 0 ? '<div class="empty">발행 대기중인 증빙이 없어요.</div>' :
     `<div style="overflow-x:auto;"><table>
-      <thead><tr><th></th><th>업체명</th><th>입금자</th><th>상품</th><th>금액</th><th>이메일</th><th>사업자번호</th><th>날짜</th><th></th></tr></thead>
-      <tbody>${invoices.slice(0,30).map(t => `<tr>
-        <td><input type="checkbox" class="taxRowCheck" data-id="${t.id}" style="width:auto;" /></td>
-        <td>${escapeHtml(t.client)}</td>
-        <td>${escapeHtml(t.depositorName || '-')}</td>
-        <td>${escapeHtml(t.productTitle || '-')}</td>
-        <td>${Number(t.grandTotal||0).toLocaleString('ko-KR')}원</td>
-        <td>${escapeHtml(t.invoiceEmail)}</td>
-        <td>${escapeHtml(t.extractedBizNumber || '자동추출 실패')}</td>
-        <td>${escapeHtml(prettyDate(fmt(new Date(t.createdAt))))}</td>
-        <td style="display:flex; gap:6px;">
-          <a class="btn small secondary" href="${escapeHtml(t.certFileUrl)}" target="_blank">보기</a>
-          <button class="btn small adminTaxCompleteBtn" data-id="${t.id}">발행완료</button>
-        </td>
-      </tr>`).join('')}</tbody>
+      <thead><tr><th></th><th>증빙</th><th>업체명</th><th>입금자</th><th>상품</th><th>금액</th><th>발행정보</th><th>날짜</th><th></th></tr></thead>
+      <tbody>${invoices.slice(0,50).map(t => {
+        let snapshot={}; try{snapshot=JSON.parse(t.billingSnapshotJson||'{}');}catch(e){}
+        const type=t.documentType||'tax_invoice';
+        const label=billingTypeLabelFront_(type);
+        const issue=type==='tax_invoice'
+          ? `${snapshot.bizName||t.client||''} / ${snapshot.bizNumber||t.extractedBizNumber||''} / ${snapshot.invoiceEmail||t.invoiceEmail||''}`
+          : type==='cash_receipt_expense'
+            ? `사업자번호 ${snapshot.bizNumber||t.issueValue||t.extractedBizNumber||''}`
+            : `휴대폰 ${snapshot.receiptPhone||t.issueValue||''}`;
+        const certBtn=type==='tax_invoice'&&t.certFileUrl
+          ? `<a class="btn small secondary" href="${escapeHtml(t.certFileUrl)}" target="_blank">등록증</a>`:'';
+        return `<tr>
+          <td><input type="checkbox" class="taxRowCheck" data-id="${t.id}" style="width:auto;" /></td>
+          <td><b>${escapeHtml(label)}</b></td>
+          <td>${escapeHtml(t.client)}</td>
+          <td>${escapeHtml(t.depositorName||'-')}</td>
+          <td>${escapeHtml(t.productTitle||'-')}</td>
+          <td>${Number(t.grandTotal||0).toLocaleString('ko-KR')}원</td>
+          <td>${escapeHtml(issue)}</td>
+          <td>${escapeHtml(prettyDate(fmt(new Date(t.createdAt))))}</td>
+          <td style="display:flex;gap:6px;">${certBtn}<button class="btn small adminTaxCompleteBtn" data-id="${t.id}">처리완료</button></td>
+        </tr>`;
+      }).join('')}</tbody>
     </table></div>`;
+
   document.querySelectorAll('.adminTaxCompleteBtn').forEach(btn=>{
     btn.addEventListener('click', async (e)=>{
       e.stopPropagation();
       btn.disabled = true; btn.textContent = '처리중...';
       const res = await apiCall('completeTaxInvoice', { token: session.token, taxId: btn.dataset.id });
       if(res.ok){ loadAdmin(); }
-      else { showMsg('submitMsg', res.error || '처리 실패', 'warn'); btn.disabled = false; btn.textContent = '발행완료'; }
+      else { showMsg('submitMsg', res.error || '처리 실패', 'warn'); btn.disabled = false; btn.textContent = '처리완료'; }
     });
   });
   document.getElementById('taxSelectAll').onchange = (e)=>{
@@ -6535,6 +6560,125 @@ document.getElementById('signupConsentSubmit')?.addEventListener('click',async()
   signupAnswers.marketingEmailAgreed=document.getElementById('consentMarketingEmail').checked;
   await submitSignup();
 });
+
+
+let currentBillingProfile = { evidenceType:'none' };
+let billingProfileLoaded = false;
+
+function billingTypeLabelFront_(type){
+  return type === 'tax_invoice' ? '세금계산서'
+    : type === 'cash_receipt_expense' ? '현금영수증 · 지출증빙'
+    : type === 'cash_receipt_income' ? '현금영수증 · 소득공제'
+    : '증빙 필요 없음';
+}
+function billingProfileDetailFront_(p){
+  p=p||{};
+  if(p.evidenceType==='tax_invoice') return `${billingTypeLabelFront_(p.evidenceType)} · ${p.bizName||''} · ${p.bizNumber||''}`;
+  if(p.evidenceType==='cash_receipt_expense') return `${billingTypeLabelFront_(p.evidenceType)} · ${p.bizNumber||''}`;
+  if(p.evidenceType==='cash_receipt_income') return `${billingTypeLabelFront_(p.evidenceType)} · ${p.receiptPhone||''}`;
+  return '증빙 필요 없음';
+}
+function renderBillingProfileSummary_(){
+  const detail=billingProfileDetailFront_(currentBillingProfile);
+  const a=document.getElementById('billingCheckoutSummary');
+  const b=document.getElementById('billingProfileSummary');
+  if(a) a.textContent=detail;
+  if(b) b.textContent=detail;
+}
+async function loadBillingProfile(force=false){
+  if(billingProfileLoaded && !force){renderBillingProfileSummary_();return currentBillingProfile;}
+  const session=await getSession();
+  if(!session||session.role!=='client') return currentBillingProfile;
+  const res=await apiCall('getBillingProfile',{token:session.token});
+  if(res.ok){
+    currentBillingProfile=res.profile||{evidenceType:'none'};
+    billingProfileLoaded=true;
+    renderBillingProfileSummary_();
+  }
+  return currentBillingProfile;
+}
+function syncBillingModalFields_(){
+  const type=document.getElementById('billingEvidenceType').value;
+  document.getElementById('billingTaxFields').style.display=type==='tax_invoice'?'block':'none';
+  document.getElementById('billingExpenseFields').style.display=type==='cash_receipt_expense'?'block':'none';
+  document.getElementById('billingIncomeFields').style.display=type==='cash_receipt_income'?'block':'none';
+}
+function openBillingProfileModal_(){
+  const p=currentBillingProfile||{evidenceType:'none'};
+  document.getElementById('billingEvidenceType').value=p.evidenceType||'none';
+  document.getElementById('billingBizName').value=p.bizName||'';
+  document.getElementById('billingBizNumber').value=p.bizNumber||'';
+  document.getElementById('billingRepresentative').value=p.representative||'';
+  document.getElementById('billingAddress').value=p.address||'';
+  document.getElementById('billingBizType').value=p.bizType||'';
+  document.getElementById('billingBizItem').value=p.bizItem||'';
+  document.getElementById('billingInvoiceEmail').value=p.invoiceEmail||'';
+  document.getElementById('billingExpenseBizNumber').value=p.bizNumber||'';
+  document.getElementById('billingReceiptPhone').value=p.receiptPhone||'';
+  document.getElementById('billingCertFile').value='';
+  document.getElementById('billingCertState').textContent=p.certFileUrl?'· 등록됨':'· 미등록';
+  document.getElementById('billingProfileMsg').style.display='none';
+  syncBillingModalFields_();
+  const modal=document.getElementById('billingProfileModal');
+  modal.classList.add('show'); modal.setAttribute('aria-hidden','false');
+}
+function closeBillingProfileModal_(){
+  const modal=document.getElementById('billingProfileModal');
+  modal.classList.remove('show'); modal.setAttribute('aria-hidden','true');
+}
+async function saveBillingProfile_(){
+  const btn=document.getElementById('billingProfileSaveBtn');
+  const type=document.getElementById('billingEvidenceType').value;
+  const session=await getSession();
+  if(!session) return;
+
+  const payload={
+    token:session.token,
+    evidenceType:type,
+    bizName:document.getElementById('billingBizName').value.trim(),
+    bizNumber:(type==='cash_receipt_expense'
+      ? document.getElementById('billingExpenseBizNumber').value
+      : document.getElementById('billingBizNumber').value).trim(),
+    representative:document.getElementById('billingRepresentative').value.trim(),
+    address:document.getElementById('billingAddress').value.trim(),
+    bizType:document.getElementById('billingBizType').value.trim(),
+    bizItem:document.getElementById('billingBizItem').value.trim(),
+    invoiceEmail:document.getElementById('billingInvoiceEmail').value.trim(),
+    receiptPhone:document.getElementById('billingReceiptPhone').value.trim()
+  };
+
+  const input=document.getElementById('billingCertFile');
+  const file=input.files&&input.files[0];
+  setBusy(btn,'저장 중...');
+
+  try{
+    if(type==='tax_invoice' && file){
+      if(file.size>15*1024*1024){
+        clearBusy(btn); showMsg('billingProfileMsg','사업자등록증 이미지는 최대 15MB까지 가능해요.','warn'); return;
+      }
+      const prepared=await prepareTaxImageForUpload(file);
+      payload.certImageBase64=await fileToBase64(prepared.file);
+      payload.certFileName=prepared.fileName;
+      payload.certMimeType=prepared.mimeType;
+    }
+    const res=await apiCall('saveBillingProfile',payload);
+    clearBusy(btn);
+    if(!res.ok){showMsg('billingProfileMsg',res.error||'저장 실패','warn');return;}
+    currentBillingProfile=res.profile||{evidenceType:'none'};
+    billingProfileLoaded=true;
+    renderBillingProfileSummary_();
+    closeBillingProfileModal_();
+  }catch(e){
+    clearBusy(btn); showMsg('billingProfileMsg','증빙 설정 저장 중 오류가 발생했어요.','warn');
+  }
+}
+document.getElementById('billingEvidenceType')?.addEventListener('change',syncBillingModalFields_);
+document.getElementById('billingProfileEditBtn')?.addEventListener('click',async()=>{await loadBillingProfile();openBillingProfileModal_();});
+document.getElementById('billingCheckoutChangeBtn')?.addEventListener('click',async()=>{await loadBillingProfile();openBillingProfileModal_();});
+document.getElementById('billingProfileCloseBtn')?.addEventListener('click',closeBillingProfileModal_);
+document.getElementById('billingProfileCancelBtn')?.addEventListener('click',closeBillingProfileModal_);
+document.getElementById('billingProfileSaveBtn')?.addEventListener('click',saveBillingProfile_);
+document.getElementById('billingProfileModal')?.addEventListener('click',e=>{if(e.target.id==='billingProfileModal')closeBillingProfileModal_();});
 
 async function loadPrivacySettings(){
   const session=await getSession();
