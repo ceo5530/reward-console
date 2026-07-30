@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-29 V6.3.2 GATEWAY-CONTRAST-FIX -->
+<!-- OLLIM FRONTEND BUILD: 2026-07-30 V6.3.3 NAVER-ONLY-LAUNCH -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -3991,12 +3991,14 @@ document.getElementById('pt_youtube').addEventListener('click', ()=>{
 
 async function loadCatalog(){
   const res = await apiCall('getCatalog', {});
-  if(res.ok && Array.isArray(res.products) && res.products.length){ CATALOG = { products: res.products, bank: res.bank }; }
+  if(res.ok && Array.isArray(res.products) && res.products.length){
+    const launchProducts = res.products.filter(p => p && (p.id === 'naver_rankon' || p.id === 'naver_jump'));
+    CATALOG = { products: launchProducts, bank: res.bank };
+  }
   else {
     CATALOG = { products: [
       { id:'naver_rankon', channel:'네이버', program:'랭크온', workDays:10, unitPrice:50000 },
-      { id:'naver_jump', channel:'네이버', program:'점프', workDays:10, unitPrice:45000 },
-      { id:'coupang_best', channel:'쿠팡', program:'베스트', workDays:30, unitPrice:30000 }
+      { id:'naver_jump', channel:'네이버', program:'점프', workDays:10, unitPrice:45000 }
     ], bank: res.bank || { bank:'-', account:'-', holder:'-' } };
   }
   const sel = document.getElementById('f_product');
@@ -4124,7 +4126,7 @@ document.getElementById('productConfirmBtn').addEventListener('click', async ()=
 
 function toggleKeywordMode(product){
   const isRankOn = product && product.id === 'naver_rankon';
-  const isSelectable = product && (product.id === 'naver_jump' || product.id === 'coupang_best');
+  const isSelectable = product && product.id === 'naver_jump';
 
   document.getElementById('autoKeywordBlock').style.display = isRankOn ? 'block' : 'none';
   document.getElementById('selectKeywordBlock').style.display = isSelectable ? 'block' : 'none';
@@ -4565,7 +4567,7 @@ function referralUrl(code){
 }
 
 function referralMessage(code){
-  return `네이버·쿠팡 상품 운영하고 있으면 올림컴퍼니 한번 써봐!\n\n가입하면 무료체험 1회 받을 수 있고 상품 순위와 캠페인 현황도 확인할 수 있어.\n\n내 추천 링크로 가입하면 추천코드도 자동 적용돼 👇\n${referralUrl(code)}`;
+  return `네이버 상품 운영하고 있으면 올림컴퍼니 한번 써봐!\n\n가입하면 무료체험 1회 받을 수 있고 상품 순위와 캠페인 현황도 확인할 수 있어.\n\n내 추천 링크로 가입하면 추천코드도 자동 적용돼 👇\n${referralUrl(code)}`;
 }
 
 async function copyTextSafe(text){
@@ -4974,7 +4976,7 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
     const qty = document.getElementById('f_qty').value;
     const cycles = document.getElementById('f_cycles').value;
     const isRankOn = productId === 'naver_rankon';
-    const isSelectableKeywordProduct = productId === 'naver_jump' || productId === 'coupang_best';
+    const isSelectableKeywordProduct = productId === 'naver_jump';
     const keywords = isRankOn
       ? (Array.isArray(window.__ollimRankOnAutoKeywords) ? window.__ollimRankOnAutoKeywords.slice(0,5) : [])
       : [1,2,3,4,5].map(n=>document.getElementById('f_kw'+n).value.trim()).filter(Boolean);
@@ -5002,7 +5004,7 @@ document.getElementById('submitBtn').addEventListener('click', async ()=>{
       return;
     }
     if(isSelectableKeywordProduct && keywords.length !== 5){
-      showMsg('submitMsg',`점프/쿠팡 베스트는 진행 키워드가 정확히 5개 필요합니다. 현재 ${keywords.length}개입니다.`, 'warn');
+      showMsg('submitMsg',`네이버 점프는 진행 키워드가 정확히 5개 필요합니다. 현재 ${keywords.length}개입니다.`, 'warn');
       return;
     }
     const submitBtn = document.getElementById('submitBtn');
@@ -6153,7 +6155,7 @@ function renderHomeTicker(active){
     try{ ranks = r.ranksJson ? JSON.parse(r.ranksJson) : {}; }catch(e){}
     try{ prev = r.prevRanksJson ? JSON.parse(r.prevRanksJson) : {}; }catch(e){}
     const kws = Array.isArray(r.keywords) ? r.keywords : String(r.keywords||'').split(',').map(k=>k.trim()).filter(Boolean);
-    const productLabel = r.channel; // 프로그램명까지는 필요없고, 어느 플랫폼(네이버/쿠팡) 건지만 간단히
+    const productLabel = r.channel; // 프로그램명까지는 필요없고 플랫폼명만 간단히 표시
     kws.forEach(kw=>{
       const cur = ranks[kw] ? ranks[kw].rank : null;
       const prv = prev[kw] ? prev[kw].rank : null;
