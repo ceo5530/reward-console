@@ -4053,6 +4053,8 @@ document.getElementById('loginBtn').addEventListener('click', async ()=>{
 });
 
 document.getElementById('logoutBtn').addEventListener('click', async ()=>{
+  const _logoutSession = await getSession();
+  if(_logoutSession){ try{ await apiCall('logout', { token: _logoutSession.token }); }catch(e){} }
   await clearSession();
   const app = document.getElementById('app');
   app.classList.remove('visible','role-admin','role-client');
@@ -7236,6 +7238,26 @@ document.getElementById('rankVerifyNaverBtn')?.addEventListener('click',()=>{
   const q=encodeURIComponent(currentRankVerifyRecord.kw);
   window.open(`https://search.shopping.naver.com/ns/search?query=${q}`,'_blank','noopener');
 });
+async function reportRankFeedback(isMatch){
+  if(!currentRankVerifyRecord) return;
+  const session = await getSession();
+  if(!session) return;
+  const { rec, kw, info } = currentRankVerifyRecord;
+  try{
+    await apiCall('reportRankFeedback', {
+      token: session.token,
+      submissionId: rec.id,
+      keyword: kw,
+      device: 'client',
+      isMatch: isMatch ? 'Y' : 'N',
+      observedRank: typeof info?.rank === 'number' ? String(info.rank) : '',
+      userAgent: navigator.userAgent
+    });
+  }catch(e){}
+  const modal = document.getElementById('rankVerifyModal');
+  if(modal){ modal.classList.remove('show'); modal.setAttribute('aria-hidden','true'); }
+  alert(isMatch ? '확인 감사합니다!' : '피드백 감사합니다. 확인 후 반영할게요.');
+}
 document.getElementById('rankVerifyMatchBtn')?.addEventListener('click',()=>reportRankFeedback(true));
 document.getElementById('rankVerifyMismatchBtn')?.addEventListener('click',()=>reportRankFeedback(false));
 
