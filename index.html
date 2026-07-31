@@ -2331,12 +2331,12 @@
 /* ===== OLLIM AI CONSULTING · LAYOUT LOCK V3 =====
    기능/데이터 로직 변경 없음. AI 컨설팅 화면 비율과 여백만 확정. */
 body:has(#panelAIConsulting.active) .content-body{
-  max-width:2000px;
-  width:100%;
-  padding:24px 32px 56px;
+  max-width:none;
+  width:calc(100% - 48px);
+  padding:24px 8px 56px;
 }
 #panelAIConsulting .ai-page{
-  max-width:1920px;
+  max-width:none;
   width:100%;
   gap:20px;
 }
@@ -2485,6 +2485,19 @@ body:has(#panelAIConsulting.active) .content-body{
 #app .sidebar-promo p{margin:0 0 12px;font-size:.76rem;color:#4a5568;line-height:1.55;font-weight:500}
 #app .sidebar-promo button{width:100%;border:0;border-radius:9px;padding:10px;background:var(--ol-blue,#1677ff);color:#fff;font-size:.76rem;font-weight:700;cursor:pointer}
 #app .sidebar-promo button:hover{background:#086cea}
+
+#panelAIConsulting .ai-dashboard-grid{row-gap:36px;column-gap:20px}
+#panelAIConsulting .ai-summary-strip{margin-bottom:4px}
+
+/* --- 벤치마킹 랭크 배지 금/은/동 --- */
+#panelAIConsulting .ai-rank-badge.rank-1{background:#f5a524;color:#fff}
+#panelAIConsulting .ai-rank-badge.rank-2{background:#9aa5b1;color:#fff}
+#panelAIConsulting .ai-rank-badge.rank-3{background:#c98a55;color:#fff}
+
+/* --- 이미지 없을 때 fallback 아이콘 (텍스트 대신 아이콘) --- */
+#panelAIConsulting .ai-product-thumb-fallback,
+#panelAIConsulting .ai-benchmark-thumb.ai-product-thumb-fallback{display:flex;align-items:center;justify-content:center;color:#a8b3c4;background:#f1f5f9}
+#panelAIConsulting .ai-product-thumb-fallback svg{width:46%;height:46%}
 
 /* --- 성공 패턴 분석 : 아이콘 배지형 카드로 재배치 --- */
 #panelAIConsulting .ai-pattern-grid{grid-template-columns:1fr 1fr}
@@ -8050,7 +8063,7 @@ document.getElementById('privacyWithdrawBtn')?.addEventListener('click',()=>docu
     return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/><circle cx="12" cy="12" r="4"/></svg>';
   }
   const delta=x=>x==null?'<span class="ai-flat">-</span>':x>0?`<span class="ai-up">▲${x}</span>`:x<0?`<span class="ai-down">▼${Math.abs(x)}</span>`:'<span class="ai-flat">-</span>';
-  const thumb=(src,cls='ai-product-thumb')=>src?`<img class="${cls}" src="${esc(src)}" alt="">`:`<div class="${cls} ai-product-thumb-fallback">AI</div>`;
+  const thumb=(src,cls='ai-product-thumb')=>src?`<img class="${cls}" src="${esc(src)}" alt="">`:`<div class="${cls} ai-product-thumb-fallback"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.4"/><path d="m21 15-5-5-9 9"/></svg></div>`;
   function factors(data){return (data.detailDiagnosis?.factors||[]).map(x=>`<div class="ai-factor"><span>${esc(x.name)}</span><div class="ai-factor-track"><div class="ai-factor-fill" style="width:${Math.max(0,Math.min(100,Number(x.value)||0))}%"></div></div><b>${esc(x.value)}</b></div>`).join('')}
   function render(data){
     const root=$('aiConsultingRoot'); if(!root)return;
@@ -8059,7 +8072,7 @@ document.getElementById('privacyWithdrawBtn')?.addEventListener('click',()=>docu
     const keywordHtml=kws.slice(0,5).map(k=>`<span class="ai-keyword">${esc(k)}</span>`).join('')+(kws.length>5?`<span class="ai-keyword ai-more-keyword">+ ${kws.length-5}개 더보기</span>`:'');
     const rankRows=ranks.slice(0,3).map(x=>`<tr><td>${esc(x.keyword)}</td><td>${x.current?esc(x.current)+'위':'미관측'}</td><td>${delta(x.delta)}</td></tr>`).join('')||'<tr><td colspan="3">관측 데이터 수집 중</td></tr>';
     const actions=(data.actions||[]).slice(0,3);
-    const benches=(data.benchmark?.items||[]).map((x,i)=>`<div class="ai-benchmark-item"><span class="ai-rank-badge">${i+1}</span>${thumb(x.image,'ai-benchmark-thumb')}<div><div class="ai-benchmark-name">${esc(x.name)}</div><div class="ai-benchmark-meta">${esc(x.meta)}</div></div><button class="ai-tiny-btn">분석 보기</button></div>`).join('');
+    const benches=(data.benchmark?.items||[]).map((x,i)=>`<div class="ai-benchmark-item"><span class="ai-rank-badge rank-${i+1}">${i+1}</span>${thumb(x.image,'ai-benchmark-thumb')}<div><div class="ai-benchmark-name">${esc(x.name)}</div><div class="ai-benchmark-meta">${esc(x.meta)}</div></div><button class="ai-tiny-btn">분석 보기</button></div>`).join('');
     const patterns=(data.successPattern?.items||[]).map((x,i)=>{const pal=patternPalette[i%patternPalette.length];return `<div class="ai-pattern"><span class="ai-pattern-icon" style="background:${pal[0]};color:${pal[1]}">${patternIconSvg_(x.title)}</span><b>${esc(x.title)}</b><span class="ai-pattern-val">${esc(x.value)}</span></div>`}).join('');
     const insights=(data.categoryInsight?.items||[]).map((x,i)=>{const pal=insightPalette[i%insightPalette.length];return `<div class="ai-insight-row"><span class="ai-insight-icon" style="background:${pal[0]};color:${pal[1]}">${esc(x.icon)}</span><div><b>${esc(x.title)}</b><p>${esc(x.text)}</p></div></div>`}).join('');
     const hist=(data.history?.scores||[48,52,55,60,64,68,score]); const pts=hist.map((v,i)=>`${i*(100/(hist.length-1||1))},${100-(Number(v)||0)}`).join(' ');
