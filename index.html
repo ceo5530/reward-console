@@ -2473,20 +2473,20 @@ body:has(#panelAIConsulting.active) .content-body{
 
 /* --- 헤더 사용자 아바타 칩 --- */
 .ai-user-chip{display:flex;align-items:center;gap:10px;padding-left:12px;margin-left:2px;border-left:1px solid #e6ebf2}
-.ai-user-avatar{width:38px;height:38px;border-radius:50%;background:var(--ol-blue,#1677ff);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;flex-shrink:0}
+.ai-user-avatar{width:40px;height:40px;border-radius:50%;background:var(--ol-blue,#1677ff);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;flex-shrink:0}
 .ai-user-name{display:flex;flex-direction:column;line-height:1.35}
-.ai-user-name strong{font-size:.8rem;color:#1f2937;font-weight:800;max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ai-user-name span{font-size:.68rem;color:#8b97aa}
+.ai-user-name strong{font-size:.92rem;color:#1f2937;font-weight:800;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ai-user-name span{font-size:.8rem;color:#8b97aa}
 @media(max-width:760px){.ai-user-chip{border-left:0;padding-left:0}.ai-user-name{display:none}}
 
 /* --- 사이드바 AI 프로모 카드 --- */
 #app .sidebar-promo{background:linear-gradient(160deg,#eef4ff,#f8fbff);border:1px solid #dbe8fb;border-radius:14px;padding:16px 14px;margin-bottom:12px;text-align:center}
-#app .sidebar-promo-icon{font-size:1.7rem;margin-bottom:8px;line-height:1}
-#app .sidebar-promo p{margin:0 0 12px;font-size:.76rem;color:#4a5568;line-height:1.55;font-weight:500}
-#app .sidebar-promo button{width:100%;border:0;border-radius:9px;padding:10px;background:var(--ol-blue,#1677ff);color:#fff;font-size:.76rem;font-weight:700;cursor:pointer}
+#app .sidebar-promo-icon{font-size:1.8rem;margin-bottom:8px;line-height:1}
+#app .sidebar-promo p{margin:0 0 12px;font-size:.86rem;color:#4a5568;line-height:1.55;font-weight:500}
+#app .sidebar-promo button{width:100%;border:0;border-radius:9px;padding:10px;background:var(--ol-blue,#1677ff);color:#fff;font-size:.86rem;font-weight:700;cursor:pointer}
 #app .sidebar-promo button:hover{background:#086cea}
 
-#panelAIConsulting .ai-dashboard-grid{row-gap:36px;column-gap:20px}
+#panelAIConsulting .ai-dashboard-grid{row-gap:64px;column-gap:20px}
 #panelAIConsulting .ai-summary-strip{margin-bottom:4px}
 
 /* --- 벤치마킹 랭크 배지 금/은/동 --- */
@@ -2502,47 +2502,70 @@ body:has(#panelAIConsulting.active) .content-body{
 /* --- 성공 패턴 분석 : 아이콘 배지형 카드로 재배치 --- */
 #panelAIConsulting .ai-pattern-grid{grid-template-columns:1fr 1fr}
 #panelAIConsulting .ai-pattern{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:13px 12px}
-#panelAIConsulting .ai-pattern-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-#panelAIConsulting .ai-pattern-icon svg{width:17px;height:17px}
-#panelAIConsulting .ai-pattern b{font-size:.76rem}
-#panelAIConsulting .ai-pattern-val{font-size:.68rem;color:#8793a5}
-#panelAIConsulting .ai-insight-tag{font-size:.68rem;padding:6px 9px}
+#panelAIConsulting .ai-pattern-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+#panelAIConsulting .ai-pattern-icon svg{width:18px;height:18px}
+#panelAIConsulting .ai-pattern b{font-size:.9rem}
+#panelAIConsulting .ai-pattern-val{font-size:.8rem;color:#8793a5}
+#panelAIConsulting .ai-insight-tag{font-size:.8rem;padding:7px 11px}
 
 /* --- 카테고리 인사이트 : 아이콘 배지 확대 + 색상 순환 --- */
-#panelAIConsulting .ai-insight-row{grid-template-columns:34px 1fr;gap:11px}
-#panelAIConsulting .ai-insight-icon{width:34px;height:34px;border-radius:50%;font-size:.9rem}
-#panelAIConsulting .ai-insight-row b{font-size:.76rem}
-#panelAIConsulting .ai-insight-row p{font-size:.7rem;line-height:1.55}
+#panelAIConsulting .ai-insight-row{grid-template-columns:36px 1fr;gap:12px}
+#panelAIConsulting .ai-insight-icon{width:36px;height:36px;border-radius:50%;font-size:1.02rem}
+#panelAIConsulting .ai-insight-row b{font-size:.9rem}
+#panelAIConsulting .ai-insight-row p{font-size:.82rem;line-height:1.6}
 
 /* --- 시장 트렌드 : 강조 박스 톤업 (기존 팔레트 유지) --- */
 #panelAIConsulting .ai-opportunity{background:#eefbf3;border:1px solid #cfeeda;border-radius:12px;padding:14px 16px}
-#panelAIConsulting .ai-opportunity b{font-size:.78rem;color:#16a34a}
-#panelAIConsulting .ai-opportunity p{font-size:.7rem;line-height:1.6;color:#4d5d6b}
+#panelAIConsulting .ai-opportunity b{font-size:.92rem;color:#16a34a}
+#panelAIConsulting .ai-opportunity p{font-size:.82rem;line-height:1.65;color:#4d5d6b}
 
 /* --- 전체 가독성용 폰트 크기 상향 (톤/색상 변경 없음) --- */
-#panelAIConsulting .ai-label{font-size:.74rem}
-#panelAIConsulting .ai-product-name{font-size:1rem}
-#panelAIConsulting .ai-product-meta{font-size:.74rem}
-#panelAIConsulting .ai-keyword{font-size:.72rem;padding:7px 11px}
-#panelAIConsulting .ai-score-copy strong{font-size:.94rem}
-#panelAIConsulting .ai-score-copy p{font-size:.74rem}
-#panelAIConsulting .ai-subtitle{font-size:.78rem}
-#panelAIConsulting .ai-factor{font-size:.7rem}
-#panelAIConsulting .ai-mini-table{font-size:.74rem}
-#panelAIConsulting .ai-priority-list li{font-size:.72rem}
-#panelAIConsulting .ai-benchmark-name{font-size:.74rem}
-#panelAIConsulting .ai-benchmark-meta{font-size:.66rem}
-#panelAIConsulting .ai-tiny-btn{font-size:.66rem;padding:6px 9px}
-#panelAIConsulting .ai-reason-box{font-size:.7rem}
-#panelAIConsulting .ai-action-table td{font-size:.72rem}
-#panelAIConsulting .ai-action-table th{font-size:.66rem}
-#panelAIConsulting .ai-impact-note{font-size:.7rem}
-#panelAIConsulting .ai-history-tab{font-size:.66rem;padding:6px 10px}
-#panelAIConsulting .ai-history-summary b{font-size:.76rem}
-#panelAIConsulting .ai-history-summary ul{font-size:.68rem}
-#panelAIConsulting .ai-report-btn{font-size:.68rem}
-#panelAIConsulting .ai-chart-labels{font-size:.62rem}
-#panelAIConsulting .ai-footnote{font-size:.72rem;color:#8b97aa;margin-top:4px}
+#panelAIConsulting .ai-page-head h1{font-size:2rem}
+#panelAIConsulting .ai-page-head p{font-size:.94rem}
+#panelAIConsulting .ai-nav-beta{font-size:.72rem;padding:3px 9px}
+#panelAIConsulting .ai-analysis-date span{font-size:.74rem}
+#panelAIConsulting .ai-analysis-date strong{font-size:.92rem}
+#panelAIConsulting .ai-module-title{font-size:1.02rem}
+#panelAIConsulting .ai-module-no{font-size:.76rem;width:25px;height:25px}
+#panelAIConsulting .ai-module-link{font-size:.78rem}
+#panelAIConsulting .ai-score-value{font-size:1.85rem}
+#panelAIConsulting .ai-score-ring{width:106px;height:106px}
+#panelAIConsulting .ai-score-ring:after{inset:9px}
+#panelAIConsulting .ai-score-value small{font-size:.7rem}
+#panelAIConsulting .ai-score-grade{font-size:.8rem}
+#panelAIConsulting .ai-detail-ring div{font-size:1.55rem}
+#panelAIConsulting .ai-detail-ring small{font-size:.68rem}
+#panelAIConsulting .ai-label{font-size:.84rem}
+#panelAIConsulting .ai-product-name{font-size:1.2rem}
+#panelAIConsulting .ai-product-meta{font-size:.84rem}
+#panelAIConsulting .ai-product-change{font-size:.8rem}
+#panelAIConsulting .ai-keyword{font-size:.84rem;padding:8px 12px}
+#panelAIConsulting .ai-score-copy strong{font-size:1.15rem}
+#panelAIConsulting .ai-score-copy p{font-size:.86rem}
+#panelAIConsulting .ai-text-link{font-size:.8rem}
+#panelAIConsulting .ai-subtitle{font-size:.94rem}
+#panelAIConsulting .ai-factor{font-size:.84rem}
+#panelAIConsulting .ai-factor b{font-size:.84rem}
+#panelAIConsulting .ai-mini-table{font-size:.9rem}
+#panelAIConsulting .ai-priority-list li{font-size:.86rem}
+#panelAIConsulting .ai-priority-list b{font-size:.8rem}
+#panelAIConsulting .ai-benchmark-name{font-size:.9rem}
+#panelAIConsulting .ai-benchmark-meta{font-size:.78rem}
+#panelAIConsulting .ai-tiny-btn{font-size:.78rem;padding:7px 10px}
+#panelAIConsulting .ai-rank-badge{font-size:.76rem}
+#panelAIConsulting .ai-reason-box{font-size:.84rem}
+#panelAIConsulting .ai-reason-box strong{font-size:.9rem}
+#panelAIConsulting .ai-action-table td{font-size:.86rem}
+#panelAIConsulting .ai-action-table th{font-size:.78rem}
+#panelAIConsulting .ai-priority-badge{font-size:.72rem}
+#panelAIConsulting .ai-impact-note{font-size:.84rem}
+#panelAIConsulting .ai-history-tab{font-size:.8rem;padding:7px 11px}
+#panelAIConsulting .ai-history-summary b{font-size:.9rem}
+#panelAIConsulting .ai-history-summary ul{font-size:.82rem}
+#panelAIConsulting .ai-report-btn{font-size:.82rem}
+#panelAIConsulting .ai-chart-labels{font-size:.76rem}
+#panelAIConsulting .ai-footnote{font-size:.82rem;color:#8b97aa;margin-top:4px}
+#panelAIConsulting .ai-loading,#panelAIConsulting .ai-empty{font-size:.9rem}
 
 @media(max-width:760px){
   #panelAIConsulting .ai-pattern-grid{grid-template-columns:1fr 1fr}
