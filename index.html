@@ -2467,6 +2467,75 @@ body:has(#panelAIConsulting.active) .content-body{
 }
 </style>
 
+<style id="ollim-ai-layout-refine-v4">
+/* ===== OLLIM AI CONSULTING · LAYOUT REFINE V4 =====
+   디자인 톤/색상은 유지, 레이아웃 배치와 가독성(폰트크기)만 정리. */
+
+/* --- 헤더 사용자 아바타 칩 --- */
+.ai-user-chip{display:flex;align-items:center;gap:10px;padding-left:12px;margin-left:2px;border-left:1px solid #e6ebf2}
+.ai-user-avatar{width:38px;height:38px;border-radius:50%;background:var(--ol-blue,#1677ff);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;flex-shrink:0}
+.ai-user-name{display:flex;flex-direction:column;line-height:1.35}
+.ai-user-name strong{font-size:.8rem;color:#1f2937;font-weight:800;max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ai-user-name span{font-size:.68rem;color:#8b97aa}
+@media(max-width:760px){.ai-user-chip{border-left:0;padding-left:0}.ai-user-name{display:none}}
+
+/* --- 사이드바 AI 프로모 카드 --- */
+#app .sidebar-promo{background:linear-gradient(160deg,#eef4ff,#f8fbff);border:1px solid #dbe8fb;border-radius:14px;padding:16px 14px;margin-bottom:12px;text-align:center}
+#app .sidebar-promo-icon{font-size:1.7rem;margin-bottom:8px;line-height:1}
+#app .sidebar-promo p{margin:0 0 12px;font-size:.76rem;color:#4a5568;line-height:1.55;font-weight:500}
+#app .sidebar-promo button{width:100%;border:0;border-radius:9px;padding:10px;background:var(--ol-blue,#1677ff);color:#fff;font-size:.76rem;font-weight:700;cursor:pointer}
+#app .sidebar-promo button:hover{background:#086cea}
+
+/* --- 성공 패턴 분석 : 아이콘 배지형 카드로 재배치 --- */
+#panelAIConsulting .ai-pattern-grid{grid-template-columns:1fr 1fr}
+#panelAIConsulting .ai-pattern{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:13px 12px}
+#panelAIConsulting .ai-pattern-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+#panelAIConsulting .ai-pattern-icon svg{width:17px;height:17px}
+#panelAIConsulting .ai-pattern b{font-size:.76rem}
+#panelAIConsulting .ai-pattern-val{font-size:.68rem;color:#8793a5}
+#panelAIConsulting .ai-insight-tag{font-size:.68rem;padding:6px 9px}
+
+/* --- 카테고리 인사이트 : 아이콘 배지 확대 + 색상 순환 --- */
+#panelAIConsulting .ai-insight-row{grid-template-columns:34px 1fr;gap:11px}
+#panelAIConsulting .ai-insight-icon{width:34px;height:34px;border-radius:50%;font-size:.9rem}
+#panelAIConsulting .ai-insight-row b{font-size:.76rem}
+#panelAIConsulting .ai-insight-row p{font-size:.7rem;line-height:1.55}
+
+/* --- 시장 트렌드 : 강조 박스 톤업 (기존 팔레트 유지) --- */
+#panelAIConsulting .ai-opportunity{background:#eefbf3;border:1px solid #cfeeda;border-radius:12px;padding:14px 16px}
+#panelAIConsulting .ai-opportunity b{font-size:.78rem;color:#16a34a}
+#panelAIConsulting .ai-opportunity p{font-size:.7rem;line-height:1.6;color:#4d5d6b}
+
+/* --- 전체 가독성용 폰트 크기 상향 (톤/색상 변경 없음) --- */
+#panelAIConsulting .ai-label{font-size:.74rem}
+#panelAIConsulting .ai-product-name{font-size:1rem}
+#panelAIConsulting .ai-product-meta{font-size:.74rem}
+#panelAIConsulting .ai-keyword{font-size:.72rem;padding:7px 11px}
+#panelAIConsulting .ai-score-copy strong{font-size:.94rem}
+#panelAIConsulting .ai-score-copy p{font-size:.74rem}
+#panelAIConsulting .ai-subtitle{font-size:.78rem}
+#panelAIConsulting .ai-factor{font-size:.7rem}
+#panelAIConsulting .ai-mini-table{font-size:.74rem}
+#panelAIConsulting .ai-priority-list li{font-size:.72rem}
+#panelAIConsulting .ai-benchmark-name{font-size:.74rem}
+#panelAIConsulting .ai-benchmark-meta{font-size:.66rem}
+#panelAIConsulting .ai-tiny-btn{font-size:.66rem;padding:6px 9px}
+#panelAIConsulting .ai-reason-box{font-size:.7rem}
+#panelAIConsulting .ai-action-table td{font-size:.72rem}
+#panelAIConsulting .ai-action-table th{font-size:.66rem}
+#panelAIConsulting .ai-impact-note{font-size:.7rem}
+#panelAIConsulting .ai-history-tab{font-size:.66rem;padding:6px 10px}
+#panelAIConsulting .ai-history-summary b{font-size:.76rem}
+#panelAIConsulting .ai-history-summary ul{font-size:.68rem}
+#panelAIConsulting .ai-report-btn{font-size:.68rem}
+#panelAIConsulting .ai-chart-labels{font-size:.62rem}
+#panelAIConsulting .ai-footnote{font-size:.72rem;color:#8b97aa;margin-top:4px}
+
+@media(max-width:760px){
+  #panelAIConsulting .ai-pattern-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+
 </head>
 <body>
 <div id="splashScreen">
@@ -2918,6 +2987,11 @@ body:has(#panelAIConsulting.active) .content-body{
       <button class="navtab admin-only" data-panel="panelReferrals" data-label="추천 현황" style="display:none;">👥 추천 현황(관리자)</button>
     </nav>
     <div class="sidebar-foot">
+      <div class="sidebar-promo client-only" id="sidebarAiPromo">
+        <div class="sidebar-promo-icon">🤖</div>
+        <p>OLLIM AI가 사장님의<br>성장을 함께 설계합니다.</p>
+        <button type="button" id="sidebarPromoBtn">AI 활용 가이드 보기</button>
+      </div>
       <button id="installAppBtn" class="client-only utility-btn" style="display:none;">📱 올림컴퍼니 앱 설치</button>
       <button id="logoutBtn">로그아웃</button>
       <button id="withdrawBtn" class="client-only" style="margin-top:8px; color:var(--bad);">회원탈퇴</button>
@@ -3298,7 +3372,7 @@ body:has(#panelAIConsulting.active) .content-body{
   <div class="ai-page">
     <div class="ai-page-head">
       <div><div class="ai-title-wrap"><h1>AI 컨설팅</h1><span class="ai-nav-beta">Beta</span></div><p>OLLIM AI가 데이터를 분석하여 성장을 위한 전략을 제안합니다.</p></div>
-      <div class="ai-head-right"><div class="ai-analysis-date"><span>분석 기준일</span><strong id="aiAnalysisDate">-</strong></div><button id="aiRefreshBtn" class="btn secondary ai-refresh-btn">새로 분석</button></div>
+      <div class="ai-head-right"><div class="ai-analysis-date"><span>분석 기준일</span><strong id="aiAnalysisDate">-</strong></div><button id="aiRefreshBtn" class="btn secondary ai-refresh-btn">새로 분석</button><div class="ai-user-chip" id="aiUserChip"><div class="ai-user-avatar" id="aiUserAvatar">-</div><div class="ai-user-name"><strong id="aiUserNameMain">-</strong><span>고객</span></div></div></div>
     </div>
     <div id="aiConsultingRoot"><div class="ai-loading"><div class="spinner"></div>AI 컨설팅 데이터를 준비하고 있습니다.</div></div>
     <select id="aiProductSelect" style="display:none"></select>
@@ -7963,6 +8037,18 @@ document.getElementById('privacyWithdrawBtn')?.addEventListener('click',()=>docu
   const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
   let loaded=false, products=[];
   const grade=s=>s>=90?'A+':s>=80?'A':s>=70?'B+':s>=60?'B':s>=50?'C':'D';
+  const patternPalette=[['#eef2ff','#4f46e5'],['#e9f7ef','#16a34a'],['#fff4e5','#c2650b'],['#fdeef3','#c2266f'],['#eefaff','#0369a1'],['#f4eeff','#7c3aed']];
+  const insightPalette=[['#eef2ff','#4f46e5'],['#fff4e5','#c2650b'],['#e9f7ef','#16a34a'],['#fdeef3','#c2266f']];
+  function patternIconSvg_(title){
+    const t=String(title||'');
+    if(t.includes('사진')||t.includes('이미지')) return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.4"/><path d="m21 15-5-5-9 9"/></svg>';
+    if(t.includes('비교')) return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h7"/></svg>';
+    if(t.includes('리뷰')) return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 3l2.6 5.6 6.1.6-4.6 4.1 1.3 6-5.4-3.2-5.4 3.2 1.3-6-4.6-4.1 6.1-.6z"/></svg>';
+    if(t.includes('혜택')) return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v8H4v-8"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7c-1.4-3-6-3-6 0s4.6 3 6 0zm0 0c1.4-3 6-3 6 0s-4.6 3-6 0z"/></svg>';
+    if(t.includes('가격')) return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>';
+    if(t.includes('옵션')||t.includes('구성')) return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="7" r="2"/><circle cx="6" cy="17" r="2"/><circle cx="18" cy="12" r="2"/><path d="M8 7h4a3 3 0 013 3M8 17h4a3 3 0 003-3"/></svg>';
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/><circle cx="12" cy="12" r="4"/></svg>';
+  }
   const delta=x=>x==null?'<span class="ai-flat">-</span>':x>0?`<span class="ai-up">▲${x}</span>`:x<0?`<span class="ai-down">▼${Math.abs(x)}</span>`:'<span class="ai-flat">-</span>';
   const thumb=(src,cls='ai-product-thumb')=>src?`<img class="${cls}" src="${esc(src)}" alt="">`:`<div class="${cls} ai-product-thumb-fallback">AI</div>`;
   function factors(data){return (data.detailDiagnosis?.factors||[]).map(x=>`<div class="ai-factor"><span>${esc(x.name)}</span><div class="ai-factor-track"><div class="ai-factor-fill" style="width:${Math.max(0,Math.min(100,Number(x.value)||0))}%"></div></div><b>${esc(x.value)}</b></div>`).join('')}
@@ -7974,8 +8060,8 @@ document.getElementById('privacyWithdrawBtn')?.addEventListener('click',()=>docu
     const rankRows=ranks.slice(0,3).map(x=>`<tr><td>${esc(x.keyword)}</td><td>${x.current?esc(x.current)+'위':'미관측'}</td><td>${delta(x.delta)}</td></tr>`).join('')||'<tr><td colspan="3">관측 데이터 수집 중</td></tr>';
     const actions=(data.actions||[]).slice(0,3);
     const benches=(data.benchmark?.items||[]).map((x,i)=>`<div class="ai-benchmark-item"><span class="ai-rank-badge">${i+1}</span>${thumb(x.image,'ai-benchmark-thumb')}<div><div class="ai-benchmark-name">${esc(x.name)}</div><div class="ai-benchmark-meta">${esc(x.meta)}</div></div><button class="ai-tiny-btn">분석 보기</button></div>`).join('');
-    const patterns=(data.successPattern?.items||[]).map(x=>`<div class="ai-pattern"><b>${esc(x.title)}</b><span>${esc(x.value)}</span></div>`).join('');
-    const insights=(data.categoryInsight?.items||[]).map(x=>`<div class="ai-insight-row"><span class="ai-insight-icon">${esc(x.icon)}</span><div><b>${esc(x.title)}</b><p>${esc(x.text)}</p></div></div>`).join('');
+    const patterns=(data.successPattern?.items||[]).map((x,i)=>{const pal=patternPalette[i%patternPalette.length];return `<div class="ai-pattern"><span class="ai-pattern-icon" style="background:${pal[0]};color:${pal[1]}">${patternIconSvg_(x.title)}</span><b>${esc(x.title)}</b><span class="ai-pattern-val">${esc(x.value)}</span></div>`}).join('');
+    const insights=(data.categoryInsight?.items||[]).map((x,i)=>{const pal=insightPalette[i%insightPalette.length];return `<div class="ai-insight-row"><span class="ai-insight-icon" style="background:${pal[0]};color:${pal[1]}">${esc(x.icon)}</span><div><b>${esc(x.title)}</b><p>${esc(x.text)}</p></div></div>`}).join('');
     const hist=(data.history?.scores||[48,52,55,60,64,68,score]); const pts=hist.map((v,i)=>`${i*(100/(hist.length-1||1))},${100-(Number(v)||0)}`).join(' ');
     root.innerHTML=`
       <section class="ai-summary-strip">
@@ -7995,8 +8081,9 @@ document.getElementById('privacyWithdrawBtn')?.addEventListener('click',()=>docu
     $('aiAnalysisDate').textContent=(data.analysisDate||new Date().toISOString().slice(0,10)).replaceAll('-','.');
     $('aiProductChange')?.addEventListener('click',()=>{const s=$('aiProductSelect');if(!s||products.length<2)return;const i=Math.max(0,products.findIndex(x=>String(x.id)===String(s.value)));s.value=products[(i+1)%products.length].id;load(true)});
   }
-  async function load(force){const root=$('aiConsultingRoot'),sel=$('aiProductSelect');if(!root||!sel)return;if(loaded&&!force)return;root.innerHTML='<div class="ai-loading"><div class="spinner"></div>운영 데이터를 분석하고 있습니다.</div>';const session=await getSession();if(!session){root.innerHTML='<div class="ai-empty">로그인이 필요합니다.</div>';return}const res=await apiCall('getAiConsultingOverview',{token:session.token,submissionId:sel.value||''});if(!res?.ok){root.innerHTML=`<div class="ai-empty">${esc(res?.error||'데이터를 불러오지 못했습니다.')}</div>`;return}products=res.products||[];sel.innerHTML=products.map(x=>`<option value="${esc(x.id)}">${esc(x.name)}</option>`).join('');if(res.selected?.id)sel.value=res.selected.id;loaded=true;render(res)}
+  async function load(force){const root=$('aiConsultingRoot'),sel=$('aiProductSelect');if(!root||!sel)return;if(loaded&&!force)return;root.innerHTML='<div class="ai-loading"><div class="spinner"></div>운영 데이터를 분석하고 있습니다.</div>';const session=await getSession();if(!session){root.innerHTML='<div class="ai-empty">로그인이 필요합니다.</div>';return}const nameEl=$('aiUserNameMain'),avEl=$('aiUserAvatar');if(nameEl&&avEl){const nm=String(session.companyName||'-').trim();nameEl.textContent=nm||'-';avEl.textContent=(nm.charAt(0)||'-').toUpperCase();}const res=await apiCall('getAiConsultingOverview',{token:session.token,submissionId:sel.value||''});if(!res?.ok){root.innerHTML=`<div class="ai-empty">${esc(res?.error||'데이터를 불러오지 못했습니다.')}</div>`;return}products=res.products||[];sel.innerHTML=products.map(x=>`<option value="${esc(x.id)}">${esc(x.name)}</option>`).join('');if(res.selected?.id)sel.value=res.selected.id;loaded=true;render(res)}
   window.loadAIConsulting=load;$('aiRefreshBtn')?.addEventListener('click',()=>load(true));$('aiProductSelect')?.addEventListener('change',()=>load(true));
+  document.getElementById('sidebarPromoBtn')?.addEventListener('click',()=>{ if(typeof switchToPanel==='function') switchToPanel('panelAIConsulting'); });
 })();
 </script>
 
