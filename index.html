@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- OLLIM FRONTEND BUILD: 2026-07-31 V6.4.0 AI-CONSULTING-V1 -->
+<!-- OLLIM FRONTEND BUILD: 2026-07-31 V6.5.0 AI-MOCKUP-LOCK -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
@@ -894,62 +894,30 @@
     }
   }
 
-/* ===== OLLIM AI CONSULTING V1 ===== */
-.ai-nav-beta{margin-left:auto;font-size:.62rem;font-weight:800;padding:2px 7px;border-radius:999px;background:#ede9fe;color:#7c3aed;}
-.ai-page{display:flex;flex-direction:column;gap:24px;}
-.ai-page-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-end;}
-.ai-page-head h1{margin:0;font-size:2rem;letter-spacing:-.04em;color:#111827;}
-.ai-page-head p{margin:6px 0 0;color:#6b7280;font-size:.92rem;}
-.ai-page-actions{display:flex;gap:10px;align-items:end;flex-wrap:wrap;}
-.ai-page-actions label{margin:0 0 5px;font-size:.74rem;}
-.ai-page-actions select{min-width:260px;height:48px;background:#fff;border:1px solid #e5e7eb;}
-.ai-refresh-btn{height:48px;margin:0;width:auto;padding:0 18px;border-radius:12px;}
-.ai-hero-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(300px,.75fr);gap:24px;}
-.ai-product-card,.ai-score-card,.ai-section{background:#fff;border:1px solid #e5e7eb;border-radius:18px;box-shadow:0 8px 24px rgba(15,23,42,.06);}
-.ai-product-card{padding:24px;display:grid;grid-template-columns:76px minmax(0,1fr);gap:18px;align-items:center;}
-.ai-product-thumb{width:76px;height:76px;border-radius:14px;object-fit:cover;background:#f3f4f6;border:1px solid #e5e7eb;}
-.ai-product-thumb-fallback{display:flex;align-items:center;justify-content:center;font-weight:800;color:#7c3aed;}
-.ai-eyebrow{font-size:.72rem;color:#7c3aed;font-weight:800;letter-spacing:.08em;text-transform:uppercase;}
-.ai-product-name{font-size:1.15rem;font-weight:800;color:#111827;margin-top:4px;overflow-wrap:anywhere;}
-.ai-product-meta{font-size:.8rem;color:#6b7280;margin-top:5px;overflow-wrap:anywhere;}
-.ai-keywords{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px;}
-.ai-keyword{padding:5px 10px;border-radius:999px;background:#eef2ff;color:#4338ca;font-size:.74rem;font-weight:700;}
-.ai-score-card{padding:24px;display:flex;align-items:center;gap:20px;}
-.ai-score-ring{width:116px;height:116px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#7c3aed calc(var(--score,0)*1%),#ede9fe 0);position:relative;flex:0 0 auto;}
-.ai-score-ring:after{content:'';position:absolute;inset:10px;border-radius:50%;background:#fff;}
-.ai-score-value{position:relative;z-index:1;text-align:center;color:#111827;font-weight:900;font-size:2rem;line-height:1;}
-.ai-score-value small{display:block;font-size:.68rem;color:#9ca3af;margin-top:5px;}
-.ai-score-copy strong{display:block;font-size:1.05rem;color:#111827;}
-.ai-score-copy p{font-size:.8rem;color:#6b7280;line-height:1.55;margin:7px 0 0;}
-.ai-summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;}
-.ai-summary-card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:20px;}
-.ai-summary-card span{font-size:.72rem;color:#6b7280;font-weight:700;}
-.ai-summary-card strong{display:block;margin-top:8px;color:#111827;font-size:.92rem;line-height:1.55;}
-.ai-section{padding:24px;}
-.ai-section-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px;}
-.ai-section-title{display:flex;align-items:center;gap:10px;}
-.ai-section-no{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;background:#111827;color:#fff;font-size:.78rem;font-weight:800;}
-.ai-section h2{margin:0;font-size:1.08rem;color:#111827;}
-.ai-state-badge{padding:5px 10px;border-radius:999px;background:#f3f4f6;color:#6b7280;font-size:.7rem;font-weight:800;}
-.ai-state-badge.ready{background:#dcfce7;color:#15803d;}.ai-state-badge.next{background:#ede9fe;color:#6d28d9;}
-.ai-diagnosis-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;}
-.ai-metric{padding:16px;border-radius:14px;background:#f8fafc;border:1px solid #eef2f7;}
-.ai-metric span{font-size:.72rem;color:#6b7280;}.ai-metric strong{display:block;font-size:1.35rem;color:#111827;margin-top:4px;}
-.ai-rank-list{margin-top:16px;display:flex;flex-direction:column;gap:8px;}
-.ai-rank-row{display:grid;grid-template-columns:minmax(0,1fr) 90px 90px;gap:12px;align-items:center;padding:11px 13px;border-radius:12px;background:#f8fafc;font-size:.8rem;}
-.ai-rank-row b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.ai-up{color:#16a34a}.ai-down{color:#dc2626}.ai-flat{color:#6b7280}
-.ai-action-list{display:flex;flex-direction:column;gap:10px;}
-.ai-action{display:grid;grid-template-columns:34px minmax(0,1fr) minmax(180px,.7fr);gap:14px;align-items:center;padding:15px;border:1px solid #e5e7eb;border-radius:14px;}
-.ai-action-priority{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:#7c3aed;color:#fff;font-weight:900;font-size:.8rem;}
-.ai-action strong{display:block;color:#111827;font-size:.88rem;}.ai-action p{margin:3px 0 0;color:#6b7280;font-size:.75rem;}
-.ai-action-outcome{font-size:.76rem;color:#2563eb;background:#eff6ff;border-radius:10px;padding:10px;}
-.ai-roadmap-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
-.ai-roadmap-card{padding:17px;border:1px solid #e5e7eb;border-radius:14px;min-height:118px;}
-.ai-roadmap-card strong{display:block;color:#111827;font-size:.88rem;}.ai-roadmap-card p{margin:7px 0 0;color:#6b7280;font-size:.75rem;line-height:1.5;}
-.ai-empty{padding:46px 18px;text-align:center;color:#6b7280;background:#fff;border:1px dashed #d1d5db;border-radius:18px;}
-.ai-loading{padding:56px 18px;text-align:center;color:#6b7280;}
-@media(max-width:1000px){.ai-hero-grid{grid-template-columns:1fr}.ai-summary-grid,.ai-roadmap-grid{grid-template-columns:1fr 1fr}.ai-diagnosis-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:600px){.ai-page-head{align-items:stretch;flex-direction:column}.ai-page-actions{display:grid}.ai-page-actions select{min-width:0}.ai-summary-grid,.ai-roadmap-grid,.ai-diagnosis-grid{grid-template-columns:1fr}.ai-score-card{align-items:flex-start}.ai-score-ring{width:96px;height:96px}.ai-action{grid-template-columns:34px minmax(0,1fr)}.ai-action-outcome{grid-column:2}.ai-rank-row{grid-template-columns:minmax(0,1fr) 65px 65px}.ai-product-card{grid-template-columns:58px minmax(0,1fr)}.ai-product-thumb{width:58px;height:58px}}
+/* ===== OLLIM AI CONSULTING V2 · MOCKUP LOCK ===== */
+.ai-nav-beta{margin-left:auto;font-size:.62rem;font-weight:900;padding:2px 7px;border-radius:999px;background:#ede9fe;color:#7c3aed}
+.ai-page{display:flex;flex-direction:column;gap:18px;max-width:1540px;margin:0 auto}
+.ai-page-head{display:flex;justify-content:space-between;gap:18px;align-items:center}
+.ai-title-wrap{display:flex;align-items:center;gap:10px}.ai-page-head h1{margin:0;font-size:1.8rem;letter-spacing:-.045em;color:#172033}.ai-page-head p{margin:5px 0 0;color:#7c8799;font-size:.86rem}
+.ai-head-right{display:flex;align-items:center;gap:14px}.ai-analysis-date{display:flex;align-items:center;gap:9px;padding:9px 13px;background:#fff;border:1px solid #e6ebf2;border-radius:12px}.ai-analysis-date span{display:block;font-size:.64rem;color:#9aa5b5}.ai-analysis-date strong{display:block;font-size:.79rem;color:#263247}
+.ai-refresh-btn{height:42px!important;margin:0!important;width:auto!important;padding:0 15px!important;border-radius:11px!important;box-shadow:none!important}
+.ai-summary-strip{display:grid;grid-template-columns:1.15fr 1fr 1.2fr;background:#fff;border:1px solid #e4eaf2;border-radius:18px;box-shadow:0 8px 28px rgba(28,48,86,.055);overflow:hidden}
+.ai-summary-cell{padding:20px 22px;min-width:0}.ai-summary-cell+.ai-summary-cell{border-left:1px solid #edf1f6}.ai-label{font-size:.7rem;color:#8b97aa;font-weight:800;margin-bottom:10px}
+.ai-product-line{display:grid;grid-template-columns:62px minmax(0,1fr) auto;gap:13px;align-items:center}.ai-product-thumb{width:62px;height:62px;border-radius:12px;object-fit:cover;background:#f1f5f9;border:1px solid #e5eaf1}.ai-product-thumb-fallback{display:grid;place-items:center;font-weight:900;color:#1677ff}.ai-product-name{font-size:.96rem;font-weight:900;color:#1a2436;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ai-product-meta{font-size:.7rem;color:#8793a5;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ai-product-change{height:34px;padding:0 12px;border:1px solid #dfe6ef;background:#fff;border-radius:9px;color:#4e5d72;font-weight:800;font-size:.7rem;cursor:pointer}
+.ai-keywords{display:flex;flex-wrap:wrap;gap:7px}.ai-keyword{padding:6px 10px;border-radius:999px;background:#f1f6ff;color:#2b6fde;font-size:.68rem;font-weight:800}.ai-more-keyword{background:#f7f8fa;color:#748096}
+.ai-score-overview{display:flex;align-items:center;gap:16px}.ai-score-ring{width:92px;height:92px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#1677ff calc(var(--score,0)*1%),#eaf1fb 0);position:relative;flex:0 0 auto}.ai-score-ring:after{content:'';position:absolute;inset:8px;border-radius:50%;background:#fff}.ai-score-value{position:relative;z-index:1;text-align:center;font-size:1.6rem;font-weight:950;color:#18243a;line-height:1}.ai-score-value small{font-size:.6rem;color:#98a4b5}.ai-score-grade{display:block;margin-top:5px;color:#18a96f;font-size:.67rem;font-weight:900}.ai-score-copy strong{font-size:.87rem;color:#1f2b3f}.ai-score-copy p{margin:5px 0 9px;font-size:.68rem;color:#7c889a;line-height:1.5}.ai-text-link{border:0;background:none;padding:0;color:#1677ff;font-size:.68rem;font-weight:900;cursor:pointer}
+.ai-dashboard-grid{display:grid;grid-template-columns:1.08fr .95fr .95fr .95fr;gap:14px;align-items:stretch}.ai-module{background:#fff;border:1px solid #e4eaf2;border-radius:16px;padding:17px;box-shadow:0 7px 22px rgba(28,48,86,.045);min-width:0}.ai-module-wide{grid-column:span 1}.ai-module-history{grid-column:span 2}.ai-module-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}.ai-module-title{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:950;color:#1b2638}.ai-module-no{width:22px;height:22px;border-radius:7px;background:#17233a;color:#fff;display:grid;place-items:center;font-size:.65rem}.ai-module-link{font-size:.65rem;color:#1677ff;font-weight:850;white-space:nowrap}
+.ai-subtitle{font-size:.72rem;font-weight:900;color:#354156;margin-bottom:9px}.ai-diagnosis-top{display:grid;grid-template-columns:118px 1fr;gap:13px}.ai-detail-ring{width:100px;height:100px;border-radius:50%;display:grid;place-items:center;margin:auto;background:conic-gradient(#7c5ce7 calc(var(--score,0)*1%),#eeeafd 0);position:relative}.ai-detail-ring:after{content:'';position:absolute;inset:9px;background:#fff;border-radius:50%}.ai-detail-ring div{position:relative;z-index:1;text-align:center;font-size:1.38rem;font-weight:950;color:#222e42}.ai-detail-ring small{display:block;font-size:.58rem;color:#9aa4b4}.ai-factor-list{display:flex;flex-direction:column;gap:7px}.ai-factor{display:grid;grid-template-columns:1fr 1.1fr 25px;gap:6px;align-items:center;font-size:.63rem;color:#6e7a8c}.ai-factor-track{height:5px;background:#edf1f6;border-radius:99px;overflow:hidden}.ai-factor-fill{height:100%;border-radius:99px;background:#4d8df7}.ai-factor b{text-align:right;color:#344155}
+.ai-mini-table{width:100%;border-collapse:collapse;font-size:.65rem}.ai-mini-table td{padding:7px 3px;border-bottom:1px solid #f0f3f7}.ai-mini-table td:nth-child(2),.ai-mini-table td:nth-child(3){text-align:right}.ai-up{color:#14a36d;font-weight:900}.ai-down{color:#e24b55;font-weight:900}.ai-flat{color:#8d98a8}.ai-priority-list{margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}.ai-priority-list li{display:grid;grid-template-columns:20px 1fr;gap:7px;font-size:.64rem;line-height:1.45;color:#59667a}.ai-priority-list b{width:19px;height:19px;border-radius:6px;background:#eef3fb;color:#315f9f;display:grid;place-items:center}
+.ai-benchmark-list{display:flex;flex-direction:column;gap:8px}.ai-benchmark-item{display:grid;grid-template-columns:22px 38px 1fr auto;gap:8px;align-items:center;padding:8px;background:#f8fafc;border-radius:10px}.ai-rank-badge{width:22px;height:22px;border-radius:7px;background:#1f6feb;color:#fff;display:grid;place-items:center;font-size:.62rem;font-weight:900}.ai-benchmark-thumb{width:38px;height:38px;border-radius:8px;object-fit:cover;background:#e9eef5}.ai-benchmark-name{font-size:.66rem;font-weight:900;color:#2a3548;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ai-benchmark-meta{font-size:.57rem;color:#8c97a8;margin-top:2px}.ai-tiny-btn{border:1px solid #dfe7f1;background:#fff;color:#3e6fad;border-radius:8px;padding:5px 7px;font-size:.57rem;font-weight:800}.ai-reason-box{margin-top:11px;padding:10px;background:#f4f8ff;border-radius:10px;font-size:.62rem;color:#5e6c80;line-height:1.55}.ai-reason-box strong{display:block;color:#315276;margin-bottom:4px}
+.ai-pattern-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.ai-pattern{padding:9px;border:1px solid #edf0f5;border-radius:10px;background:#fbfcfe}.ai-pattern b{display:block;font-size:.65rem;color:#344156}.ai-pattern span{font-size:.57rem;color:#8793a5}.ai-insight-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.ai-insight-tag{padding:5px 7px;border-radius:8px;background:#f2efff;color:#6e4fc8;font-size:.56rem;font-weight:800}
+.ai-radar-chart{height:92px;display:flex;align-items:flex-end;gap:7px;padding:8px 4px 0;border-bottom:1px solid #e9edf3}.ai-radar-bar{flex:1;min-width:0;background:linear-gradient(180deg,#5c97f7,#a8c9ff);border-radius:5px 5px 0 0;position:relative}.ai-radar-bar span{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:.52rem;color:#8b96a7;white-space:nowrap}.ai-opportunity{margin-top:28px;padding:10px;border-radius:11px;background:#f0fbf6;border:1px solid #d8f3e5}.ai-opportunity b{display:block;font-size:.68rem;color:#1f5f46}.ai-opportunity p{margin:4px 0 0;font-size:.58rem;color:#6e7b76}
+.ai-insight-list{display:flex;flex-direction:column;gap:9px}.ai-insight-row{display:grid;grid-template-columns:28px 1fr;gap:9px;align-items:start}.ai-insight-icon{width:28px;height:28px;border-radius:9px;background:#edf5ff;display:grid;place-items:center;font-size:.72rem}.ai-insight-row b{display:block;font-size:.66rem;color:#334056}.ai-insight-row p{margin:2px 0 0;font-size:.58rem;color:#7e899a;line-height:1.45}
+.ai-action-table{width:100%;border-collapse:collapse}.ai-action-table th{padding:7px;text-align:left;color:#8b96a7;font-size:.58rem;border-bottom:1px solid #e9edf3}.ai-action-table td{padding:9px 7px;font-size:.63rem;border-bottom:1px solid #f0f3f6;color:#465267}.ai-action-table td:first-child{font-weight:850;color:#293649}.ai-priority-badge{display:inline-block;padding:4px 7px;border-radius:99px;background:#fff0f0;color:#db4c56;font-size:.55rem;font-weight:900}.ai-priority-badge.medium{background:#fff7e8;color:#d88917}.ai-impact-note{margin-top:10px;padding:9px;border-radius:10px;background:#f4f8ff;color:#4e6e9c;font-size:.6rem;line-height:1.45}
+.ai-history-tabs{display:flex;gap:6px;margin-bottom:10px}.ai-history-tab{padding:5px 8px;border-radius:7px;background:#f4f6f9;color:#7f8a9b;font-size:.56rem;font-weight:800}.ai-history-tab.active{background:#eaf3ff;color:#1677ff}.ai-history-body{display:grid;grid-template-columns:1.4fr .8fr;gap:12px}.ai-line-chart{height:132px;position:relative;border-left:1px solid #e9edf3;border-bottom:1px solid #e9edf3;margin:8px 5px 20px 26px}.ai-line-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}.ai-chart-labels{position:absolute;left:0;right:0;bottom:-20px;display:flex;justify-content:space-between;font-size:.5rem;color:#9aa4b3}.ai-history-summary{padding:11px;background:#f8fafc;border-radius:11px}.ai-history-summary b{font-size:.66rem;color:#354156}.ai-history-summary ul{padding-left:14px;margin:7px 0;font-size:.57rem;color:#707d90;line-height:1.7}.ai-report-btn{width:100%;border:1px solid #dfe7f1;background:#fff;border-radius:8px;padding:7px;color:#346cae;font-size:.58rem;font-weight:850}
+.ai-footnote{font-size:.58rem;color:#9aa4b3;padding:0 4px}.ai-loading,.ai-empty{padding:55px;text-align:center;color:#7d899a;background:#fff;border:1px dashed #dbe2eb;border-radius:16px}
+@media(max-width:1280px){.ai-dashboard-grid{grid-template-columns:1fr 1fr}.ai-module-history{grid-column:span 2}.ai-summary-strip{grid-template-columns:1fr 1fr}.ai-summary-cell:last-child{grid-column:span 2;border-left:0;border-top:1px solid #edf1f6}}
+@media(max-width:760px){.ai-page-head{align-items:flex-start;flex-direction:column}.ai-head-right{width:100%;justify-content:space-between}.ai-summary-strip{grid-template-columns:1fr}.ai-summary-cell+.ai-summary-cell{border-left:0;border-top:1px solid #edf1f6}.ai-summary-cell:last-child{grid-column:auto}.ai-dashboard-grid{grid-template-columns:1fr}.ai-module-history{grid-column:auto}.ai-history-body{grid-template-columns:1fr}.ai-product-line{grid-template-columns:52px minmax(0,1fr)}.ai-product-change{grid-column:1/-1;width:100%}.ai-score-overview{align-items:flex-start}.ai-diagnosis-top{grid-template-columns:1fr}.ai-page-head h1{font-size:1.45rem}}
 
 </style>
 
@@ -3187,16 +3155,11 @@
 <div id="panelAIConsulting" class="panel">
   <div class="ai-page">
     <div class="ai-page-head">
-      <div>
-        <h1>AI 컨설팅 <span class="ai-state-badge next">Beta</span></h1>
-        <p>내 상품의 현재 상황, 원인, 실행 과제와 다음 성장 기회를 한 화면에서 확인하세요.</p>
-      </div>
-      <div class="ai-page-actions">
-        <div><label for="aiProductSelect">분석 상품</label><select id="aiProductSelect"><option>상품을 불러오는 중...</option></select></div>
-        <button class="btn secondary ai-refresh-btn" id="aiRefreshBtn">분석 새로고침</button>
-      </div>
+      <div><div class="ai-title-wrap"><h1>AI 컨설팅</h1><span class="ai-nav-beta">Beta</span></div><p>OLLIM AI가 데이터를 분석하여 성장을 위한 전략을 제안합니다.</p></div>
+      <div class="ai-head-right"><div class="ai-analysis-date"><span>분석 기준일</span><strong id="aiAnalysisDate">-</strong></div><button id="aiRefreshBtn" class="btn secondary ai-refresh-btn">새로 분석</button></div>
     </div>
     <div id="aiConsultingRoot"><div class="ai-loading"><div class="spinner"></div>AI 컨설팅 데이터를 준비하고 있습니다.</div></div>
+    <select id="aiProductSelect" style="display:none"></select>
   </div>
 </div>
 
@@ -7830,86 +7793,46 @@ document.getElementById('privacyWithdrawBtn')?.addEventListener('click',()=>docu
 </script>
 
 
-<script id="ollim-ai-consulting-v1">
+<script id="ollim-ai-consulting-v2-mockup-lock">
 (function(){
-  const $ = id => document.getElementById(id);
-  const escAI = value => String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
-  let aiProducts = [];
-  let aiLoadedOnce = false;
-
-  function aiStatusLabel(value){
-    const map={payment_pending:'결제 대기',approved:'진행 중',confirmed:'진행 중',done:'종료'};
-    return map[value] || value || '상태 미확인';
-  }
-  function aiDelta(item){
-    if(item.delta === null || item.delta === undefined) return '<span class="ai-flat">-</span>';
-    if(item.delta > 0) return `<span class="ai-up">▲ ${item.delta}</span>`;
-    if(item.delta < 0) return `<span class="ai-down">▼ ${Math.abs(item.delta)}</span>`;
-    return '<span class="ai-flat">-</span>';
-  }
-  function aiRoadmapCard(title, state, desc){
-    const label=state==='data_connected'?'데이터 연결됨':state==='next'?'다음 개발':'기획 반영';
-    const cls=state==='data_connected'?'ready':'next';
-    return `<div class="ai-roadmap-card"><div style="display:flex;justify-content:space-between;gap:8px"><strong>${escAI(title)}</strong><span class="ai-state-badge ${cls}">${label}</span></div><p>${escAI(desc)}</p></div>`;
-  }
-  function renderAI(data){
-    const root=$('aiConsultingRoot');
-    if(!root) return;
-    if(!data?.selected){
-      root.innerHTML='<div class="ai-empty"><strong>분석할 상품이 없습니다.</strong><br>캠페인을 먼저 등록하면 AI 컨설팅이 운영 데이터를 연결합니다.</div>';
-      return;
-    }
-    const p=data.selected, score=data.score?.value ?? 0, rank=data.rank || {}, coverage=data.coverage || {};
-    const keywords=(p.keywords||[]).map(k=>`<span class="ai-keyword">#${escAI(k)}</span>`).join('') || '<span class="ai-keyword">키워드 미등록</span>';
-    const thumb=p.image ? `<img class="ai-product-thumb" src="${escAI(p.image)}" alt="">` : '<div class="ai-product-thumb ai-product-thumb-fallback">AI</div>';
-    const ranks=(rank.items||[]).map(item=>`<div class="ai-rank-row"><b>${escAI(item.keyword)}</b><span>${item.current?escAI(item.current)+'위':'미관측'}</span>${aiDelta(item)}</div>`).join('') || '<div class="ai-empty">등록된 키워드가 없습니다.</div>';
-    const actions=(data.actions||[]).map(a=>`<div class="ai-action"><div class="ai-action-priority">${escAI(a.priority)}</div><div><strong>${escAI(a.title)}</strong><p>${escAI(a.reason)}</p></div><div class="ai-action-outcome">예상 효과 · ${escAI(a.expected)}</div></div>`).join('');
+  const $=id=>document.getElementById(id);
+  const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  let loaded=false, products=[];
+  const grade=s=>s>=90?'A+':s>=80?'A':s>=70?'B+':s>=60?'B':s>=50?'C':'D';
+  const delta=x=>x==null?'<span class="ai-flat">-</span>':x>0?`<span class="ai-up">▲${x}</span>`:x<0?`<span class="ai-down">▼${Math.abs(x)}</span>`:'<span class="ai-flat">-</span>';
+  const thumb=(src,cls='ai-product-thumb')=>src?`<img class="${cls}" src="${esc(src)}" alt="">`:`<div class="${cls} ai-product-thumb-fallback">AI</div>`;
+  function factors(data){return (data.detailDiagnosis?.factors||[]).map(x=>`<div class="ai-factor"><span>${esc(x.name)}</span><div class="ai-factor-track"><div class="ai-factor-fill" style="width:${Math.max(0,Math.min(100,Number(x.value)||0))}%"></div></div><b>${esc(x.value)}</b></div>`).join('')}
+  function render(data){
+    const root=$('aiConsultingRoot'); if(!root)return;
+    if(!data?.selected){root.innerHTML='<div class="ai-empty">분석할 상품이 없습니다. 캠페인을 먼저 등록해 주세요.</div>';return}
+    const p=data.selected, score=Number(data.score?.value||0), ds=Number(data.detailDiagnosis?.score||0), ranks=data.rank?.items||[], kws=p.keywords||[];
+    const keywordHtml=kws.slice(0,5).map(k=>`<span class="ai-keyword">${esc(k)}</span>`).join('')+(kws.length>5?`<span class="ai-keyword ai-more-keyword">+ ${kws.length-5}개 더보기</span>`:'');
+    const rankRows=ranks.slice(0,3).map(x=>`<tr><td>${esc(x.keyword)}</td><td>${x.current?esc(x.current)+'위':'미관측'}</td><td>${delta(x.delta)}</td></tr>`).join('')||'<tr><td colspan="3">관측 데이터 수집 중</td></tr>';
+    const actions=(data.actions||[]).slice(0,3);
+    const benches=(data.benchmark?.items||[]).map((x,i)=>`<div class="ai-benchmark-item"><span class="ai-rank-badge">${i+1}</span>${thumb(x.image,'ai-benchmark-thumb')}<div><div class="ai-benchmark-name">${esc(x.name)}</div><div class="ai-benchmark-meta">${esc(x.meta)}</div></div><button class="ai-tiny-btn">분석 보기</button></div>`).join('');
+    const patterns=(data.successPattern?.items||[]).map(x=>`<div class="ai-pattern"><b>${esc(x.title)}</b><span>${esc(x.value)}</span></div>`).join('');
+    const insights=(data.categoryInsight?.items||[]).map(x=>`<div class="ai-insight-row"><span class="ai-insight-icon">${esc(x.icon)}</span><div><b>${esc(x.title)}</b><p>${esc(x.text)}</p></div></div>`).join('');
+    const hist=(data.history?.scores||[48,52,55,60,64,68,score]); const pts=hist.map((v,i)=>`${i*(100/(hist.length-1||1))},${100-(Number(v)||0)}`).join(' ');
     root.innerHTML=`
-      <div class="ai-hero-grid">
-        <section class="ai-product-card">${thumb}<div><div class="ai-eyebrow">분석 상품</div><div class="ai-product-name">${escAI(p.name)}</div><div class="ai-product-meta">${escAI(aiStatusLabel(p.status))}${p.url?' · '+escAI(p.url):''}</div><div class="ai-keywords">${keywords}</div></div></section>
-        <section class="ai-score-card"><div class="ai-score-ring" style="--score:${score}"><div class="ai-score-value">${escAI(score)}<small>/ 100 · ${escAI(data.score?.label||'-')}</small></div></div><div class="ai-score-copy"><strong>AI 초기 운영 점수</strong><p>현재 V1 점수는 순위와 데이터 준비도를 투명하게 계산한 초기 지표입니다. 상세페이지와 시장 데이터가 연결되면 정식 AI 점수로 확장됩니다.</p></div></section>
-      </div>
-      <div class="ai-summary-grid">
-        <div class="ai-summary-card"><span>현재 상황</span><strong>${escAI(data.summary?.currentSituation||'-')}</strong></div>
-        <div class="ai-summary-card"><span>왜 그런가요?</span><strong>${escAI(data.summary?.why||'-')}</strong></div>
-        <div class="ai-summary-card"><span>기대 결과</span><strong>${escAI(data.summary?.expectedOutcome||'-')}</strong></div>
-      </div>
-      <section class="ai-section"><div class="ai-section-head"><div class="ai-section-title"><span class="ai-section-no">1</span><h2>내 상품 진단</h2></div><span class="ai-state-badge ready">실데이터 연결</span></div>
-        <div class="ai-diagnosis-grid"><div class="ai-metric"><span>평균 순위</span><strong>${rank.average?escAI(rank.average)+'위':'-'}</strong></div><div class="ai-metric"><span>관측 커버리지</span><strong>${escAI(rank.coverage||0)}%</strong></div><div class="ai-metric"><span>상승 키워드</span><strong>${escAI(rank.rising||0)}개</strong></div><div class="ai-metric"><span>하락 키워드</span><strong>${escAI(rank.falling||0)}개</strong></div></div>
-        <div class="ai-rank-list">${ranks}</div>
+      <section class="ai-summary-strip">
+        <div class="ai-summary-cell"><div class="ai-label">분석 상품</div><div class="ai-product-line">${thumb(p.image)}<div><div class="ai-product-name">${esc(p.name)}</div><div class="ai-product-meta">스마트스토어 · ${esc(p.storeName||'OLLIM 등록 상품')}</div></div><button class="ai-product-change" id="aiProductChange">상품 변경</button></div></div>
+        <div class="ai-summary-cell"><div class="ai-label">분석 키워드</div><div class="ai-keywords">${keywordHtml||'<span class="ai-keyword">키워드 미등록</span>'}</div></div>
+        <div class="ai-summary-cell"><div class="ai-label">AI 종합 점수</div><div class="ai-score-overview"><div class="ai-score-ring" style="--score:${score}"><div class="ai-score-value">${score}<small>/100</small><span class="ai-score-grade">${grade(score)}</span></div></div><div class="ai-score-copy"><strong>${esc(data.score?.headline||'데이터 기반 진단을 준비하고 있습니다.')}</strong><p>${esc(data.score?.description||data.summary?.currentSituation||'')}</p><button class="ai-text-link">점수 상세 보기 →</button></div></div></div>
       </section>
-      <section class="ai-section"><div class="ai-section-head"><div class="ai-section-title"><span class="ai-section-no">2</span><h2>오늘의 실행 전략</h2></div><span class="ai-state-badge ready">우선순위 생성</span></div><div class="ai-action-list">${actions}</div></section>
-      <section class="ai-section"><div class="ai-section-head"><div class="ai-section-title"><span class="ai-section-no">3–7</span><h2>AI 컨설팅 확장 로드맵</h2></div><span class="ai-state-badge next">기획안 그대로 진행</span></div>
-        <div class="ai-roadmap-grid">
-          ${aiRoadmapCard('벤치마킹',data.roadmap?.benchmark,'상위 5위, 7일 상승폭, 리뷰 증가, 유사 가격·스펙 기준으로 비교 상품 3개를 선정합니다.')}
-          ${aiRoadmapCard('성공 패턴 분석',data.roadmap?.successPattern,'상위 상품의 첫 화면, 신뢰 요소, 리뷰, 가격, 혜택, CTA 공통 패턴을 추출합니다.')}
-          ${aiRoadmapCard('시장 트렌드 · Product Radar',data.roadmap?.productRadar,'스토어 인기상품 TOP5 변동과 NAVER HUB 검색·클릭 신호를 교차 검증해 신규 상품 기회를 제안합니다.')}
-          ${aiRoadmapCard('카테고리 인사이트',data.roadmap?.categoryInsight,'경쟁사 움직임, 계절성, 키워드 수요 변화를 주간 단위로 설명합니다.')}
-          ${aiRoadmapCard('개선 이력',data.roadmap?.improvementHistory,'AI 권장사항 적용 여부를 상세페이지 해시 변경과 재분석으로 확인합니다.')}
-          ${aiRoadmapCard('성과 추적',data.roadmap?.performanceTracking,'개선 적용 전후의 순위와 검색 신호를 비교해 효과 있음·미미·추적 중으로 판정합니다.')}
-        </div>
-        <div class="ai-product-meta" style="margin-top:15px">데이터 현황 · 순위 이력 ${escAI(coverage.historyRows||0)}건 · 관측 기록 ${escAI(coverage.observationRows||0)}건 · 관측 키워드 ${escAI(coverage.observedKeywordCount||0)}/${escAI(coverage.keywordCount||0)}개</div>
-      </section>`;
+      <div class="ai-dashboard-grid">
+        <section class="ai-module"><div class="ai-module-head"><div class="ai-module-title"><span class="ai-module-no">1</span>내 상품 진단</div><span class="ai-module-link">자세히 보기 →</span></div><div class="ai-diagnosis-top"><div><div class="ai-subtitle">AI 상세페이지 점수</div><div class="ai-detail-ring" style="--score:${ds}"><div>${ds}<small>/100</small></div></div></div><div class="ai-factor-list">${factors(data)}</div></div><div class="ai-subtitle" style="margin-top:13px">순위 현황 (주요 키워드)</div><table class="ai-mini-table">${rankRows}</table><div class="ai-subtitle" style="margin-top:12px">개선 우선순위 TOP 3</div><ol class="ai-priority-list">${actions.map((a,i)=>`<li><b>${i+1}</b><span>${esc(a.title)} — ${esc(a.reason)}</span></li>`).join('')}</ol></section>
+        <section class="ai-module"><div class="ai-module-head"><div class="ai-module-title"><span class="ai-module-no">2</span>벤치마킹</div><span class="ai-module-link">자세히 보기 →</span></div><div class="ai-subtitle">벤치마킹 추천 상품/업체 TOP 3</div><div class="ai-benchmark-list">${benches}</div><div class="ai-reason-box"><strong>왜 이 상품들이 상위에 있을까?</strong>${esc(data.benchmark?.reason||'상위 상품의 시공 사례, 비교 정보, 리뷰 최신성을 함께 분석합니다.')}</div></section>
+        <section class="ai-module"><div class="ai-module-head"><div class="ai-module-title"><span class="ai-module-no">3</span>성공 패턴 분석</div><span class="ai-module-link">자세히 보기 →</span></div><div class="ai-subtitle">상위 상품 공통 패턴</div><div class="ai-pattern-grid">${patterns}</div><div class="ai-subtitle" style="margin-top:12px">주요 키워드 인사이트</div><div class="ai-insight-tags">${(data.successPattern?.keywords||[]).map(x=>`<span class="ai-insight-tag">“${esc(x)}”</span>`).join('')}</div></section>
+        <section class="ai-module"><div class="ai-module-head"><div class="ai-module-title"><span class="ai-module-no">4</span>시장 트렌드 (Product Radar)</div><span class="ai-module-link">자세히 보기 →</span></div><div class="ai-subtitle">스토어 인기상품 TOP5 변동</div><div class="ai-radar-chart">${(data.productRadar?.bars||[38,48,43,66,82]).map((v,i)=>`<div class="ai-radar-bar" style="height:${v}%"><span>${i+1}위</span></div>`).join('')}</div><div class="ai-opportunity"><b>${esc(data.productRadar?.opportunity||'최근 상승 상품 기회 분석 준비 중')}</b><p>${esc(data.productRadar?.reason||'스토어 인기 변화와 네이버 수요 신호를 교차 검증합니다.')}</p></div></section>
+        <section class="ai-module"><div class="ai-module-head"><div class="ai-module-title"><span class="ai-module-no">5</span>카테고리 인사이트</div><span class="ai-module-link">자세히 보기 →</span></div><div class="ai-insight-list">${insights}</div></section>
+        <section class="ai-module"><div class="ai-module-head"><div class="ai-module-title"><span class="ai-module-no">6</span>오늘의 실행 전략</div><span class="ai-module-link">자세히 보기 →</span></div><table class="ai-action-table"><thead><tr><th>실행 과제</th><th>예상 효과</th><th>우선순위</th></tr></thead><tbody>${actions.map((a,i)=>`<tr><td>${i+1}. ${esc(a.title)}</td><td>${esc(a.expected)}</td><td><span class="ai-priority-badge ${i===2?'medium':''}">${i===2?'중간':'높음'}</span></td></tr>`).join('')}</tbody></table><div class="ai-impact-note">🚀 3가지만 실행해도 2~4주 내 순위와 전환에 긍정적 변화가 기대됩니다.</div></section>
+        <section class="ai-module ai-module-history"><div class="ai-module-head"><div class="ai-module-title"><span class="ai-module-no">7</span>분석 히스토리</div><span class="ai-module-link">자세히 보기 →</span></div><div class="ai-history-tabs"><span class="ai-history-tab active">AI 점수 변화</span><span class="ai-history-tab">순위 변화</span><span class="ai-history-tab">개선 이력</span><span class="ai-history-tab">성과 추적</span></div><div class="ai-history-body"><div class="ai-line-chart"><svg class="ai-line-svg" viewBox="0 0 100 100" preserveAspectRatio="none"><polyline points="${pts}" fill="none" stroke="#1677ff" stroke-width="2.2" vector-effect="non-scaling-stroke"/></svg><div class="ai-chart-labels">${(data.history?.labels||['6/30','7/5','7/10','7/15','7/20','7/25','오늘']).map(x=>`<span>${esc(x)}</span>`).join('')}</div></div><div class="ai-history-summary"><b>최근 AI 분석 요약</b><ul>${(data.history?.summary||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ul><button class="ai-report-btn">분석 리포트 다운로드</button></div></div></section>
+      </div><div class="ai-footnote">* 모든 분석 결과는 네이버 쇼핑 데이터 및 OLLIM AI 분석 모델을 기반으로 제공됩니다.</div>`;
+    $('aiAnalysisDate').textContent=(data.analysisDate||new Date().toISOString().slice(0,10)).replaceAll('-','.');
+    $('aiProductChange')?.addEventListener('click',()=>{const s=$('aiProductSelect');if(!s||products.length<2)return;const i=Math.max(0,products.findIndex(x=>String(x.id)===String(s.value)));s.value=products[(i+1)%products.length].id;load(true)});
   }
-
-  async function loadAIConsulting(force){
-    const root=$('aiConsultingRoot'), select=$('aiProductSelect');
-    if(!root || !select) return;
-    if(aiLoadedOnce && !force && select.value) return;
-    root.innerHTML='<div class="ai-loading"><div class="spinner"></div>운영 데이터를 분석하고 있습니다.</div>';
-    const session=await getSession();
-    if(!session){ root.innerHTML='<div class="ai-empty">로그인이 필요합니다.</div>'; return; }
-    const res=await apiCall('getAiConsultingOverview',{token:session.token,submissionId:select.value||''});
-    if(!res?.ok){ root.innerHTML=`<div class="ai-empty">${escAI(res?.error||'AI 컨설팅 데이터를 불러오지 못했습니다.')}</div>`; return; }
-    aiProducts=res.products||[];
-    const current=res.selected?.id||'';
-    select.innerHTML=aiProducts.length ? aiProducts.map(p=>`<option value="${escAI(p.id)}" ${String(p.id)===String(current)?'selected':''}>${escAI(p.name)}</option>`).join('') : '<option value="">분석할 상품 없음</option>';
-    aiLoadedOnce=true;
-    renderAI(res);
-  }
-  window.loadAIConsulting=loadAIConsulting;
-  $('aiRefreshBtn')?.addEventListener('click',()=>loadAIConsulting(true));
-  $('aiProductSelect')?.addEventListener('change',()=>loadAIConsulting(true));
+  async function load(force){const root=$('aiConsultingRoot'),sel=$('aiProductSelect');if(!root||!sel)return;if(loaded&&!force)return;root.innerHTML='<div class="ai-loading"><div class="spinner"></div>운영 데이터를 분석하고 있습니다.</div>';const session=await getSession();if(!session){root.innerHTML='<div class="ai-empty">로그인이 필요합니다.</div>';return}const res=await apiCall('getAiConsultingOverview',{token:session.token,submissionId:sel.value||''});if(!res?.ok){root.innerHTML=`<div class="ai-empty">${esc(res?.error||'데이터를 불러오지 못했습니다.')}</div>`;return}products=res.products||[];sel.innerHTML=products.map(x=>`<option value="${esc(x.id)}">${esc(x.name)}</option>`).join('');if(res.selected?.id)sel.value=res.selected.id;loaded=true;render(res)}
+  window.loadAIConsulting=load;$('aiRefreshBtn')?.addEventListener('click',()=>load(true));$('aiProductSelect')?.addEventListener('change',()=>load(true));
 })();
 </script>
 
